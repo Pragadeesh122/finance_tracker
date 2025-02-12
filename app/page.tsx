@@ -49,7 +49,6 @@ interface FundData {
     schemeCategory: string;
     navData: NAVData[];
     expenseRatio?: number;
-    exitLoad?: string;
     fundSize?: number;
     peRatio?: number;
     pbRatio?: number;
@@ -58,8 +57,6 @@ interface FundData {
     sharpeRatio?: number;
     turnoverRatio?: number;
     riskLevel?: string;
-    minSIPAmount?: number;
-    minLumpSumAmount?: number;
   };
 }
 
@@ -130,22 +127,7 @@ async function getFundMetrics(
   amfiCode: string,
   category?: string
 ): Promise<Partial<FundData["data"]>> {
-  const getExitLoad = (category?: string) => {
-    if (!category) return "1% if redeemed within 1 year";
-    category = category.toLowerCase();
-    if (category.includes("liquid") || category.includes("overnight")) {
-      return "NIL";
-    }
-    if (category.includes("debt")) {
-      return "0.5% if redeemed within 6 months";
-    }
-    return "1% if redeemed within 1 year";
-  };
-
   return {
-    exitLoad: getExitLoad(category),
-    minSIPAmount: 500,
-    minLumpSumAmount: 5000,
     riskLevel: getRiskLevel(category),
   };
 }
@@ -693,14 +675,6 @@ function MutualFundTracker() {
 
             {/* Fund Metrics Section */}
             <div className='grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4'>
-              {selectedFund.data.exitLoad && (
-                <div>
-                  <div className='text-slate-500 dark:text-slate-400'>
-                    Exit Load
-                  </div>
-                  <div>{selectedFund.data.exitLoad}</div>
-                </div>
-              )}
               {selectedFund.data.fundSize && (
                 <div>
                   <div className='text-slate-500 dark:text-slate-400'>
@@ -763,24 +737,6 @@ function MutualFundTracker() {
                     Risk Level
                   </div>
                   <div>{selectedFund.data.riskLevel}</div>
-                </div>
-              )}
-              {selectedFund.data.minSIPAmount && (
-                <div>
-                  <div className='text-slate-500 dark:text-slate-400'>
-                    Min. SIP Amount
-                  </div>
-                  <div>₹{selectedFund.data.minSIPAmount.toLocaleString()}</div>
-                </div>
-              )}
-              {selectedFund.data.minLumpSumAmount && (
-                <div>
-                  <div className='text-slate-500 dark:text-slate-400'>
-                    Min. Lump Sum
-                  </div>
-                  <div>
-                    ₹{selectedFund.data.minLumpSumAmount.toLocaleString()}
-                  </div>
                 </div>
               )}
             </div>
