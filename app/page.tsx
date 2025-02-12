@@ -128,17 +128,6 @@ async function getFundMetrics(
   amfiCode: string,
   category?: string
 ): Promise<Partial<FundData["data"]>> {
-  // Use category-based estimations since the API doesn't provide these metrics
-  const getExpenseRatio = (category?: string) => {
-    if (!category) return 1.5;
-    category = category.toLowerCase();
-    if (category.includes("index")) return 0.5;
-    if (category.includes("liquid") || category.includes("overnight"))
-      return 0.25;
-    if (category.includes("debt")) return 1.0;
-    return 1.5; // Default for equity funds
-  };
-
   const getExitLoad = (category?: string) => {
     if (!category) return "1% if redeemed within 1 year";
     category = category.toLowerCase();
@@ -152,7 +141,6 @@ async function getFundMetrics(
   };
 
   return {
-    expenseRatio: getExpenseRatio(category),
     exitLoad: getExitLoad(category),
     minSIPAmount: 500,
     minLumpSumAmount: 5000,
@@ -376,6 +364,31 @@ function calculateTaxAmount(totalGains: number): number {
   return (totalGains - exemptionLimit) * 0.125; // 12.5% tax on gains above exemption
 }
 
+function getMaxDuration(data: NAVData[]): string {
+  if (!data || data.length < 2) return "";
+
+  const sortedData = [...data].sort((a, b) => {
+    const dateA = new Date(a.date.split("-").reverse().join("-"));
+    const dateB = new Date(b.date.split("-").reverse().join("-"));
+    return dateA.getTime() - dateB.getTime();
+  });
+
+  const startDate = new Date(sortedData[0].date.split("-").reverse().join("-"));
+  const endDate = new Date(
+    sortedData[sortedData.length - 1].date.split("-").reverse().join("-")
+  );
+
+  const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+  const totalMonths = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 30.44)); // Average days in a month
+
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
+
+  if (years === 0) return `${months}M`;
+  if (months === 0) return `${years}Y`;
+  return `${years}Y ${months}M`;
+}
+
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -545,7 +558,11 @@ export default function Home() {
                           ? "bg-slate-700 text-slate-50"
                           : "bg-slate-800 text-slate-400 hover:bg-slate-700"
                       }`}>
-                      {period}
+                      {period === "Max"
+                        ? `Max (${getMaxDuration(
+                            selectedFund?.data?.navData || []
+                          )})`
+                        : period}
                     </button>
                   ))}
                 </div>
@@ -641,12 +658,6 @@ export default function Home() {
 
             {/* Fund Metrics Section */}
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4'>
-              {selectedFund.data.expenseRatio && (
-                <div>
-                  <div className='text-slate-400'>Expense Ratio</div>
-                  <div>{selectedFund.data.expenseRatio.toFixed(2)}%</div>
-                </div>
-              )}
               {selectedFund.data.exitLoad && (
                 <div>
                   <div className='text-slate-400'>Exit Load</div>
