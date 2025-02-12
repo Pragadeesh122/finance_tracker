@@ -9,6 +9,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import {useRouter, useSearchParams} from "next/navigation";
+import {LoadingSkeleton} from "@/components/loading-skeleton";
 
 interface NAVData {
   date: string;
@@ -390,6 +392,8 @@ function getMaxDuration(data: NAVData[]): string {
 }
 
 export default function Home() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [selectedFund, setSelectedFund] = useState<FundData | null>(null);
@@ -400,6 +404,14 @@ export default function Home() {
     amount: 10000,
     years: 5,
   });
+
+  // Load fund from URL params on initial render
+  useEffect(() => {
+    const amfiCode = searchParams.get("fund");
+    if (amfiCode && !selectedFund) {
+      handleFundSelect(amfiCode);
+    }
+  }, [searchParams]);
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300); // 300ms delay
 
@@ -429,6 +441,9 @@ export default function Home() {
         fundDetails.data.schemeCategory
       );
       fundDetails.data = {...fundDetails.data, ...additionalMetrics};
+
+      // Update URL with the selected fund's AMFI code
+      router.push(`?fund=${amfiCode}`, {scroll: false});
     }
     setSelectedFund(fundDetails);
     // Clear search results and query after selection
@@ -512,7 +527,9 @@ export default function Home() {
         </section>
 
         {/* Selected Fund Details */}
-        {selectedFund && selectedFund.data && (
+        {loading ? (
+          <LoadingSkeleton />
+        ) : selectedFund && selectedFund.data ? (
           <section className='bg-slate-900 p-4 rounded-lg border border-slate-800'>
             <h2 className='text-xl font-semibold mb-4'>{selectedFund.name}</h2>
 
@@ -947,7 +964,7 @@ export default function Home() {
               </section>
             )}
           </section>
-        )}
+        ) : null}
       </div>
     </main>
   );
