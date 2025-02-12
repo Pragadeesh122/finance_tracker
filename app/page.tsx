@@ -343,7 +343,7 @@ function calculateSIPValue(
 }
 
 function calculateTaxAmount(totalGains: number): number {
-  const exemptionLimit = 150000;
+  const exemptionLimit = 150000; // ₹1.5L exemption on gains
   if (totalGains <= exemptionLimit) return 0;
   return (totalGains - exemptionLimit) * 0.125; // 12.5% tax on gains above exemption
 }
@@ -468,480 +468,480 @@ function MutualFundTracker() {
   const minNav = Math.min(...(chartData.map((item) => item.nav) || [0]));
 
   return (
-    <main className='min-h-screen bg-slate-50 p-4 dark:bg-slate-950 sm:p-8'>
-      <h1 className='mb-4 text-xl font-bold sm:text-2xl'>
-        Indian Mutual Funds Performance Tracker
-      </h1>
-
-      <div className='space-y-6 sm:space-y-8'>
-        {/* Search Section */}
-        <section className='rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 sm:p-6'>
-          <div className='relative'>
-            <input
-              type='text'
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder='Search mutual funds...'
-              className='w-full rounded border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-50 sm:px-4'
-            />
-            {loading && (
-              <div className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-500 dark:text-slate-400 sm:text-base'>
-                Searching...
-              </div>
-            )}
+    <main className='min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900'>
+      {/* Hero Section */}
+      <div className='relative overflow-hidden bg-gradient-to-br from-slate-100 via-white to-slate-50 py-12 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800'>
+        <div className='absolute inset-0 bg-grid-slate-200/30 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.7))] dark:bg-grid-slate-800/30'></div>
+        <div className='relative mx-[6%]'>
+          <div className='text-center'>
+            <h1 className='bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 bg-clip-text text-4xl font-bold tracking-tight text-transparent dark:from-slate-200 dark:via-slate-100 dark:to-slate-200 sm:text-5xl'>
+              Indian Mutual Funds
+            </h1>
+            <p className='mx-auto mt-3 max-w-2xl text-sm text-slate-600 dark:text-slate-400 sm:text-base'>
+              Track, analyze, and compare mutual fund performance with real-time
+              data and interactive charts
+            </p>
           </div>
 
-          {/* Search Results */}
-          {searchResults.length > 0 && (
-            <div className='mt-4 max-h-96 space-y-2 overflow-y-auto'>
-              {searchResults.map((fund) => (
-                <button
-                  key={fund.schemeCode}
-                  onClick={() => handleFundSelect(fund.schemeCode)}
-                  className='w-full rounded border border-slate-200 bg-slate-50 p-3 text-left hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700'>
-                  <div className='font-medium'>{fund.schemeName}</div>
-                  <div className='text-sm text-slate-500 dark:text-slate-400'>
-                    {fund.fundHouse}
+          {/* Search Section */}
+          <div className='mx-auto mt-8 max-w-2xl'>
+            <div className='relative group'>
+              <div className='absolute -inset-0.5 bg-gradient-to-r from-slate-200 via-slate-400 to-slate-200 rounded-lg blur opacity-30 group-hover:opacity-50 transition duration-1000 group-hover:duration-200 dark:from-slate-700 dark:via-slate-600 dark:to-slate-700'></div>
+              <div className='relative'>
+                <input
+                  type='text'
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder='Search mutual funds by name or fund house...'
+                  className='w-full rounded-lg border border-slate-200 bg-white/80 px-4 py-3 text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-400/50 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-slate-600 dark:focus:ring-slate-500/50'
+                />
+                {loading && (
+                  <div className='absolute right-4 top-1/2 -translate-y-1/2'>
+                    <div className='h-5 w-5 animate-spin rounded-full border-2 border-slate-400 border-t-transparent dark:border-slate-500'></div>
                   </div>
-                </button>
-              ))}
+                )}
+              </div>
             </div>
-          )}
-        </section>
 
-        {/* Selected Fund Details */}
-        {loading ? (
-          <LoadingSkeleton />
-        ) : selectedFund && selectedFund.data ? (
-          <section className='rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 sm:p-6'>
-            <h2 className='mb-4 text-lg font-semibold sm:text-xl'>
-              {selectedFund.name}
-            </h2>
-
-            {/* Price Chart Section */}
-            <div className='mb-6 sm:mb-8'>
-              <div className='mb-4 flex flex-col justify-between gap-4 sm:flex-row sm:items-center'>
-                <div>
-                  <div className='text-slate-500 dark:text-slate-400'>
-                    Price Chart
-                  </div>
-                  <div className='mt-2 grid grid-cols-2 gap-4 sm:grid-cols-4'>
-                    <div>
-                      <div className='text-slate-500 dark:text-slate-400'>
-                        Low
-                      </div>
-                      <div className='font-semibold'>₹{minNav.toFixed(2)}</div>
-                    </div>
-                    <div>
-                      <div className='text-slate-500 dark:text-slate-400'>
-                        High
-                      </div>
-                      <div className='font-semibold'>₹{maxNav.toFixed(2)}</div>
-                    </div>
-                    <div>
-                      <div className='text-slate-500 dark:text-slate-400'>
-                        Current
-                      </div>
-                      <div className='font-semibold'>
-                        ₹{selectedFund.data.currentNAV}
-                      </div>
-                    </div>
-                    {selectedPeriod !== "6M" && cagrData[selectedPeriod] && (
-                      <div>
-                        <div className='text-slate-500 dark:text-slate-400'>
-                          CAGR ({selectedPeriod})
-                        </div>
-                        <div className='font-semibold'>
-                          {cagrData[selectedPeriod]?.toFixed(2)}%
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className='flex flex-wrap gap-2'>
-                  {availablePeriods.map((period) => (
+            {/* Search Results */}
+            {searchResults.length > 0 && (
+              <div className='relative mt-2'>
+                <div className='absolute -inset-0.5 bg-gradient-to-r from-slate-200 via-slate-400 to-slate-200 rounded-lg blur opacity-30 dark:from-slate-700 dark:via-slate-600 dark:to-slate-700'></div>
+                <div className='relative max-h-96 space-y-1 overflow-y-auto rounded-lg border border-slate-200 bg-white/80 p-2 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-800/80'>
+                  {searchResults.map((fund) => (
                     <button
-                      key={period}
-                      onClick={() => setSelectedPeriod(period)}
-                      className={`rounded px-3 py-1 text-sm ${
-                        selectedPeriod === period
-                          ? "bg-blue-500 text-white"
-                          : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
-                      }`}>
-                      {period === "Max"
-                        ? `Max (${getMaxDuration(
-                            selectedFund?.data?.navData || []
-                          )})`
-                        : period}
+                      key={fund.schemeCode}
+                      onClick={() => handleFundSelect(fund.schemeCode)}
+                      className='w-full rounded-md p-3 text-left transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-700'>
+                      <div className='font-medium text-slate-900 dark:text-slate-100'>
+                        {fund.schemeName}
+                      </div>
+                      <div className='mt-0.5 text-sm text-slate-500 dark:text-slate-400'>
+                        {fund.fundHouse}
+                      </div>
                     </button>
                   ))}
                 </div>
               </div>
+            )}
+          </div>
+        </div>
+      </div>
 
-              <div className='h-[300px] sm:h-[400px]'>
-                <ResponsiveContainer width='100%' height='100%'>
-                  <AreaChart data={chartData}>
-                    <defs>
-                      <linearGradient
-                        id='navGradient'
-                        x1='0'
-                        y1='0'
-                        x2='0'
-                        y2='1'>
-                        <stop
-                          offset='5%'
-                          stopColor='rgb(34, 197, 94)'
-                          stopOpacity={0.3}
-                        />
-                        <stop
-                          offset='95%'
-                          stopColor='rgb(34, 197, 94)'
-                          stopOpacity={0}
-                        />
-                      </linearGradient>
-                    </defs>
-                    <XAxis
-                      dataKey='date'
-                      tickFormatter={(date) => {
-                        const [day, month, year] = date.split("-");
-                        return `${day}/${month}/${year.slice(-2)}`;
-                      }}
-                      tick={{fill: "rgb(148, 163, 184)"}}
-                      tickLine={{stroke: "rgb(148, 163, 184)"}}
-                    />
-                    <YAxis
-                      domain={["auto", "auto"]}
-                      tick={{fill: "rgb(148, 163, 184)"}}
-                      tickLine={{stroke: "rgb(148, 163, 184)"}}
-                      tickFormatter={(value) => `₹${value.toFixed(2)}`}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "rgb(15, 23, 42)",
-                        border: "1px solid rgb(51, 65, 85)",
-                      }}
-                      labelStyle={{color: "rgb(148, 163, 184)"}}
-                      formatter={(value: number) => [
-                        `₹${value.toFixed(2)}`,
-                        "NAV",
-                      ]}
-                    />
-                    <Area
-                      type='monotone'
-                      dataKey='nav'
-                      stroke='rgb(34, 197, 94)'
-                      fill='url(#navGradient)'
-                      strokeWidth={2}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+      {/* Selected Fund Details */}
+      {loading ? (
+        <LoadingSkeleton />
+      ) : selectedFund && selectedFund.data ? (
+        <div className='mx-[6%] py-8'>
+          <div className='space-y-6'>
+            {/* Fund Header */}
+            <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
+              <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
+              <div className='relative'>
+                <h2 className='text-xl font-semibold text-slate-900 dark:text-slate-100 sm:text-2xl'>
+                  {selectedFund.name}
+                </h2>
+                <div className='mt-2 flex flex-wrap gap-4'>
+                  <div className='rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-400'>
+                    {selectedFund.data.schemeCategory}
+                  </div>
+                  <div className='rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-400'>
+                    {selectedFund.data.schemeType}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Price Chart Section */}
+            <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
+              <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
+              <div className='relative'>
+                <div className='mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center'>
+                  <div>
+                    <div className='text-sm font-medium text-slate-400 dark:text-slate-500'>
+                      Price Chart
+                    </div>
+                    <div className='mt-2 grid grid-cols-2 gap-4 sm:grid-cols-4'>
+                      <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
+                        <div className='text-sm text-slate-500 dark:text-slate-400'>
+                          Low
+                        </div>
+                        <div className='mt-1 font-semibold text-slate-900 dark:text-slate-100'>
+                          ₹{minNav.toFixed(2)}
+                        </div>
+                      </div>
+                      <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
+                        <div className='text-sm text-slate-500 dark:text-slate-400'>
+                          High
+                        </div>
+                        <div className='mt-1 font-semibold text-slate-900 dark:text-slate-100'>
+                          ₹{maxNav.toFixed(2)}
+                        </div>
+                      </div>
+                      <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
+                        <div className='text-sm text-slate-500 dark:text-slate-400'>
+                          Current
+                        </div>
+                        <div className='mt-1 font-semibold text-slate-900 dark:text-slate-100'>
+                          ₹{selectedFund.data.currentNAV}
+                        </div>
+                      </div>
+                      {selectedPeriod !== "6M" && cagrData[selectedPeriod] && (
+                        <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
+                          <div className='text-sm text-slate-500 dark:text-slate-400'>
+                            CAGR ({selectedPeriod})
+                          </div>
+                          <div className='mt-1 font-semibold text-emerald-600 dark:text-emerald-400'>
+                            {cagrData[selectedPeriod]?.toFixed(2)}%
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className='flex flex-wrap gap-2'>
+                    {availablePeriods.map((period) => (
+                      <button
+                        key={period}
+                        onClick={() => setSelectedPeriod(period)}
+                        className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                          selectedPeriod === period
+                            ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+                        }`}>
+                        {period === "Max"
+                          ? `Max (${getMaxDuration(
+                              selectedFund?.data?.navData || []
+                            )})`
+                          : period}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className='h-[400px]'>
+                  <ResponsiveContainer width='100%' height='100%'>
+                    <AreaChart data={chartData}>
+                      <defs>
+                        <linearGradient
+                          id='navGradient'
+                          x1='0'
+                          y1='0'
+                          x2='0'
+                          y2='1'>
+                          <stop
+                            offset='5%'
+                            stopColor='rgb(16, 185, 129)'
+                            stopOpacity={0.2}
+                          />
+                          <stop
+                            offset='95%'
+                            stopColor='rgb(16, 185, 129)'
+                            stopOpacity={0}
+                          />
+                        </linearGradient>
+                      </defs>
+                      <XAxis
+                        dataKey='date'
+                        tickFormatter={(date) => {
+                          const [day, month, year] = date.split("-");
+                          return `${day}/${month}/${year.slice(-2)}`;
+                        }}
+                        tick={{fill: "rgb(148, 163, 184)"}}
+                        tickLine={{stroke: "rgb(148, 163, 184)"}}
+                        axisLine={{stroke: "rgb(148, 163, 184)"}}
+                      />
+                      <YAxis
+                        domain={["auto", "auto"]}
+                        tick={{fill: "rgb(148, 163, 184)"}}
+                        tickLine={{stroke: "rgb(148, 163, 184)"}}
+                        axisLine={{stroke: "rgb(148, 163, 184)"}}
+                        tickFormatter={(value) => `₹${value.toFixed(2)}`}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "rgb(15, 23, 42)",
+                          border: "1px solid rgb(51, 65, 85)",
+                          borderRadius: "0.5rem",
+                          padding: "0.75rem",
+                        }}
+                        labelStyle={{color: "rgb(148, 163, 184)"}}
+                        formatter={(value: number) => [
+                          `₹${value.toFixed(2)}`,
+                          "NAV",
+                        ]}
+                      />
+                      <Area
+                        type='monotone'
+                        dataKey='nav'
+                        stroke='rgb(16, 185, 129)'
+                        strokeWidth={2}
+                        fill='url(#navGradient)'
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </div>
 
             {/* Fund Details Grid */}
-            <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-              <div>
-                <div className='text-slate-500 dark:text-slate-400'>
-                  Current NAV
-                </div>
-                <div className='text-xl font-semibold'>
-                  ₹{selectedFund.data.currentNAV}
+            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+              <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
+                <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
+                <div className='relative'>
+                  <div className='text-sm font-medium text-slate-400 dark:text-slate-500'>
+                    Fund House
+                  </div>
+                  <div className='mt-2 text-lg font-medium text-slate-900 dark:text-slate-100'>
+                    {selectedFund.data.fundHouse}
+                  </div>
                 </div>
               </div>
-              <div>
-                <div className='text-slate-500 dark:text-slate-400'>
-                  Last Updated
+              <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
+                <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
+                <div className='relative'>
+                  <div className='text-sm font-medium text-slate-400 dark:text-slate-500'>
+                    Last Updated
+                  </div>
+                  <div className='mt-2 text-lg font-medium text-slate-900 dark:text-slate-100'>
+                    {selectedFund.data.lastUpdated}
+                  </div>
                 </div>
-                <div>{selectedFund.data.lastUpdated}</div>
               </div>
-              <div>
-                <div className='text-slate-500 dark:text-slate-400'>
-                  Fund House
+              <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
+                <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
+                <div className='relative'>
+                  <div className='text-sm font-medium text-slate-400 dark:text-slate-500'>
+                    Risk Level
+                  </div>
+                  <div className='mt-2 text-lg font-medium text-slate-900 dark:text-slate-100'>
+                    {selectedFund.data.riskLevel}
+                  </div>
                 </div>
-                <div>{selectedFund.data.fundHouse}</div>
-              </div>
-              <div>
-                <div className='text-slate-500 dark:text-slate-400'>
-                  Category
-                </div>
-                <div>{selectedFund.data.schemeCategory}</div>
-              </div>
-              <div>
-                <div className='text-slate-500 dark:text-slate-400'>Type</div>
-                <div>{selectedFund.data.schemeType}</div>
               </div>
             </div>
 
             {/* Fund Metrics Section */}
-            <div className='grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4'>
+            <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
               {selectedFund.data.fundSize && (
-                <div>
-                  <div className='text-slate-500 dark:text-slate-400'>
-                    Fund Size
-                  </div>
-                  <div>
-                    ₹{(selectedFund.data.fundSize / 10000000).toFixed(2)} Cr
+                <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
+                  <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
+                  <div className='relative'>
+                    <div className='text-sm font-medium text-slate-400 dark:text-slate-500'>
+                      Fund Size
+                    </div>
+                    <div className='mt-2 text-lg font-medium text-slate-900 dark:text-slate-100'>
+                      ₹{(selectedFund.data.fundSize / 10000000).toFixed(2)} Cr
+                    </div>
                   </div>
                 </div>
               )}
               {selectedFund.data.peRatio && (
-                <div>
-                  <div className='text-slate-500 dark:text-slate-400'>
-                    P/E Ratio
+                <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
+                  <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
+                  <div className='relative'>
+                    <div className='text-sm font-medium text-slate-400 dark:text-slate-500'>
+                      P/E Ratio
+                    </div>
+                    <div className='mt-2 text-lg font-medium text-slate-900 dark:text-slate-100'>
+                      {selectedFund.data.peRatio.toFixed(2)}
+                    </div>
                   </div>
-                  <div>{selectedFund.data.peRatio.toFixed(2)}</div>
                 </div>
               )}
               {selectedFund.data.pbRatio && (
-                <div>
-                  <div className='text-slate-500 dark:text-slate-400'>
-                    P/B Ratio
+                <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
+                  <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
+                  <div className='relative'>
+                    <div className='text-sm font-medium text-slate-400 dark:text-slate-500'>
+                      P/B Ratio
+                    </div>
+                    <div className='mt-2 text-lg font-medium text-slate-900 dark:text-slate-100'>
+                      {selectedFund.data.pbRatio.toFixed(2)}
+                    </div>
                   </div>
-                  <div>{selectedFund.data.pbRatio.toFixed(2)}</div>
                 </div>
               )}
               {selectedFund.data.beta && (
-                <div>
-                  <div className='text-slate-500 dark:text-slate-400'>Beta</div>
-                  <div>{selectedFund.data.beta.toFixed(2)}</div>
+                <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
+                  <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
+                  <div className='relative'>
+                    <div className='text-sm font-medium text-slate-400 dark:text-slate-500'>
+                      Beta
+                    </div>
+                    <div className='mt-2 text-lg font-medium text-slate-900 dark:text-slate-100'>
+                      {selectedFund.data.beta.toFixed(2)}
+                    </div>
+                  </div>
                 </div>
               )}
               {selectedFund.data.stdDev && (
-                <div>
-                  <div className='text-slate-500 dark:text-slate-400'>
-                    Standard Deviation
+                <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
+                  <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
+                  <div className='relative'>
+                    <div className='text-sm font-medium text-slate-400 dark:text-slate-500'>
+                      Standard Deviation
+                    </div>
+                    <div className='mt-2 text-lg font-medium text-slate-900 dark:text-slate-100'>
+                      {selectedFund.data.stdDev.toFixed(2)}%
+                    </div>
                   </div>
-                  <div>{selectedFund.data.stdDev.toFixed(2)}%</div>
                 </div>
               )}
               {selectedFund.data.sharpeRatio && (
-                <div>
-                  <div className='text-slate-500 dark:text-slate-400'>
-                    Sharpe Ratio
+                <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
+                  <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
+                  <div className='relative'>
+                    <div className='text-sm font-medium text-slate-400 dark:text-slate-500'>
+                      Sharpe Ratio
+                    </div>
+                    <div className='mt-2 text-lg font-medium text-slate-900 dark:text-slate-100'>
+                      {selectedFund.data.sharpeRatio.toFixed(2)}
+                    </div>
                   </div>
-                  <div>{selectedFund.data.sharpeRatio.toFixed(2)}</div>
-                </div>
-              )}
-              {selectedFund.data.turnoverRatio && (
-                <div>
-                  <div className='text-slate-500 dark:text-slate-400'>
-                    Portfolio Turnover
-                  </div>
-                  <div>{selectedFund.data.turnoverRatio.toFixed(2)}%</div>
-                </div>
-              )}
-              {selectedFund.data.riskLevel && (
-                <div>
-                  <div className='text-slate-500 dark:text-slate-400'>
-                    Risk Level
-                  </div>
-                  <div>{selectedFund.data.riskLevel}</div>
                 </div>
               )}
             </div>
 
             {/* Calculator Section */}
             {selectedFund && selectedFund.data && cagrData["Max"] && (
-              <div className='mt-6 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 sm:mt-8 sm:p-6'>
-                <h3 className='mb-4 text-lg font-semibold'>
-                  Investment Calculator
-                </h3>
-                <div className='space-y-4 sm:space-y-6'>
-                  <div className='flex gap-4'>
-                    <button
-                      onClick={() =>
-                        setCalculatorInputs((prev) => ({
-                          ...prev,
-                          investmentType: "lumpsum",
-                        }))
-                      }
-                      className={`px-4 py-2 rounded ${
-                        calculatorInputs.investmentType === "lumpsum"
-                          ? "bg-blue-500 text-white"
-                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
-                      }`}>
-                      Lumpsum
-                    </button>
-                    <button
-                      onClick={() =>
-                        setCalculatorInputs((prev) => ({
-                          ...prev,
-                          investmentType: "sip",
-                        }))
-                      }
-                      className={`px-4 py-2 rounded ${
-                        calculatorInputs.investmentType === "sip"
-                          ? "bg-blue-500 text-white"
-                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
-                      }`}>
-                      Monthly SIP
-                    </button>
-                  </div>
-
-                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-                    <div>
-                      <label className='block text-sm text-slate-500 dark:text-slate-400 mb-1'>
-                        {calculatorInputs.investmentType === "lumpsum"
-                          ? "Lumpsum Amount"
-                          : "Monthly SIP Amount"}
-                      </label>
-                      <input
-                        type='number'
-                        value={calculatorInputs.amount}
-                        onChange={(e) =>
+              <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
+                <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
+                <div className='relative'>
+                  <h3 className='text-xl font-semibold text-slate-900 dark:text-slate-100'>
+                    Investment Calculator
+                  </h3>
+                  <div className='mt-6 space-y-6'>
+                    <div className='flex flex-wrap gap-2'>
+                      <button
+                        onClick={() =>
                           setCalculatorInputs((prev) => ({
                             ...prev,
-                            amount: Math.max(0, Number(e.target.value)),
+                            investmentType: "lumpsum",
                           }))
                         }
-                        className='w-full px-4 py-2 rounded bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-50 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-blue-500'
-                        min='0'
-                      />
-                    </div>
-                    <div>
-                      <label className='block text-sm text-slate-500 dark:text-slate-400 mb-1'>
-                        Investment Period (Years)
-                      </label>
-                      <input
-                        type='number'
-                        value={calculatorInputs.years}
-                        onChange={(e) =>
+                        className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                          calculatorInputs.investmentType === "lumpsum"
+                            ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+                        }`}>
+                        Lumpsum
+                      </button>
+                      <button
+                        onClick={() =>
                           setCalculatorInputs((prev) => ({
                             ...prev,
-                            years: Math.max(
-                              1,
-                              Math.min(50, Number(e.target.value))
-                            ),
+                            investmentType: "sip",
                           }))
                         }
-                        className='w-full px-4 py-2 rounded bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-50 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-blue-500'
-                        min='1'
-                        max='50'
-                      />
+                        className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                          calculatorInputs.investmentType === "sip"
+                            ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+                        }`}>
+                        Monthly SIP
+                      </button>
                     </div>
-                  </div>
 
-                  <div className='bg-slate-100 dark:bg-slate-800 p-4 rounded-lg'>
-                    <div className='grid grid-cols-2 gap-4'>
+                    <div className='grid gap-4 sm:grid-cols-2'>
                       <div>
-                        <div className='text-slate-500 dark:text-slate-400'>
-                          Expected CAGR
-                        </div>
-                        <div className='text-xl font-semibold'>
-                          {cagrData["Max"].toFixed(2)}%
-                        </div>
+                        <label className='block text-sm font-medium text-slate-600 dark:text-slate-400'>
+                          {calculatorInputs.investmentType === "lumpsum"
+                            ? "Lumpsum Amount (₹)"
+                            : "Monthly SIP Amount (₹)"}
+                        </label>
+                        <input
+                          type='number'
+                          value={calculatorInputs.amount}
+                          onChange={(e) =>
+                            setCalculatorInputs((prev) => ({
+                              ...prev,
+                              amount: Math.max(0, Number(e.target.value)),
+                            }))
+                          }
+                          className='mt-1 block w-full rounded-lg border border-slate-200 bg-white/80 px-4 py-2.5 text-slate-900 backdrop-blur-sm transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-400/50 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-100 dark:focus:border-slate-600 dark:focus:ring-slate-500/50'
+                          min='0'
+                        />
                       </div>
                       <div>
-                        <div className='text-slate-500 dark:text-slate-400'>
-                          Total Investment
-                        </div>
-                        <div className='text-xl font-semibold'>
-                          ₹
-                          {(calculatorInputs.investmentType === "lumpsum"
-                            ? calculatorInputs.amount
-                            : calculatorInputs.amount *
-                              calculatorInputs.years *
-                              12
-                          ).toLocaleString()}
-                        </div>
+                        <label className='block text-sm font-medium text-slate-600 dark:text-slate-400'>
+                          Investment Period (Years)
+                        </label>
+                        <input
+                          type='number'
+                          value={calculatorInputs.years}
+                          onChange={(e) =>
+                            setCalculatorInputs((prev) => ({
+                              ...prev,
+                              years: Math.max(
+                                1,
+                                Math.min(50, Number(e.target.value))
+                              ),
+                            }))
+                          }
+                          className='mt-1 block w-full rounded-lg border border-slate-200 bg-white/80 px-4 py-2.5 text-slate-900 backdrop-blur-sm transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-400/50 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-100 dark:focus:border-slate-600 dark:focus:ring-slate-500/50'
+                          min='1'
+                          max='50'
+                        />
                       </div>
-                      <div>
-                        <div className='text-slate-500 dark:text-slate-400'>
-                          Total Corpus
+                    </div>
+
+                    <div className='overflow-hidden rounded-xl bg-slate-50 p-6 dark:bg-slate-800/50'>
+                      <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+                        <div>
+                          <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
+                            Expected CAGR
+                          </div>
+                          <div className='mt-1.5 text-2xl font-semibold text-slate-900 dark:text-slate-100'>
+                            {cagrData["Max"].toFixed(2)}%
+                          </div>
                         </div>
-                        <div className='text-xl font-semibold text-green-500'>
-                          ₹
-                          {(calculatorInputs.investmentType === "lumpsum"
-                            ? calculateLumpsumValue(
-                                calculatorInputs.amount,
-                                cagrData["Max"],
-                                calculatorInputs.years
-                              )
-                            : calculateSIPValue(
-                                calculatorInputs.amount,
-                                cagrData["Max"],
-                                calculatorInputs.years
-                              )
-                          ).toLocaleString(undefined, {
-                            maximumFractionDigits: 0,
-                          })}
-                        </div>
-                      </div>
-                      <div>
-                        <div className='text-slate-500 dark:text-slate-400'>
-                          Total Returns
-                        </div>
-                        <div className='text-xl font-semibold text-green-500'>
-                          ₹
-                          {(
-                            (calculatorInputs.investmentType === "lumpsum"
-                              ? calculateLumpsumValue(
-                                  calculatorInputs.amount,
-                                  cagrData["Max"],
-                                  calculatorInputs.years
-                                )
-                              : calculateSIPValue(
-                                  calculatorInputs.amount,
-                                  cagrData["Max"],
-                                  calculatorInputs.years
-                                )) -
-                            (calculatorInputs.investmentType === "lumpsum"
+                        <div>
+                          <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
+                            Total Investment
+                          </div>
+                          <div className='mt-1.5 text-2xl font-semibold text-slate-900 dark:text-slate-100'>
+                            ₹
+                            {(calculatorInputs.investmentType === "lumpsum"
                               ? calculatorInputs.amount
                               : calculatorInputs.amount *
                                 calculatorInputs.years *
-                                12)
-                          ).toLocaleString(undefined, {
-                            maximumFractionDigits: 0,
-                          })}
+                                12
+                            ).toLocaleString()}
+                          </div>
                         </div>
-                      </div>
-                      <div>
-                        <div className='text-slate-500 dark:text-slate-400'>
-                          Tax Amount
-                        </div>
-                        <div className='text-xl font-semibold text-red-500'>
-                          ₹
-                          {calculateTaxAmount(
-                            (calculatorInputs.investmentType === "lumpsum"
-                              ? calculateLumpsumValue(
-                                  calculatorInputs.amount,
-                                  cagrData["Max"],
-                                  calculatorInputs.years
-                                )
-                              : calculateSIPValue(
-                                  calculatorInputs.amount,
-                                  cagrData["Max"],
-                                  calculatorInputs.years
-                                )) -
+                        <div>
+                          <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
+                            Total Returns
+                          </div>
+                          <div className='mt-1.5 text-2xl font-semibold text-emerald-600 dark:text-emerald-400'>
+                            ₹
+                            {(
+                              (calculatorInputs.investmentType === "lumpsum"
+                                ? calculateLumpsumValue(
+                                    calculatorInputs.amount,
+                                    cagrData["Max"],
+                                    calculatorInputs.years
+                                  )
+                                : calculateSIPValue(
+                                    calculatorInputs.amount,
+                                    cagrData["Max"],
+                                    calculatorInputs.years
+                                  )) -
                               (calculatorInputs.investmentType === "lumpsum"
                                 ? calculatorInputs.amount
                                 : calculatorInputs.amount *
                                   calculatorInputs.years *
                                   12)
-                          ).toLocaleString(undefined, {
-                            maximumFractionDigits: 0,
-                          })}
+                            ).toLocaleString()}
+                          </div>
                         </div>
-                      </div>
-                      <div>
-                        <div className='text-slate-500 dark:text-slate-400'>
-                          Corpus After Tax
-                        </div>
-                        <div className='text-xl font-semibold text-green-500'>
-                          ₹
-                          {(
-                            (calculatorInputs.investmentType === "lumpsum"
-                              ? calculateLumpsumValue(
-                                  calculatorInputs.amount,
-                                  cagrData["Max"],
-                                  calculatorInputs.years
-                                )
-                              : calculateSIPValue(
-                                  calculatorInputs.amount,
-                                  cagrData["Max"],
-                                  calculatorInputs.years
-                                )) -
-                            calculateTaxAmount(
+                        <div>
+                          <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
+                            Tax Amount
+                          </div>
+                          <div className='mt-1.5 text-2xl font-semibold text-red-600 dark:text-red-400'>
+                            ₹
+                            {calculateTaxAmount(
                               (calculatorInputs.investmentType === "lumpsum"
                                 ? calculateLumpsumValue(
                                     calculatorInputs.amount,
@@ -958,20 +958,88 @@ function MutualFundTracker() {
                                   : calculatorInputs.amount *
                                     calculatorInputs.years *
                                     12)
-                            )
-                          ).toLocaleString(undefined, {
-                            maximumFractionDigits: 0,
-                          })}
+                            ).toLocaleString()}
+                          </div>
                         </div>
+                        <div>
+                          <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
+                            Final Amount
+                          </div>
+                          <div className='mt-1.5 text-2xl font-semibold text-emerald-600 dark:text-emerald-400'>
+                            ₹
+                            {(calculatorInputs.investmentType === "lumpsum"
+                              ? calculateLumpsumValue(
+                                  calculatorInputs.amount,
+                                  cagrData["Max"],
+                                  calculatorInputs.years
+                                )
+                              : calculateSIPValue(
+                                  calculatorInputs.amount,
+                                  cagrData["Max"],
+                                  calculatorInputs.years
+                                )
+                            ).toLocaleString()}
+                          </div>
+                        </div>
+                        <div>
+                          <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
+                            Post-tax Amount
+                          </div>
+                          <div className='mt-1.5 text-2xl font-semibold text-emerald-600 dark:text-emerald-400'>
+                            ₹
+                            {(
+                              (calculatorInputs.investmentType === "lumpsum"
+                                ? calculateLumpsumValue(
+                                    calculatorInputs.amount,
+                                    cagrData["Max"],
+                                    calculatorInputs.years
+                                  )
+                                : calculateSIPValue(
+                                    calculatorInputs.amount,
+                                    cagrData["Max"],
+                                    calculatorInputs.years
+                                  )) -
+                              calculateTaxAmount(
+                                (calculatorInputs.investmentType === "lumpsum"
+                                  ? calculateLumpsumValue(
+                                      calculatorInputs.amount,
+                                      cagrData["Max"],
+                                      calculatorInputs.years
+                                    )
+                                  : calculateSIPValue(
+                                      calculatorInputs.amount,
+                                      cagrData["Max"],
+                                      calculatorInputs.years
+                                    )) -
+                                  (calculatorInputs.investmentType === "lumpsum"
+                                    ? calculatorInputs.amount
+                                    : calculatorInputs.amount *
+                                      calculatorInputs.years *
+                                      12)
+                              )
+                            ).toLocaleString()}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className='space-y-1 text-xs text-slate-500 dark:text-slate-400'>
+                      <div>
+                        • Tax calculation assumes LTCG at 12.5% on gains above
+                        ₹1.5L exemption limit.
+                      </div>
+                      <div>
+                        • Returns % is calculated based on total investment
+                        amount.
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             )}
-          </section>
-        ) : null}
-      </div>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }
