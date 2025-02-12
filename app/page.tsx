@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect, useState} from "react";
+import {Suspense, useEffect, useState} from "react";
 import {
   Area,
   AreaChart,
@@ -391,7 +391,7 @@ function getMaxDuration(data: NAVData[]): string {
   return `${years}Y ${months}M`;
 }
 
-export default function Home() {
+function MutualFundTracker() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
@@ -967,5 +967,13 @@ export default function Home() {
         ) : null}
       </div>
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<LoadingSkeleton />}>
+      <MutualFundTracker />
+    </Suspense>
   );
 }
