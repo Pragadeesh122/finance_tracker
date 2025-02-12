@@ -487,24 +487,24 @@ function MutualFundTracker() {
   const minNav = Math.min(...(chartData.map((item) => item.nav) || [0]));
 
   return (
-    <main className='p-8 min-h-screen bg-slate-950 text-slate-50'>
-      <h1 className='text-2xl font-bold mb-4 text-slate-50'>
+    <main className='p-8 min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50'>
+      <h1 className='text-2xl font-bold mb-4'>
         Indian Mutual Funds Performance Tracker
       </h1>
 
       <div className='space-y-8'>
         {/* Search Section */}
-        <section className='bg-slate-900 p-4 rounded-lg border border-slate-800'>
+        <section className='bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800'>
           <div className='relative'>
             <input
               type='text'
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder='Search mutual funds...'
-              className='w-full px-4 py-2 rounded bg-slate-800 text-slate-50 border border-slate-700 focus:outline-none focus:border-slate-500'
+              className='w-full px-4 py-2 rounded bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-50 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-blue-500'
             />
             {loading && (
-              <div className='absolute right-3 top-1/2 -translate-y-1/2 text-slate-400'>
+              <div className='absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400'>
                 Searching...
               </div>
             )}
@@ -517,9 +517,11 @@ function MutualFundTracker() {
                 <button
                   key={fund.schemeCode}
                   onClick={() => handleFundSelect(fund.schemeCode)}
-                  className='w-full text-left p-3 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700'>
+                  className='w-full text-left p-3 rounded bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'>
                   <div className='font-medium'>{fund.schemeName}</div>
-                  <div className='text-sm text-slate-400'>{fund.fundHouse}</div>
+                  <div className='text-sm text-slate-500 dark:text-slate-400'>
+                    {fund.fundHouse}
+                  </div>
                 </button>
               ))}
             </div>
@@ -530,32 +532,40 @@ function MutualFundTracker() {
         {loading ? (
           <LoadingSkeleton />
         ) : selectedFund && selectedFund.data ? (
-          <section className='bg-slate-900 p-4 rounded-lg border border-slate-800'>
+          <section className='bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800'>
             <h2 className='text-xl font-semibold mb-4'>{selectedFund.name}</h2>
 
             {/* Price Chart Section */}
             <div className='mb-8'>
               <div className='flex justify-between items-center mb-4'>
                 <div>
-                  <div className='text-slate-400'>Price Chart</div>
+                  <div className='text-slate-500 dark:text-slate-400'>
+                    Price Chart
+                  </div>
                   <div className='grid grid-cols-4 gap-4 mt-2'>
                     <div>
-                      <div className='text-slate-400'>Low</div>
+                      <div className='text-slate-500 dark:text-slate-400'>
+                        Low
+                      </div>
                       <div className='font-semibold'>₹{minNav.toFixed(2)}</div>
                     </div>
                     <div>
-                      <div className='text-slate-400'>High</div>
+                      <div className='text-slate-500 dark:text-slate-400'>
+                        High
+                      </div>
                       <div className='font-semibold'>₹{maxNav.toFixed(2)}</div>
                     </div>
                     <div>
-                      <div className='text-slate-400'>Current</div>
+                      <div className='text-slate-500 dark:text-slate-400'>
+                        Current
+                      </div>
                       <div className='font-semibold'>
                         ₹{selectedFund.data.currentNAV}
                       </div>
                     </div>
                     {selectedPeriod !== "6M" && cagrData[selectedPeriod] && (
                       <div>
-                        <div className='text-slate-400'>
+                        <div className='text-slate-500 dark:text-slate-400'>
                           CAGR ({selectedPeriod})
                         </div>
                         <div className='font-semibold'>
@@ -572,8 +582,8 @@ function MutualFundTracker() {
                       onClick={() => setSelectedPeriod(period)}
                       className={`px-3 py-1 rounded ${
                         selectedPeriod === period
-                          ? "bg-slate-700 text-slate-50"
-                          : "bg-slate-800 text-slate-400 hover:bg-slate-700"
+                          ? "bg-blue-500 text-white"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
                       }`}>
                       {period === "Max"
                         ? `Max (${getMaxDuration(
@@ -649,26 +659,34 @@ function MutualFundTracker() {
             <div className='space-y-4'>
               <div className='grid grid-cols-2 gap-4'>
                 <div>
-                  <div className='text-slate-400'>Current NAV</div>
+                  <div className='text-slate-500 dark:text-slate-400'>
+                    Current NAV
+                  </div>
                   <div className='text-xl font-semibold'>
                     ₹{selectedFund.data.currentNAV}
                   </div>
                 </div>
                 <div>
-                  <div className='text-slate-400'>Last Updated</div>
+                  <div className='text-slate-500 dark:text-slate-400'>
+                    Last Updated
+                  </div>
                   <div>{selectedFund.data.lastUpdated}</div>
                 </div>
               </div>
               <div>
-                <div className='text-slate-400'>Fund House</div>
+                <div className='text-slate-500 dark:text-slate-400'>
+                  Fund House
+                </div>
                 <div>{selectedFund.data.fundHouse}</div>
               </div>
               <div>
-                <div className='text-slate-400'>Category</div>
+                <div className='text-slate-500 dark:text-slate-400'>
+                  Category
+                </div>
                 <div>{selectedFund.data.schemeCategory}</div>
               </div>
               <div>
-                <div className='text-slate-400'>Type</div>
+                <div className='text-slate-500 dark:text-slate-400'>Type</div>
                 <div>{selectedFund.data.schemeType}</div>
               </div>
             </div>
@@ -677,13 +695,17 @@ function MutualFundTracker() {
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4'>
               {selectedFund.data.exitLoad && (
                 <div>
-                  <div className='text-slate-400'>Exit Load</div>
+                  <div className='text-slate-500 dark:text-slate-400'>
+                    Exit Load
+                  </div>
                   <div>{selectedFund.data.exitLoad}</div>
                 </div>
               )}
               {selectedFund.data.fundSize && (
                 <div>
-                  <div className='text-slate-400'>Fund Size</div>
+                  <div className='text-slate-500 dark:text-slate-400'>
+                    Fund Size
+                  </div>
                   <div>
                     ₹{(selectedFund.data.fundSize / 10000000).toFixed(2)} Cr
                   </div>
@@ -691,55 +713,71 @@ function MutualFundTracker() {
               )}
               {selectedFund.data.peRatio && (
                 <div>
-                  <div className='text-slate-400'>P/E Ratio</div>
+                  <div className='text-slate-500 dark:text-slate-400'>
+                    P/E Ratio
+                  </div>
                   <div>{selectedFund.data.peRatio.toFixed(2)}</div>
                 </div>
               )}
               {selectedFund.data.pbRatio && (
                 <div>
-                  <div className='text-slate-400'>P/B Ratio</div>
+                  <div className='text-slate-500 dark:text-slate-400'>
+                    P/B Ratio
+                  </div>
                   <div>{selectedFund.data.pbRatio.toFixed(2)}</div>
                 </div>
               )}
               {selectedFund.data.beta && (
                 <div>
-                  <div className='text-slate-400'>Beta</div>
+                  <div className='text-slate-500 dark:text-slate-400'>Beta</div>
                   <div>{selectedFund.data.beta.toFixed(2)}</div>
                 </div>
               )}
               {selectedFund.data.stdDev && (
                 <div>
-                  <div className='text-slate-400'>Standard Deviation</div>
+                  <div className='text-slate-500 dark:text-slate-400'>
+                    Standard Deviation
+                  </div>
                   <div>{selectedFund.data.stdDev.toFixed(2)}%</div>
                 </div>
               )}
               {selectedFund.data.sharpeRatio && (
                 <div>
-                  <div className='text-slate-400'>Sharpe Ratio</div>
+                  <div className='text-slate-500 dark:text-slate-400'>
+                    Sharpe Ratio
+                  </div>
                   <div>{selectedFund.data.sharpeRatio.toFixed(2)}</div>
                 </div>
               )}
               {selectedFund.data.turnoverRatio && (
                 <div>
-                  <div className='text-slate-400'>Portfolio Turnover</div>
+                  <div className='text-slate-500 dark:text-slate-400'>
+                    Portfolio Turnover
+                  </div>
                   <div>{selectedFund.data.turnoverRatio.toFixed(2)}%</div>
                 </div>
               )}
               {selectedFund.data.riskLevel && (
                 <div>
-                  <div className='text-slate-400'>Risk Level</div>
+                  <div className='text-slate-500 dark:text-slate-400'>
+                    Risk Level
+                  </div>
                   <div>{selectedFund.data.riskLevel}</div>
                 </div>
               )}
               {selectedFund.data.minSIPAmount && (
                 <div>
-                  <div className='text-slate-400'>Min. SIP Amount</div>
+                  <div className='text-slate-500 dark:text-slate-400'>
+                    Min. SIP Amount
+                  </div>
                   <div>₹{selectedFund.data.minSIPAmount.toLocaleString()}</div>
                 </div>
               )}
               {selectedFund.data.minLumpSumAmount && (
                 <div>
-                  <div className='text-slate-400'>Min. Lump Sum</div>
+                  <div className='text-slate-500 dark:text-slate-400'>
+                    Min. Lump Sum
+                  </div>
                   <div>
                     ₹{selectedFund.data.minLumpSumAmount.toLocaleString()}
                   </div>
@@ -748,7 +786,7 @@ function MutualFundTracker() {
             </div>
 
             {selectedFund && selectedFund.data && cagrData["Max"] && (
-              <section className='bg-slate-900 p-4 rounded-lg border border-slate-800 mt-8'>
+              <section className='bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800 mt-8'>
                 <h3 className='text-lg font-semibold mb-4'>
                   Investment Calculator
                 </h3>
@@ -763,8 +801,8 @@ function MutualFundTracker() {
                       }
                       className={`px-4 py-2 rounded ${
                         calculatorInputs.investmentType === "lumpsum"
-                          ? "bg-slate-700 text-slate-50"
-                          : "bg-slate-800 text-slate-400 hover:bg-slate-700"
+                          ? "bg-blue-500 text-white"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
                       }`}>
                       Lumpsum
                     </button>
@@ -777,8 +815,8 @@ function MutualFundTracker() {
                       }
                       className={`px-4 py-2 rounded ${
                         calculatorInputs.investmentType === "sip"
-                          ? "bg-slate-700 text-slate-50"
-                          : "bg-slate-800 text-slate-400 hover:bg-slate-700"
+                          ? "bg-blue-500 text-white"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
                       }`}>
                       Monthly SIP
                     </button>
@@ -786,7 +824,7 @@ function MutualFundTracker() {
 
                   <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                     <div>
-                      <label className='block text-sm text-slate-400 mb-1'>
+                      <label className='block text-sm text-slate-500 dark:text-slate-400 mb-1'>
                         {calculatorInputs.investmentType === "lumpsum"
                           ? "Lumpsum Amount"
                           : "Monthly SIP Amount"}
@@ -800,12 +838,12 @@ function MutualFundTracker() {
                             amount: Math.max(0, Number(e.target.value)),
                           }))
                         }
-                        className='w-full px-4 py-2 rounded bg-slate-800 text-slate-50 border border-slate-700 focus:outline-none focus:border-slate-500'
+                        className='w-full px-4 py-2 rounded bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-50 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-blue-500'
                         min='0'
                       />
                     </div>
                     <div>
-                      <label className='block text-sm text-slate-400 mb-1'>
+                      <label className='block text-sm text-slate-500 dark:text-slate-400 mb-1'>
                         Investment Period (Years)
                       </label>
                       <input
@@ -820,23 +858,27 @@ function MutualFundTracker() {
                             ),
                           }))
                         }
-                        className='w-full px-4 py-2 rounded bg-slate-800 text-slate-50 border border-slate-700 focus:outline-none focus:border-slate-500'
+                        className='w-full px-4 py-2 rounded bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-50 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-blue-500'
                         min='1'
                         max='50'
                       />
                     </div>
                   </div>
 
-                  <div className='bg-slate-800 p-4 rounded-lg'>
+                  <div className='bg-slate-100 dark:bg-slate-800 p-4 rounded-lg'>
                     <div className='grid grid-cols-2 gap-4'>
                       <div>
-                        <div className='text-slate-400'>Expected CAGR</div>
+                        <div className='text-slate-500 dark:text-slate-400'>
+                          Expected CAGR
+                        </div>
                         <div className='text-xl font-semibold'>
                           {cagrData["Max"].toFixed(2)}%
                         </div>
                       </div>
                       <div>
-                        <div className='text-slate-400'>Total Investment</div>
+                        <div className='text-slate-500 dark:text-slate-400'>
+                          Total Investment
+                        </div>
                         <div className='text-xl font-semibold'>
                           ₹
                           {(calculatorInputs.investmentType === "lumpsum"
@@ -848,7 +890,9 @@ function MutualFundTracker() {
                         </div>
                       </div>
                       <div>
-                        <div className='text-slate-400'>Total Corpus</div>
+                        <div className='text-slate-500 dark:text-slate-400'>
+                          Total Corpus
+                        </div>
                         <div className='text-xl font-semibold text-green-500'>
                           ₹
                           {(calculatorInputs.investmentType === "lumpsum"
@@ -868,7 +912,9 @@ function MutualFundTracker() {
                         </div>
                       </div>
                       <div>
-                        <div className='text-slate-400'>Total Returns</div>
+                        <div className='text-slate-500 dark:text-slate-400'>
+                          Total Returns
+                        </div>
                         <div className='text-xl font-semibold text-green-500'>
                           ₹
                           {(
@@ -894,7 +940,9 @@ function MutualFundTracker() {
                         </div>
                       </div>
                       <div>
-                        <div className='text-slate-400'>Tax Amount</div>
+                        <div className='text-slate-500 dark:text-slate-400'>
+                          Tax Amount
+                        </div>
                         <div className='text-xl font-semibold text-red-500'>
                           ₹
                           {calculateTaxAmount(
@@ -920,7 +968,9 @@ function MutualFundTracker() {
                         </div>
                       </div>
                       <div>
-                        <div className='text-slate-400'>Corpus After Tax</div>
+                        <div className='text-slate-500 dark:text-slate-400'>
+                          Corpus After Tax
+                        </div>
                         <div className='text-xl font-semibold text-green-500'>
                           ₹
                           {(
