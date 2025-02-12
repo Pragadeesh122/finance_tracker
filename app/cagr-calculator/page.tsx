@@ -125,16 +125,16 @@ export default function CAGRCalculator() {
   const finalAmount = projectedAmount - taxAmount;
 
   return (
-    <main className='min-h-screen bg-slate-50 p-8 dark:bg-slate-950'>
+    <main className='min-h-screen bg-slate-50 p-4 dark:bg-slate-950 sm:p-8'>
       <div className='mx-auto max-w-3xl'>
-        <h1 className='mb-8 text-2xl font-bold text-slate-900 dark:text-slate-50'>
+        <h1 className='mb-4 text-xl font-bold text-slate-900 dark:text-slate-50 sm:mb-6 sm:text-2xl'>
           Investment Calculator
         </h1>
 
-        <div className='mb-6 flex gap-4'>
+        <div className='mb-4 flex flex-wrap gap-2 sm:mb-6 sm:gap-4'>
           <button
             onClick={() => setMode("cagr")}
-            className={`rounded-lg px-4 py-2 font-medium ${
+            className={`rounded-lg px-3 py-2 text-sm font-medium sm:px-4 sm:py-2 sm:text-base ${
               mode === "cagr"
                 ? "bg-blue-500 text-white"
                 : "bg-white text-slate-700 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
@@ -143,7 +143,7 @@ export default function CAGRCalculator() {
           </button>
           <button
             onClick={() => setMode("projection")}
-            className={`rounded-lg px-4 py-2 font-medium ${
+            className={`rounded-lg px-3 py-2 text-sm font-medium sm:px-4 sm:py-2 sm:text-base ${
               mode === "projection"
                 ? "bg-blue-500 text-white"
                 : "bg-white text-slate-700 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
@@ -152,9 +152,9 @@ export default function CAGRCalculator() {
           </button>
         </div>
 
-        <div className='rounded-lg border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+        <div className='rounded-lg border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-6'>
           {mode === "cagr" ? (
-            <div className='grid gap-6'>
+            <div className='grid gap-4 sm:gap-6'>
               <div>
                 <label className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
                   Initial Investment Amount (₹)
@@ -233,13 +233,13 @@ export default function CAGRCalculator() {
               </div>
             </div>
           ) : (
-            <div className='grid gap-6'>
-              <div className='flex gap-4'>
+            <div className='grid gap-4 sm:gap-6'>
+              <div className='flex flex-wrap gap-2 sm:gap-4'>
                 <button
                   onClick={() =>
                     handleProjectionInputChange("investmentType", "lumpsum")
                   }
-                  className={`rounded-lg px-4 py-2 font-medium ${
+                  className={`rounded-lg px-3 py-2 text-sm font-medium sm:px-4 sm:py-2 sm:text-base ${
                     projectionInputs.investmentType === "lumpsum"
                       ? "bg-blue-500 text-white"
                       : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
@@ -250,7 +250,7 @@ export default function CAGRCalculator() {
                   onClick={() =>
                     handleProjectionInputChange("investmentType", "sip")
                   }
-                  className={`rounded-lg px-4 py-2 font-medium ${
+                  className={`rounded-lg px-3 py-2 text-sm font-medium sm:px-4 sm:py-2 sm:text-base ${
                     projectionInputs.investmentType === "sip"
                       ? "bg-blue-500 text-white"
                       : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
@@ -259,58 +259,60 @@ export default function CAGRCalculator() {
                 </button>
               </div>
 
-              <div>
-                <label className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
-                  {projectionInputs.investmentType === "lumpsum"
-                    ? "Lumpsum Amount (₹)"
-                    : "Monthly SIP Amount (₹)"}
-                </label>
-                <input
-                  type='number'
-                  value={projectionInputs.amount}
-                  onChange={(e) =>
-                    handleProjectionInputChange("amount", e.target.value)
-                  }
-                  className='mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100'
-                  min='0'
-                />
+              <div className='grid gap-4 sm:grid-cols-2'>
+                <div>
+                  <label className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
+                    {projectionInputs.investmentType === "lumpsum"
+                      ? "Lumpsum Amount (₹)"
+                      : "Monthly SIP Amount (₹)"}
+                  </label>
+                  <input
+                    type='number'
+                    value={projectionInputs.amount}
+                    onChange={(e) =>
+                      handleProjectionInputChange("amount", e.target.value)
+                    }
+                    className='mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100'
+                    min='0'
+                  />
+                </div>
+
+                <div>
+                  <label className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
+                    Expected CAGR (%)
+                  </label>
+                  <input
+                    type='number'
+                    value={projectionInputs.cagr}
+                    onChange={(e) =>
+                      handleProjectionInputChange("cagr", e.target.value)
+                    }
+                    className='mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100'
+                    min='0'
+                    max='100'
+                    step='0.1'
+                  />
+                </div>
+
+                <div>
+                  <label className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
+                    Investment Period (Years)
+                  </label>
+                  <input
+                    type='number'
+                    value={projectionInputs.years}
+                    onChange={(e) =>
+                      handleProjectionInputChange("years", e.target.value)
+                    }
+                    className='mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100'
+                    min='1'
+                    max='50'
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
-                  Expected CAGR (%)
-                </label>
-                <input
-                  type='number'
-                  value={projectionInputs.cagr}
-                  onChange={(e) =>
-                    handleProjectionInputChange("cagr", e.target.value)
-                  }
-                  className='mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100'
-                  min='0'
-                  max='100'
-                  step='0.1'
-                />
-              </div>
-
-              <div>
-                <label className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
-                  Investment Period (Years)
-                </label>
-                <input
-                  type='number'
-                  value={projectionInputs.years}
-                  onChange={(e) =>
-                    handleProjectionInputChange("years", e.target.value)
-                  }
-                  className='mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100'
-                  min='1'
-                  max='50'
-                />
-              </div>
-
-              <div className='mt-6 rounded-lg bg-slate-100 p-4 dark:bg-slate-800'>
-                <div className='grid grid-cols-2 gap-4'>
+              <div className='mt-4 rounded-lg bg-slate-100 p-4 dark:bg-slate-800 sm:mt-6'>
+                <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
                   <div>
                     <div className='text-sm text-slate-600 dark:text-slate-400'>
                       Total Investment
@@ -398,7 +400,7 @@ export default function CAGRCalculator() {
                     </div>
                   </div>
                 </div>
-                <div className='mt-4 text-sm text-slate-500 dark:text-slate-400'>
+                <div className='mt-4 space-y-1 text-xs text-slate-500 dark:text-slate-400 sm:text-sm'>
                   <div>
                     • Tax calculation assumes LTCG at 12.5% above ₹1.5L
                     exemption limit.

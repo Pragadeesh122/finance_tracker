@@ -487,24 +487,24 @@ function MutualFundTracker() {
   const minNav = Math.min(...(chartData.map((item) => item.nav) || [0]));
 
   return (
-    <main className='p-8 min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50'>
-      <h1 className='text-2xl font-bold mb-4'>
+    <main className='min-h-screen bg-slate-50 p-4 dark:bg-slate-950 sm:p-8'>
+      <h1 className='mb-4 text-xl font-bold sm:text-2xl'>
         Indian Mutual Funds Performance Tracker
       </h1>
 
-      <div className='space-y-8'>
+      <div className='space-y-6 sm:space-y-8'>
         {/* Search Section */}
-        <section className='bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800'>
+        <section className='rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 sm:p-6'>
           <div className='relative'>
             <input
               type='text'
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder='Search mutual funds...'
-              className='w-full px-4 py-2 rounded bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-slate-50 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-blue-500'
+              className='w-full rounded border border-slate-200 bg-slate-50 px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-50 sm:px-4'
             />
             {loading && (
-              <div className='absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400'>
+              <div className='absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-500 dark:text-slate-400 sm:text-base'>
                 Searching...
               </div>
             )}
@@ -512,12 +512,12 @@ function MutualFundTracker() {
 
           {/* Search Results */}
           {searchResults.length > 0 && (
-            <div className='mt-4 space-y-2 max-h-96 overflow-y-auto'>
+            <div className='mt-4 max-h-96 space-y-2 overflow-y-auto'>
               {searchResults.map((fund) => (
                 <button
                   key={fund.schemeCode}
                   onClick={() => handleFundSelect(fund.schemeCode)}
-                  className='w-full text-left p-3 rounded bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'>
+                  className='w-full rounded border border-slate-200 bg-slate-50 p-3 text-left hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700'>
                   <div className='font-medium'>{fund.schemeName}</div>
                   <div className='text-sm text-slate-500 dark:text-slate-400'>
                     {fund.fundHouse}
@@ -532,17 +532,19 @@ function MutualFundTracker() {
         {loading ? (
           <LoadingSkeleton />
         ) : selectedFund && selectedFund.data ? (
-          <section className='bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800'>
-            <h2 className='text-xl font-semibold mb-4'>{selectedFund.name}</h2>
+          <section className='rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 sm:p-6'>
+            <h2 className='mb-4 text-lg font-semibold sm:text-xl'>
+              {selectedFund.name}
+            </h2>
 
             {/* Price Chart Section */}
-            <div className='mb-8'>
-              <div className='flex justify-between items-center mb-4'>
+            <div className='mb-6 sm:mb-8'>
+              <div className='mb-4 flex flex-col justify-between gap-4 sm:flex-row sm:items-center'>
                 <div>
                   <div className='text-slate-500 dark:text-slate-400'>
                     Price Chart
                   </div>
-                  <div className='grid grid-cols-4 gap-4 mt-2'>
+                  <div className='mt-2 grid grid-cols-2 gap-4 sm:grid-cols-4'>
                     <div>
                       <div className='text-slate-500 dark:text-slate-400'>
                         Low
@@ -575,15 +577,15 @@ function MutualFundTracker() {
                     )}
                   </div>
                 </div>
-                <div className='flex gap-2'>
+                <div className='flex flex-wrap gap-2'>
                   {availablePeriods.map((period) => (
                     <button
                       key={period}
                       onClick={() => setSelectedPeriod(period)}
-                      className={`px-3 py-1 rounded ${
+                      className={`rounded px-3 py-1 text-sm ${
                         selectedPeriod === period
                           ? "bg-blue-500 text-white"
-                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
+                          : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
                       }`}>
                       {period === "Max"
                         ? `Max (${getMaxDuration(
@@ -595,7 +597,7 @@ function MutualFundTracker() {
                 </div>
               </div>
 
-              <div className='h-[400px] w-full'>
+              <div className='h-[300px] sm:h-[400px]'>
                 <ResponsiveContainer width='100%' height='100%'>
                   <AreaChart data={chartData}>
                     <defs>
@@ -655,23 +657,21 @@ function MutualFundTracker() {
               </div>
             </div>
 
-            {/* Existing fund details */}
-            <div className='space-y-4'>
-              <div className='grid grid-cols-2 gap-4'>
-                <div>
-                  <div className='text-slate-500 dark:text-slate-400'>
-                    Current NAV
-                  </div>
-                  <div className='text-xl font-semibold'>
-                    ₹{selectedFund.data.currentNAV}
-                  </div>
+            {/* Fund Details Grid */}
+            <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+              <div>
+                <div className='text-slate-500 dark:text-slate-400'>
+                  Current NAV
                 </div>
-                <div>
-                  <div className='text-slate-500 dark:text-slate-400'>
-                    Last Updated
-                  </div>
-                  <div>{selectedFund.data.lastUpdated}</div>
+                <div className='text-xl font-semibold'>
+                  ₹{selectedFund.data.currentNAV}
                 </div>
+              </div>
+              <div>
+                <div className='text-slate-500 dark:text-slate-400'>
+                  Last Updated
+                </div>
+                <div>{selectedFund.data.lastUpdated}</div>
               </div>
               <div>
                 <div className='text-slate-500 dark:text-slate-400'>
@@ -692,7 +692,7 @@ function MutualFundTracker() {
             </div>
 
             {/* Fund Metrics Section */}
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4'>
+            <div className='grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4'>
               {selectedFund.data.exitLoad && (
                 <div>
                   <div className='text-slate-500 dark:text-slate-400'>
@@ -785,12 +785,13 @@ function MutualFundTracker() {
               )}
             </div>
 
+            {/* Calculator Section */}
             {selectedFund && selectedFund.data && cagrData["Max"] && (
-              <section className='bg-white dark:bg-slate-900 p-4 rounded-lg border border-slate-200 dark:border-slate-800 mt-8'>
-                <h3 className='text-lg font-semibold mb-4'>
+              <div className='mt-6 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 sm:mt-8 sm:p-6'>
+                <h3 className='mb-4 text-lg font-semibold'>
                   Investment Calculator
                 </h3>
-                <div className='space-y-6'>
+                <div className='space-y-4 sm:space-y-6'>
                   <div className='flex gap-4'>
                     <button
                       onClick={() =>
@@ -1011,7 +1012,7 @@ function MutualFundTracker() {
                     </div>
                   </div>
                 </div>
-              </section>
+              </div>
             )}
           </section>
         ) : null}
