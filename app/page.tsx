@@ -1,6 +1,6 @@
 "use client";
 
-import {Suspense, useEffect, useState} from "react";
+import {Suspense, useEffect, useState, useCallback} from "react";
 import {
   Area,
   AreaChart,
@@ -387,13 +387,33 @@ function MutualFundTracker() {
     years: 5,
   });
 
+  const handleFundSelect = useCallback(
+    async (amfiCode: string) => {
+      setLoading(true);
+      const fundDetails = await getFundDetails(amfiCode);
+      if (fundDetails) {
+        const additionalMetrics = await getFundMetrics(
+          amfiCode,
+          fundDetails.data.schemeCategory
+        );
+        fundDetails.data = {...fundDetails.data, ...additionalMetrics};
+        router.push(`?fund=${amfiCode}`, {scroll: false});
+      }
+      setSelectedFund(fundDetails);
+      setSearchResults([]);
+      setSearchQuery("");
+      setLoading(false);
+    },
+    [router]
+  );
+
   // Load fund from URL params on initial render
   useEffect(() => {
     const amfiCode = searchParams.get("fund");
     if (amfiCode && !selectedFund) {
       handleFundSelect(amfiCode);
     }
-  }, [searchParams]);
+  }, [searchParams, handleFundSelect, selectedFund]);
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300); // 300ms delay
 
@@ -412,27 +432,6 @@ function MutualFundTracker() {
 
     handleSearch();
   }, [debouncedSearchQuery]);
-
-  const handleFundSelect = async (amfiCode: string) => {
-    setLoading(true);
-    const fundDetails = await getFundDetails(amfiCode);
-    if (fundDetails) {
-      // Fetch additional metrics
-      const additionalMetrics = await getFundMetrics(
-        amfiCode,
-        fundDetails.data.schemeCategory
-      );
-      fundDetails.data = {...fundDetails.data, ...additionalMetrics};
-
-      // Update URL with the selected fund's AMFI code
-      router.push(`?fund=${amfiCode}`, {scroll: false});
-    }
-    setSelectedFund(fundDetails);
-    // Clear search results and query after selection
-    setSearchResults([]);
-    setSearchQuery("");
-    setLoading(false);
-  };
 
   const chartData = selectedFund?.data?.navData
     ? getFilteredData(selectedFund.data.navData, selectedPeriod)
