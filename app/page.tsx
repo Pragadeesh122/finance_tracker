@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import {useRouter, useSearchParams} from "next/navigation";
 import {LoadingSkeleton} from "@/components/loading-skeleton";
+import {getFromCache, setInCache} from "../utils/cache";
 
 interface NAVData {
   date: string;
@@ -75,7 +76,9 @@ interface CalculatorInputs {
 async function searchFunds(query: string): Promise<SearchResult[]> {
   try {
     const response = await fetch(
-      `https://api.mfapi.in/mf/search?q=${encodeURIComponent(query)}`
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/search?q=${encodeURIComponent(
+        query
+      )}`
     );
     const data = await response.json();
     return data;
@@ -87,7 +90,9 @@ async function searchFunds(query: string): Promise<SearchResult[]> {
 
 async function getFundDetails(amfiCode: string): Promise<FundData | null> {
   try {
-    const response = await fetch(`https://api.mfapi.in/mf/${amfiCode}`);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/${amfiCode}`
+    );
     const data: MFAPIResponse = await response.json();
 
     if (!data.data || data.data.length === 0) {
@@ -179,39 +184,58 @@ function useDebounce<T>(value: T, delay: number): T {
 type TimePeriod = "6M" | "1Y" | "3Y" | "5Y" | "7Y" | "10Y" | "15Y" | "Max";
 
 function getFilteredData(data: NAVData[], period: TimePeriod): NAVData[] {
-  const now = new Date();
-  const monthsAgo = new Date();
+  if (!data || data.length === 0) return [];
+
+  // Sort data to find the latest date
+  const sortedData = [...data].sort((a, b) => {
+    const dateA = new Date(a.date.split("-").reverse().join("-"));
+    const dateB = new Date(b.date.split("-").reverse().join("-"));
+    return dateB.getTime() - dateA.getTime();
+  });
+
+  const latestDate = new Date(
+    sortedData[0].date.split("-").reverse().join("-")
+  );
+
+  // Use the last NAV date as the end date for calculations
+  const endDate = latestDate;
+  const monthsAgo = new Date(endDate);
 
   switch (period) {
     case "6M":
-      monthsAgo.setMonth(now.getMonth() - 6);
+      monthsAgo.setMonth(endDate.getMonth() - 6);
       break;
     case "1Y":
-      monthsAgo.setFullYear(now.getFullYear() - 1);
+      monthsAgo.setFullYear(endDate.getFullYear() - 1);
       break;
     case "3Y":
-      monthsAgo.setFullYear(now.getFullYear() - 3);
+      monthsAgo.setFullYear(endDate.getFullYear() - 3);
       break;
     case "5Y":
-      monthsAgo.setFullYear(now.getFullYear() - 5);
+      monthsAgo.setFullYear(endDate.getFullYear() - 5);
       break;
     case "7Y":
-      monthsAgo.setFullYear(now.getFullYear() - 7);
+      monthsAgo.setFullYear(endDate.getFullYear() - 7);
       break;
     case "10Y":
-      monthsAgo.setFullYear(now.getFullYear() - 10);
+      monthsAgo.setFullYear(endDate.getFullYear() - 10);
       break;
     case "15Y":
-      monthsAgo.setFullYear(now.getFullYear() - 15);
+      monthsAgo.setFullYear(endDate.getFullYear() - 15);
       break;
     case "Max":
       return data;
   }
 
-  return data.filter((item) => {
+  const filteredData = data.filter((item) => {
     const itemDate = new Date(item.date.split("-").reverse().join("-"));
-    return itemDate >= monthsAgo;
+    return itemDate >= monthsAgo && itemDate <= endDate;
   });
+
+  // Return empty array if we don't have enough data for the period
+  if (filteredData.length === 0) return [];
+
+  return filteredData;
 }
 
 function calculateCAGR(
@@ -238,7 +262,7 @@ function getCAGR(data: NAVData[]): {
 
   const latestData = sortedData[sortedData.length - 1];
   const currentNAV = parseFloat(latestData.nav);
-  const currentDate = new Date(latestData.date.split("-").reverse().join("-"));
+  const endDate = new Date(latestData.date.split("-").reverse().join("-"));
   const oldestDate = new Date(
     sortedData[0].date.split("-").reverse().join("-")
   );
@@ -247,8 +271,7 @@ function getCAGR(data: NAVData[]): {
 
   // Calculate Max period CAGR
   const maxYears =
-    (currentDate.getTime() - oldestDate.getTime()) /
-    (365.25 * 24 * 60 * 60 * 1000);
+    (endDate.getTime() - oldestDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000);
   if (maxYears >= 1) {
     const oldestNAV = parseFloat(sortedData[0].nav);
     cagr["Max"] = calculateCAGR(oldestNAV, currentNAV, maxYears);
@@ -266,52 +289,55 @@ function getCAGR(data: NAVData[]): {
 
   // For each period, find the NAV closest to that period's start date
   Object.entries(periods).forEach(([period, years]) => {
-    const targetDate = new Date(currentDate);
-    targetDate.setFullYear(currentDate.getFullYear() - years);
+    const targetDate = new Date(endDate);
+    targetDate.setFullYear(endDate.getFullYear() - years);
 
-    // Binary search to find the closest date
-    let left = 0;
-    let right = sortedData.length - 1;
-    let closestIndex = -1;
-    let minDiff = Infinity;
+    // Only proceed if we have enough historical data for this period
+    if (oldestDate <= targetDate) {
+      // Binary search to find the closest date
+      let left = 0;
+      let right = sortedData.length - 1;
+      let closestIndex = -1;
+      let minDiff = Infinity;
 
-    while (left <= right) {
-      const mid = Math.floor((left + right) / 2);
-      const midDate = new Date(
-        sortedData[mid].date.split("-").reverse().join("-")
-      );
-      const diff = Math.abs(midDate.getTime() - targetDate.getTime());
-
-      if (diff < minDiff) {
-        minDiff = diff;
-        closestIndex = mid;
-      }
-
-      if (midDate.getTime() === targetDate.getTime()) {
-        break;
-      } else if (midDate.getTime() < targetDate.getTime()) {
-        left = mid + 1;
-      } else {
-        right = mid - 1;
-      }
-    }
-
-    if (closestIndex !== -1) {
-      const startNAV = parseFloat(sortedData[closestIndex].nav);
-      const startDate = new Date(
-        sortedData[closestIndex].date.split("-").reverse().join("-")
-      );
-      const actualYears =
-        (currentDate.getTime() - startDate.getTime()) /
-        (365.25 * 24 * 60 * 60 * 1000);
-
-      if (actualYears >= 0.9 * years) {
-        // Only calculate if we have at least 90% of the period
-        cagr[period as keyof typeof cagr] = calculateCAGR(
-          startNAV,
-          currentNAV,
-          actualYears
+      while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        const midDate = new Date(
+          sortedData[mid].date.split("-").reverse().join("-")
         );
+        const diff = Math.abs(midDate.getTime() - targetDate.getTime());
+
+        if (diff < minDiff) {
+          minDiff = diff;
+          closestIndex = mid;
+        }
+
+        if (midDate.getTime() === targetDate.getTime()) {
+          break;
+        } else if (midDate.getTime() < targetDate.getTime()) {
+          left = mid + 1;
+        } else {
+          right = mid - 1;
+        }
+      }
+
+      if (closestIndex !== -1) {
+        const startNAV = parseFloat(sortedData[closestIndex].nav);
+        const startDate = new Date(
+          sortedData[closestIndex].date.split("-").reverse().join("-")
+        );
+        const actualYears =
+          (endDate.getTime() - startDate.getTime()) /
+          (365.25 * 24 * 60 * 60 * 1000);
+
+        // Only calculate if we have the complete period (with a small buffer for date misalignment)
+        if (actualYears >= years * 0.99) {
+          cagr[period as keyof typeof cagr] = calculateCAGR(
+            startNAV,
+            currentNAV,
+            actualYears
+          );
+        }
       }
     }
   });
@@ -373,6 +399,58 @@ function getMaxDuration(data: NAVData[]): string {
   return `${years}Y ${months}M`;
 }
 
+// Add new function to fetch all funds
+async function getAllFunds(): Promise<SearchResult[]> {
+  try {
+    // Try to get data from cache first
+    const cachedData = await getFromCache<SearchResult[]>();
+    if (cachedData) {
+      return cachedData;
+    }
+
+    // If no cached data, fetch from API with CORS headers
+    const response = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL!, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      mode: "cors",
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Cache the data
+    await setInCache(data);
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching all funds:", error);
+    return [];
+  }
+}
+
+// Add function for client-side search
+function searchLocalFunds(
+  funds: SearchResult[],
+  query: string
+): SearchResult[] {
+  const searchTerms = query.toLowerCase().split(" ");
+  return funds
+    .filter((fund) => {
+      const fundName = fund.schemeName.toLowerCase();
+      const fundHouse = fund.fundHouse?.toLowerCase() || "";
+      return searchTerms.every(
+        (term) => fundName.includes(term) || fundHouse.includes(term)
+      );
+    })
+    .slice(0, 20); // Limit to 20 results for better performance
+}
+
 function MutualFundTracker() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -381,11 +459,28 @@ function MutualFundTracker() {
   const [selectedFund, setSelectedFund] = useState<FundData | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>("1Y");
+  const [allFunds, setAllFunds] = useState<SearchResult[]>([]);
   const [calculatorInputs, setCalculatorInputs] = useState<CalculatorInputs>({
     investmentType: "lumpsum",
     amount: 10000,
     years: 5,
   });
+
+  // Fetch all funds on mount
+  useEffect(() => {
+    const fetchAllFunds = async () => {
+      try {
+        setLoading(true);
+        const funds = await getAllFunds();
+        setAllFunds(funds);
+      } catch (error) {
+        console.error("Error in fetchAllFunds:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAllFunds();
+  }, []);
 
   const handleFundSelect = useCallback(
     async (amfiCode: string) => {
@@ -425,13 +520,25 @@ function MutualFundTracker() {
       }
 
       setLoading(true);
+
+      // First try client-side search
+      if (allFunds.length > 0) {
+        const localResults = searchLocalFunds(allFunds, debouncedSearchQuery);
+        if (localResults.length > 0) {
+          setSearchResults(localResults);
+          setLoading(false);
+          return;
+        }
+      }
+
+      // Fall back to API search if no local results
       const results = await searchFunds(debouncedSearchQuery);
       setSearchResults(results);
       setLoading(false);
     };
 
     handleSearch();
-  }, [debouncedSearchQuery]);
+  }, [debouncedSearchQuery, allFunds]);
 
   const chartData = selectedFund?.data?.navData
     ? getFilteredData(selectedFund.data.navData, selectedPeriod)
@@ -464,8 +571,26 @@ function MutualFundTracker() {
     return cagrData[period as keyof typeof cagrData] !== undefined;
   }) as TimePeriod[];
 
-  const maxNav = Math.max(...(chartData.map((item) => item.nav) || [0]));
-  const minNav = Math.min(...(chartData.map((item) => item.nav) || [0]));
+  const maxNav =
+    chartData.length > 0
+      ? Math.max(...chartData.map((item) => item.nav))
+      : null;
+  const minNav =
+    chartData.length > 0
+      ? Math.min(...chartData.map((item) => item.nav))
+      : null;
+
+  // Check if fund is discontinued (last NAV date > 6 months old)
+  const isDiscontinued = selectedFund?.data?.lastUpdated
+    ? (() => {
+        const lastNavDate = new Date(
+          selectedFund.data.lastUpdated.split("-").reverse().join("-")
+        );
+        const sixMonthsAgo = new Date();
+        sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+        return lastNavDate < sixMonthsAgo;
+      })()
+    : false;
 
   return (
     <main className='min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900'>
@@ -548,6 +673,12 @@ function MutualFundTracker() {
                   <div className='rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600 dark:bg-slate-800 dark:text-slate-400'>
                     {selectedFund.data.schemeType}
                   </div>
+                  {isDiscontinued && (
+                    <div className='rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-600 dark:bg-red-900/30 dark:text-red-400'>
+                      Discontinued/Merged Fund • Last NAV:{" "}
+                      {selectedFund.data.lastUpdated}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -567,7 +698,7 @@ function MutualFundTracker() {
                           Low
                         </div>
                         <div className='mt-1 font-semibold text-slate-900 dark:text-slate-100'>
-                          ₹{minNav.toFixed(2)}
+                          {minNav !== null ? `₹${minNav.toFixed(2)}` : "N/A"}
                         </div>
                       </div>
                       <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
@@ -575,7 +706,7 @@ function MutualFundTracker() {
                           High
                         </div>
                         <div className='mt-1 font-semibold text-slate-900 dark:text-slate-100'>
-                          ₹{maxNav.toFixed(2)}
+                          {maxNav !== null ? `₹${maxNav.toFixed(2)}` : "N/A"}
                         </div>
                       </div>
                       <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
