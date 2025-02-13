@@ -462,8 +462,8 @@ function MutualFundTracker() {
   const [allFunds, setAllFunds] = useState<SearchResult[]>([]);
   const [calculatorInputs, setCalculatorInputs] = useState<CalculatorInputs>({
     investmentType: "lumpsum",
-    amount: 10000,
-    years: 5,
+    amount: 0,
+    years: 0,
   });
 
   // Fetch all funds on mount
@@ -982,12 +982,24 @@ function MutualFundTracker() {
                         </label>
                         <input
                           type='number'
-                          value={calculatorInputs.amount}
-                          onChange={(e) =>
+                          value={calculatorInputs.amount || ""}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            const numValue = parseFloat(value);
                             setCalculatorInputs((prev) => ({
                               ...prev,
-                              amount: Math.max(0, Number(e.target.value)),
-                            }))
+                              amount:
+                                value === ""
+                                  ? 0
+                                  : isNaN(numValue)
+                                  ? 0
+                                  : Math.max(0, numValue),
+                            }));
+                          }}
+                          placeholder={
+                            calculatorInputs.investmentType === "lumpsum"
+                              ? "Enter lumpsum amount"
+                              : "Enter monthly SIP amount"
                           }
                           className='mt-1 block w-full rounded-lg border border-slate-200 bg-white/80 px-4 py-2.5 text-slate-900 backdrop-blur-sm transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-400/50 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-100 dark:focus:border-slate-600 dark:focus:ring-slate-500/50'
                           min='0'
@@ -999,16 +1011,21 @@ function MutualFundTracker() {
                         </label>
                         <input
                           type='number'
-                          value={calculatorInputs.years}
-                          onChange={(e) =>
+                          value={calculatorInputs.years || ""}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            const numValue = parseFloat(value);
                             setCalculatorInputs((prev) => ({
                               ...prev,
-                              years: Math.max(
-                                1,
-                                Math.min(50, Number(e.target.value))
-                              ),
-                            }))
-                          }
+                              years:
+                                value === ""
+                                  ? 0
+                                  : isNaN(numValue)
+                                  ? 0
+                                  : Math.max(1, Math.min(50, numValue)),
+                            }));
+                          }}
+                          placeholder='Enter investment period'
                           className='mt-1 block w-full rounded-lg border border-slate-200 bg-white/80 px-4 py-2.5 text-slate-900 backdrop-blur-sm transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-400/50 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-100 dark:focus:border-slate-600 dark:focus:ring-slate-500/50'
                           min='1'
                           max='50'
@@ -1023,7 +1040,7 @@ function MutualFundTracker() {
                             Expected CAGR
                           </div>
                           <div className='mt-1.5 text-2xl font-semibold text-slate-900 dark:text-slate-100'>
-                            {cagrData["Max"].toFixed(2)}%
+                            {Math.round(cagrData["Max"])}%
                           </div>
                         </div>
                         <div>
@@ -1032,11 +1049,12 @@ function MutualFundTracker() {
                           </div>
                           <div className='mt-1.5 text-2xl font-semibold text-slate-900 dark:text-slate-100'>
                             ₹
-                            {(calculatorInputs.investmentType === "lumpsum"
-                              ? calculatorInputs.amount
-                              : calculatorInputs.amount *
-                                calculatorInputs.years *
-                                12
+                            {Math.round(
+                              calculatorInputs.investmentType === "lumpsum"
+                                ? calculatorInputs.amount
+                                : calculatorInputs.amount *
+                                    calculatorInputs.years *
+                                    12
                             ).toLocaleString()}
                           </div>
                         </div>
@@ -1046,33 +1064,7 @@ function MutualFundTracker() {
                           </div>
                           <div className='mt-1.5 text-2xl font-semibold text-emerald-600 dark:text-emerald-400'>
                             ₹
-                            {(
-                              (calculatorInputs.investmentType === "lumpsum"
-                                ? calculateLumpsumValue(
-                                    calculatorInputs.amount,
-                                    cagrData["Max"],
-                                    calculatorInputs.years
-                                  )
-                                : calculateSIPValue(
-                                    calculatorInputs.amount,
-                                    cagrData["Max"],
-                                    calculatorInputs.years
-                                  )) -
-                              (calculatorInputs.investmentType === "lumpsum"
-                                ? calculatorInputs.amount
-                                : calculatorInputs.amount *
-                                  calculatorInputs.years *
-                                  12)
-                            ).toLocaleString()}
-                          </div>
-                        </div>
-                        <div>
-                          <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
-                            Tax Amount
-                          </div>
-                          <div className='mt-1.5 text-2xl font-semibold text-red-600 dark:text-red-400'>
-                            ₹
-                            {calculateTaxAmount(
+                            {Math.round(
                               (calculatorInputs.investmentType === "lumpsum"
                                 ? calculateLumpsumValue(
                                     calculatorInputs.amount,
@@ -1094,32 +1086,12 @@ function MutualFundTracker() {
                         </div>
                         <div>
                           <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
-                            Final Amount
+                            Total Corpus (Before Tax)
                           </div>
                           <div className='mt-1.5 text-2xl font-semibold text-emerald-600 dark:text-emerald-400'>
                             ₹
-                            {(calculatorInputs.investmentType === "lumpsum"
-                              ? calculateLumpsumValue(
-                                  calculatorInputs.amount,
-                                  cagrData["Max"],
-                                  calculatorInputs.years
-                                )
-                              : calculateSIPValue(
-                                  calculatorInputs.amount,
-                                  cagrData["Max"],
-                                  calculatorInputs.years
-                                )
-                            ).toLocaleString()}
-                          </div>
-                        </div>
-                        <div>
-                          <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
-                            Post-tax Amount
-                          </div>
-                          <div className='mt-1.5 text-2xl font-semibold text-emerald-600 dark:text-emerald-400'>
-                            ₹
-                            {(
-                              (calculatorInputs.investmentType === "lumpsum"
+                            {Math.round(
+                              calculatorInputs.investmentType === "lumpsum"
                                 ? calculateLumpsumValue(
                                     calculatorInputs.amount,
                                     cagrData["Max"],
@@ -1129,7 +1101,17 @@ function MutualFundTracker() {
                                     calculatorInputs.amount,
                                     cagrData["Max"],
                                     calculatorInputs.years
-                                  )) -
+                                  )
+                            ).toLocaleString()}
+                          </div>
+                        </div>
+                        <div>
+                          <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
+                            Tax Amount
+                          </div>
+                          <div className='mt-1.5 text-2xl font-semibold text-red-600 dark:text-red-400'>
+                            ₹
+                            {Math.round(
                               calculateTaxAmount(
                                 (calculatorInputs.investmentType === "lumpsum"
                                   ? calculateLumpsumValue(
@@ -1148,6 +1130,46 @@ function MutualFundTracker() {
                                       calculatorInputs.years *
                                       12)
                               )
+                            ).toLocaleString()}
+                          </div>
+                        </div>
+                        <div>
+                          <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
+                            Post-tax Amount
+                          </div>
+                          <div className='mt-1.5 text-2xl font-semibold text-emerald-600 dark:text-emerald-400'>
+                            ₹
+                            {Math.round(
+                              (calculatorInputs.investmentType === "lumpsum"
+                                ? calculateLumpsumValue(
+                                    calculatorInputs.amount,
+                                    cagrData["Max"],
+                                    calculatorInputs.years
+                                  )
+                                : calculateSIPValue(
+                                    calculatorInputs.amount,
+                                    cagrData["Max"],
+                                    calculatorInputs.years
+                                  )) -
+                                calculateTaxAmount(
+                                  (calculatorInputs.investmentType === "lumpsum"
+                                    ? calculateLumpsumValue(
+                                        calculatorInputs.amount,
+                                        cagrData["Max"],
+                                        calculatorInputs.years
+                                      )
+                                    : calculateSIPValue(
+                                        calculatorInputs.amount,
+                                        cagrData["Max"],
+                                        calculatorInputs.years
+                                      )) -
+                                    (calculatorInputs.investmentType ===
+                                    "lumpsum"
+                                      ? calculatorInputs.amount
+                                      : calculatorInputs.amount *
+                                        calculatorInputs.years *
+                                        12)
+                                )
                             ).toLocaleString()}
                           </div>
                         </div>

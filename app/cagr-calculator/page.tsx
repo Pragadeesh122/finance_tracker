@@ -80,24 +80,23 @@ function calculateCorpusProjection(
 ): YearlyProjection[] {
   const projection: YearlyProjection[] = [];
   let currentCorpus = initialCorpus;
+  const exemptionLimit = 150000; // ₹1.5L annual exemption
 
   for (let year = 1; year <= years; year++) {
     // Calculate annual withdrawal amount
     const annualWithdrawal = (currentCorpus * annualWithdrawalPercent) / 100;
     const monthlyIncomeBeforeTax = annualWithdrawal / 12;
 
-    // Calculate growth on remaining corpus
-    const monthlyRate = growthRate / 12 / 100;
-    let yearEndCorpus = currentCorpus;
+    // Calculate remaining corpus after annual withdrawal
+    const remainingCorpus = currentCorpus - annualWithdrawal;
 
-    // Simulate month-by-month growth and withdrawals
-    for (let month = 1; month <= 12; month++) {
-      yearEndCorpus = yearEndCorpus * (1 + monthlyRate);
-      yearEndCorpus -= monthlyIncomeBeforeTax;
-    }
+    // Calculate annual growth on remaining corpus
+    const growthAmount = (remainingCorpus * growthRate) / 100;
+    const yearEndCorpus = remainingCorpus + growthAmount;
 
-    const growthAmount = yearEndCorpus - currentCorpus + annualWithdrawal;
-    const annualTax = calculateTaxAmount(growthAmount);
+    // Calculate tax on annual withdrawal with one-time exemption
+    const taxableAmount = Math.max(0, annualWithdrawal - exemptionLimit);
+    const annualTax = taxableAmount * 0.125; // 12.5% tax on amount above exemption
     const monthlyIncomeAfterTax = (annualWithdrawal - annualTax) / 12;
 
     projection.push({
@@ -106,12 +105,12 @@ function calculateCorpusProjection(
       annualWithdrawal,
       growthAmount,
       annualTax,
-      endingCorpus: yearEndCorpus - annualTax,
+      endingCorpus: yearEndCorpus,
       monthlyIncomeBeforeTax,
       monthlyIncomeAfterTax,
     });
 
-    currentCorpus = yearEndCorpus - annualTax;
+    currentCorpus = yearEndCorpus;
   }
 
   return projection;
@@ -120,16 +119,16 @@ function calculateCorpusProjection(
 export default function CAGRCalculator() {
   const [mode, setMode] = useState<CalculatorMode>("cagr");
   const [cagrInputs, setCAGRInputs] = useState<CAGRInputs>({
-    initialAmount: 10000,
-    finalAmount: 20000,
-    years: 5,
+    initialAmount: 0,
+    finalAmount: 0,
+    years: 0,
     months: 0,
   });
   const [projectionInputs, setProjectionInputs] = useState<ProjectionInputs>({
     investmentType: "lumpsum",
-    amount: 10000,
-    cagr: 12,
-    years: 5,
+    amount: 0,
+    cagr: 0,
+    years: 0,
   });
   const [withdrawalInputs, setWithdrawalInputs] = useState<WithdrawalInputs>({
     annualWithdrawalRate: 5, // Default to 5% annual withdrawal
@@ -140,25 +139,44 @@ export default function CAGRCalculator() {
     field: keyof CAGRInputs,
     value: string | number
   ) => {
-    setCAGRInputs((prev) => ({
-      ...prev,
-      [field]: typeof value === "string" ? parseFloat(value) || 0 : value,
-    }));
+    const numValue = typeof value === "string" ? parseFloat(value) : value;
+    if (value === "") {
+      setCAGRInputs((prev) => ({
+        ...prev,
+        [field]: 0,
+      }));
+    } else {
+      setCAGRInputs((prev) => ({
+        ...prev,
+        [field]: isNaN(numValue) ? 0 : numValue,
+      }));
+    }
   };
 
   const handleProjectionInputChange = (
     field: keyof ProjectionInputs,
     value: string | number | "lumpsum" | "sip"
   ) => {
-    setProjectionInputs((prev) => ({
-      ...prev,
-      [field]:
-        field === "investmentType"
-          ? value
-          : typeof value === "string"
-          ? parseFloat(value) || 0
-          : value,
-    }));
+    if (field === "investmentType") {
+      setProjectionInputs((prev) => ({
+        ...prev,
+        [field]: value as "lumpsum" | "sip",
+      }));
+      return;
+    }
+
+    const numValue = typeof value === "string" ? parseFloat(value) : value;
+    if (value === "") {
+      setProjectionInputs((prev) => ({
+        ...prev,
+        [field]: 0,
+      }));
+    } else {
+      setProjectionInputs((prev) => ({
+        ...prev,
+        [field]: isNaN(numValue) ? 0 : numValue,
+      }));
+    }
   };
 
   const cagr = calculateCAGR(
@@ -243,10 +261,11 @@ export default function CAGRCalculator() {
                 </label>
                 <input
                   type='number'
-                  value={cagrInputs.initialAmount}
+                  value={cagrInputs.initialAmount || ""}
                   onChange={(e) =>
                     handleCAGRInputChange("initialAmount", e.target.value)
                   }
+                  placeholder='Enter initial amount'
                   className='mt-1 block w-full rounded-md border border-slate-200 bg-white/70 px-3 py-2 text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-100 dark:focus:border-violet-500 dark:focus:ring-violet-500'
                   min='0'
                 />
@@ -258,10 +277,11 @@ export default function CAGRCalculator() {
                 </label>
                 <input
                   type='number'
-                  value={cagrInputs.finalAmount}
+                  value={cagrInputs.finalAmount || ""}
                   onChange={(e) =>
                     handleCAGRInputChange("finalAmount", e.target.value)
                   }
+                  placeholder='Enter final amount'
                   className='mt-1 block w-full rounded-md border border-slate-200 bg-white/70 px-3 py-2 text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-100 dark:focus:border-violet-500 dark:focus:ring-violet-500'
                   min='0'
                 />
@@ -274,10 +294,11 @@ export default function CAGRCalculator() {
                   </label>
                   <input
                     type='number'
-                    value={cagrInputs.years}
+                    value={cagrInputs.years || ""}
                     onChange={(e) =>
                       handleCAGRInputChange("years", e.target.value)
                     }
+                    placeholder='Years'
                     className='mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100'
                     min='0'
                   />
@@ -289,10 +310,11 @@ export default function CAGRCalculator() {
                   </label>
                   <input
                     type='number'
-                    value={cagrInputs.months}
+                    value={cagrInputs.months || ""}
                     onChange={(e) =>
                       handleCAGRInputChange("months", e.target.value)
                     }
+                    placeholder='Months'
                     className='mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100'
                     min='0'
                     max='11'
@@ -305,12 +327,85 @@ export default function CAGRCalculator() {
                   Calculated CAGR
                 </div>
                 <div className='mt-1 bg-gradient-to-r from-blue-600 via-sky-600 to-cyan-600 bg-clip-text text-3xl font-bold text-transparent dark:from-indigo-400 dark:via-fuchsia-400 dark:to-violet-400'>
-                  {cagr.toFixed(2)}%
+                  {Math.round(cagr)}%
                 </div>
                 <div className='mt-2 text-sm text-slate-500 dark:text-slate-400'>
                   This is the annualized return rate that represents the
                   geometric progression ratio that provides a constant rate of
                   return over the time period.
+                </div>
+                <div className='mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
+                  <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
+                    <div className='text-sm text-slate-500 dark:text-slate-400'>
+                      Initial Amount
+                    </div>
+                    <div className='mt-1 font-semibold text-slate-900 dark:text-slate-100'>
+                      ₹{Math.round(cagrInputs.initialAmount).toLocaleString()}
+                    </div>
+                  </div>
+                  <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
+                    <div className='text-sm text-slate-500 dark:text-slate-400'>
+                      Final Amount
+                    </div>
+                    <div className='mt-1 font-semibold text-slate-900 dark:text-slate-100'>
+                      ₹{Math.round(cagrInputs.finalAmount).toLocaleString()}
+                    </div>
+                  </div>
+                  <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
+                    <div className='text-sm text-slate-500 dark:text-slate-400'>
+                      Total Returns
+                    </div>
+                    <div className='mt-1 font-semibold text-emerald-600 dark:text-emerald-400'>
+                      ₹
+                      {Math.round(
+                        cagrInputs.finalAmount - cagrInputs.initialAmount
+                      ).toLocaleString()}
+                    </div>
+                  </div>
+                  <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
+                    <div className='text-sm text-slate-500 dark:text-slate-400'>
+                      Total Corpus (Before Tax)
+                    </div>
+                    <div className='mt-1 font-semibold text-emerald-600 dark:text-emerald-400'>
+                      ₹{Math.round(cagrInputs.finalAmount).toLocaleString()}
+                    </div>
+                  </div>
+                  <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
+                    <div className='text-sm text-slate-500 dark:text-slate-400'>
+                      Tax Amount
+                    </div>
+                    <div className='mt-1 font-semibold text-red-600 dark:text-red-400'>
+                      ₹
+                      {Math.round(
+                        calculateTaxAmount(
+                          cagrInputs.finalAmount - cagrInputs.initialAmount
+                        )
+                      ).toLocaleString()}
+                    </div>
+                  </div>
+                  <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
+                    <div className='text-sm text-slate-500 dark:text-slate-400'>
+                      Post-tax Amount
+                    </div>
+                    <div className='mt-1 font-semibold text-emerald-600 dark:text-emerald-400'>
+                      ₹
+                      {Math.round(
+                        cagrInputs.finalAmount -
+                          calculateTaxAmount(
+                            cagrInputs.finalAmount - cagrInputs.initialAmount
+                          )
+                      ).toLocaleString()}
+                    </div>
+                  </div>
+                  <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
+                    <div className='text-sm text-slate-500 dark:text-slate-400'>
+                      Investment Period
+                    </div>
+                    <div className='mt-1 font-semibold text-slate-900 dark:text-slate-100'>
+                      {Math.round(cagrInputs.years)} Years {cagrInputs.months}{" "}
+                      Months
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -354,9 +449,14 @@ export default function CAGRCalculator() {
                     </label>
                     <input
                       type='number'
-                      value={projectionInputs.amount}
+                      value={projectionInputs.amount || ""}
                       onChange={(e) =>
                         handleProjectionInputChange("amount", e.target.value)
+                      }
+                      placeholder={
+                        projectionInputs.investmentType === "lumpsum"
+                          ? "Enter lumpsum amount"
+                          : "Enter monthly SIP amount"
                       }
                       className='mt-1 block w-full rounded-md border border-slate-200 bg-white/70 px-3 py-1.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-100 dark:focus:border-violet-500 dark:focus:ring-violet-500'
                       min='0'
@@ -369,10 +469,11 @@ export default function CAGRCalculator() {
                     </label>
                     <input
                       type='number'
-                      value={projectionInputs.cagr}
+                      value={projectionInputs.cagr || ""}
                       onChange={(e) =>
                         handleProjectionInputChange("cagr", e.target.value)
                       }
+                      placeholder='Enter expected CAGR'
                       className='mt-1 block w-full rounded-md border border-slate-200 bg-white/70 px-3 py-1.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-100 dark:focus:border-violet-500 dark:focus:ring-violet-500'
                       min='0'
                       max='100'
@@ -386,10 +487,11 @@ export default function CAGRCalculator() {
                     </label>
                     <input
                       type='number'
-                      value={projectionInputs.years}
+                      value={projectionInputs.years || ""}
                       onChange={(e) =>
                         handleProjectionInputChange("years", e.target.value)
                       }
+                      placeholder='Enter investment period'
                       className='mt-1 block w-full rounded-md border border-slate-200 bg-white/70 px-3 py-1.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-100 dark:focus:border-violet-500 dark:focus:ring-violet-500'
                       min='1'
                       max='50'
@@ -398,13 +500,13 @@ export default function CAGRCalculator() {
                 </div>
 
                 <div className='mt-2 overflow-hidden rounded-lg bg-gradient-to-br from-slate-100 to-white p-3 dark:from-slate-800 dark:to-slate-900/80'>
-                  <div className='grid grid-cols-2 gap-3 sm:grid-cols-4'>
+                  <div className='grid grid-cols-2 gap-3 sm:grid-cols-5'>
                     <div>
                       <div className='text-xs text-slate-600 dark:text-slate-400'>
                         Total Investment
                       </div>
                       <div className='mt-0.5 text-sm font-semibold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent dark:from-slate-200 dark:to-slate-400'>
-                        ₹{totalInvestment.toLocaleString()}
+                        ₹{Math.round(totalInvestment).toLocaleString()}
                       </div>
                     </div>
                     <div>
@@ -412,7 +514,15 @@ export default function CAGRCalculator() {
                         Total Returns
                       </div>
                       <div className='mt-0.5 text-sm font-semibold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-400'>
-                        ₹{totalGains.toLocaleString()}
+                        ₹{Math.round(totalGains).toLocaleString()}
+                      </div>
+                    </div>
+                    <div>
+                      <div className='text-xs text-slate-600 dark:text-slate-400'>
+                        Total Corpus
+                      </div>
+                      <div className='mt-0.5 text-sm font-semibold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-400'>
+                        ₹{Math.round(projectedAmount).toLocaleString()}
                       </div>
                     </div>
                     <div>
@@ -420,16 +530,19 @@ export default function CAGRCalculator() {
                         Tax Amount
                       </div>
                       <div className='mt-0.5 text-sm font-semibold bg-gradient-to-r from-rose-600 to-red-600 bg-clip-text text-transparent dark:from-rose-400 dark:to-red-400'>
-                        ₹{calculateTaxAmount(totalGains).toLocaleString()}
+                        ₹
+                        {Math.round(
+                          calculateTaxAmount(totalGains)
+                        ).toLocaleString()}
                       </div>
                     </div>
                     <div>
                       <div className='text-xs text-slate-600 dark:text-slate-400'>
-                        Final Amount
+                        Post-tax Amount
                       </div>
                       <div className='mt-0.5 text-sm font-semibold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-400'>
                         ₹
-                        {(
+                        {Math.round(
                           projectedAmount - calculateTaxAmount(totalGains)
                         ).toLocaleString()}
                       </div>
