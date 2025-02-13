@@ -1040,7 +1040,7 @@ function MutualFundTracker() {
                             Expected CAGR
                           </div>
                           <div className='mt-1.5 text-2xl font-semibold text-slate-900 dark:text-slate-100'>
-                            {Math.round(cagrData["Max"])}%
+                            {cagrData["Max"]?.toFixed(2)}%
                           </div>
                         </div>
                         <div>
