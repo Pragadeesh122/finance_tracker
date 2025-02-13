@@ -327,7 +327,7 @@ export default function CAGRCalculator() {
                   Calculated CAGR
                 </div>
                 <div className='mt-1 bg-gradient-to-r from-blue-600 via-sky-600 to-cyan-600 bg-clip-text text-3xl font-bold text-transparent dark:from-indigo-400 dark:via-fuchsia-400 dark:to-violet-400'>
-                  {Math.round(cagr)}%
+                  {cagr.toFixed(2)}%
                 </div>
                 <div className='mt-2 text-sm text-slate-500 dark:text-slate-400'>
                   This is the annualized return rate that represents the
