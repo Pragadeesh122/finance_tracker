@@ -423,7 +423,7 @@ export default function CAGRCalculator() {
                     className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 ${
                       projectionInputs.investmentType === "lumpsum"
                         ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-sm dark:from-indigo-500 dark:to-violet-500"
-                        : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+                        : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover :bg-slate-700"
                     }`}>
                     Lumpsum
                   </button>
