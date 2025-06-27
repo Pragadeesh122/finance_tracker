@@ -14,6 +14,7 @@ export function calculateLumpsumValue(
   cagr: number,
   years: number
 ): number {
+  if (principal <= 0 || cagr <= 0 || years <= 0) return 0;
   const r = cagr / 100;
   return principal * Math.pow(1 + r, years);
 }
@@ -23,6 +24,7 @@ export function calculateSIPValue(
   cagr: number,
   years: number
 ): number {
+  if (monthlyAmount <= 0 || cagr <= 0 || years <= 0) return 0;
   const monthlyRate = cagr / (12 * 100);
   const months = years * 12;
   return (
@@ -37,6 +39,7 @@ export function calculateYearlySIPValue(
   cagr: number,
   years: number
 ): number {
+  if (yearlyAmount <= 0 || cagr <= 0 || years <= 0) return 0;
   const annualRate = cagr / 100;
   return (
     yearlyAmount *
