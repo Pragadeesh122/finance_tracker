@@ -774,12 +774,29 @@ function MutualFundTracker() {
                       <XAxis
                         dataKey='date'
                         tickFormatter={(date) => {
-                          const [day, month, year] = date.split("-");
-                          return `${day}/${month}/${year.slice(-2)}`;
+                          const [, month, year] = date.split("-");
+                          const monthNames = [
+                            "Jan",
+                            "Feb",
+                            "Mar",
+                            "Apr",
+                            "May",
+                            "Jun",
+                            "Jul",
+                            "Aug",
+                            "Sep",
+                            "Oct",
+                            "Nov",
+                            "Dec",
+                          ];
+                          const monthIndex = parseInt(month) - 1;
+                          return `${monthNames[monthIndex]} ${year.slice(-2)}`;
                         }}
                         tick={{fill: "rgb(148, 163, 184)"}}
                         tickLine={{stroke: "rgb(148, 163, 184)"}}
                         axisLine={{stroke: "rgb(148, 163, 184)"}}
+                        interval='preserveStartEnd'
+                        minTickGap={80}
                       />
                       <YAxis
                         domain={["auto", "auto"]}
