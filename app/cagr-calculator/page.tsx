@@ -5,6 +5,7 @@ import {
   CAGRCalculatorSection,
   ProjectionCalculatorSection,
   WithdrawalProjectionSection,
+  YearlyInvestmentBreakdownSection,
   CAGRInputs,
   ProjectionInputs,
   WithdrawalInputs,
@@ -166,6 +167,10 @@ export default function CAGRCalculator() {
               onInputChange={handleProjectionInputChange}
               includeTax={includeTax}
               onTaxToggle={setIncludeTax}
+            />
+
+            <YearlyInvestmentBreakdownSection
+              projectionInputs={projectionInputs}
             />
 
             <WithdrawalProjectionSection

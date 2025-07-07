@@ -29,3 +29,11 @@ export interface YearlyProjection {
   monthlyIncomeBeforeTax: number;
   monthlyIncomeAfterTax: number;
 }
+
+export interface YearlyInvestmentBreakdown {
+  year: number;
+  startingCorpus: number;
+  investmentAmount: number;
+  interestEarned: number;
+  totalCorpus: number;
+}

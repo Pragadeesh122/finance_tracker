@@ -1,4 +1,4 @@
-import {YearlyProjection} from "./types";
+import {YearlyProjection, YearlyInvestmentBreakdown} from "./types";
 
 export function calculateCAGR(
   initialAmount: number,
@@ -103,4 +103,69 @@ export function calculateCorpusProjection(
   }
 
   return projection;
+}
+
+export function calculateYearlyInvestmentBreakdown(
+  investmentType: "lumpsum" | "sip" | "yearly",
+  amount: number,
+  cagr: number,
+  years: number
+): YearlyInvestmentBreakdown[] {
+  if (amount <= 0 || cagr <= 0 || years <= 0) return [];
+
+  const breakdown: YearlyInvestmentBreakdown[] = [];
+  const annualRate = cagr / 100;
+  let cumulativeCorpus = 0;
+
+  for (let year = 1; year <= years; year++) {
+    const startingCorpus = cumulativeCorpus;
+    let investmentAmount = 0;
+    let interestEarned = 0;
+
+    if (investmentType === "lumpsum") {
+      // For lumpsum, investment happens only in year 1
+      if (year === 1) {
+        investmentAmount = amount;
+        cumulativeCorpus = amount;
+      }
+      // Interest is earned on the entire corpus
+      interestEarned = cumulativeCorpus * annualRate;
+      cumulativeCorpus += interestEarned;
+    } else if (investmentType === "sip") {
+      // For monthly SIP, investment happens throughout the year
+      investmentAmount = amount * 12; // Total annual investment
+
+      // Calculate interest earned on cumulative corpus at start of year
+      const interestOnExistingCorpus = cumulativeCorpus * annualRate;
+
+      // Add annual investment
+      cumulativeCorpus += investmentAmount;
+
+      // Calculate interest on new investments (assuming mid-year average)
+      const interestOnNewInvestment = investmentAmount * (annualRate / 2);
+
+      interestEarned = interestOnExistingCorpus + interestOnNewInvestment;
+      cumulativeCorpus += interestEarned;
+    } else if (investmentType === "yearly") {
+      // For yearly SIP, investment happens at the beginning of each year
+      investmentAmount = amount;
+
+      // Add annual investment
+      cumulativeCorpus += investmentAmount;
+
+      // Calculate interest on the entire corpus (including new investment)
+      interestEarned = cumulativeCorpus * annualRate;
+      cumulativeCorpus += interestEarned;
+    }
+
+    breakdown.push({
+      year,
+      startingCorpus,
+      investmentAmount,
+      interestEarned,
+      totalCorpus: cumulativeCorpus,
+    });
+  }
+
+  return breakdown;
 }
