@@ -30,10 +30,20 @@ export interface YearlyProjection {
   monthlyIncomeAfterTax: number;
 }
 
+export interface MonthlyBreakdown {
+  month: number;
+  monthName: string;
+  startingCorpus: number;
+  investmentAmount: number;
+  interestEarned: number;
+  totalCorpus: number;
+}
+
 export interface YearlyInvestmentBreakdown {
   year: number;
   startingCorpus: number;
   investmentAmount: number;
   interestEarned: number;
   totalCorpus: number;
+  monthlyBreakdown?: MonthlyBreakdown[]; // Only for SIP investments
 }

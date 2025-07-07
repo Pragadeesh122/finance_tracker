@@ -10,6 +10,7 @@ export default function YearlyInvestmentBreakdownSection({
   projectionInputs,
 }: YearlyInvestmentBreakdownProps) {
   const [showBreakdown, setShowBreakdown] = useState<boolean>(false);
+  const [expandedYears, setExpandedYears] = useState<Set<number>>(new Set());
 
   const breakdownData = calculateYearlyInvestmentBreakdown(
     projectionInputs.investmentType,
@@ -22,16 +23,33 @@ export default function YearlyInvestmentBreakdownSection({
     setShowBreakdown(!showBreakdown);
   };
 
+  const handleToggleYear = (year: number) => {
+    const newExpandedYears = new Set(expandedYears);
+    if (newExpandedYears.has(year)) {
+      newExpandedYears.delete(year);
+    } else {
+      newExpandedYears.add(year);
+    }
+    setExpandedYears(newExpandedYears);
+  };
+
   // Don't render if no valid data
   if (breakdownData.length === 0) {
     return null;
   }
+
+  const isSIPInvestment = projectionInputs.investmentType === "sip";
 
   return (
     <div className='transform rounded-lg border border-slate-200/60 bg-white/80 p-4 shadow-lg backdrop-blur-sm transition-all duration-200 hover:shadow-xl dark:border-slate-800/60 dark:bg-slate-900/80 sm:p-6'>
       <div className='flex items-center justify-between mb-4'>
         <h3 className='text-lg font-semibold text-slate-900 dark:text-slate-100'>
           Yearly Investment Breakdown
+          {isSIPInvestment && (
+            <span className='ml-2 text-sm font-normal text-slate-500 dark:text-slate-400'>
+              (Click on years to see monthly details)
+            </span>
+          )}
         </h3>
         <button
           onClick={handleToggleBreakdown}
@@ -64,7 +82,7 @@ export default function YearlyInvestmentBreakdownSection({
                 <thead className='bg-slate-50 dark:bg-slate-800'>
                   <tr>
                     <th className='px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400'>
-                      Year
+                      {isSIPInvestment ? "Year" : "Year"}
                     </th>
                     <th className='px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400'>
                       Starting Corpus
@@ -81,26 +99,128 @@ export default function YearlyInvestmentBreakdownSection({
                   </tr>
                 </thead>
                 <tbody className='divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-900'>
-                  {breakdownData.map((row) => (
-                    <tr
-                      key={row.year}
-                      className='hover:bg-slate-50 dark:hover:bg-slate-800/50'>
-                      <td className='whitespace-nowrap px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100'>
-                        {row.year}
-                      </td>
-                      <td className='whitespace-nowrap px-4 py-3 text-sm text-slate-600 dark:text-slate-400'>
-                        ₹{Math.round(row.startingCorpus).toLocaleString()}
-                      </td>
-                      <td className='whitespace-nowrap px-4 py-3 text-sm text-blue-600 dark:text-blue-400'>
-                        ₹{Math.round(row.investmentAmount).toLocaleString()}
-                      </td>
-                      <td className='whitespace-nowrap px-4 py-3 text-sm text-emerald-600 dark:text-emerald-400'>
-                        ₹{Math.round(row.interestEarned).toLocaleString()}
-                      </td>
-                      <td className='whitespace-nowrap px-4 py-3 text-sm font-semibold text-slate-900 dark:text-slate-100'>
-                        ₹{Math.round(row.totalCorpus).toLocaleString()}
-                      </td>
-                    </tr>
+                  {breakdownData.map((row, index) => (
+                    <>
+                      <tr
+                        key={index}
+                        className={`hover:bg-slate-50 dark:hover:bg-slate-800/50 ${
+                          isSIPInvestment ? "cursor-pointer" : ""
+                        }`}
+                        onClick={() =>
+                          isSIPInvestment && handleToggleYear(row.year)
+                        }>
+                        <td className='whitespace-nowrap px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100'>
+                          <div className='flex items-center gap-2'>
+                            {isSIPInvestment && (
+                              <svg
+                                className={`h-4 w-4 transform transition-transform duration-200 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 ${
+                                  expandedYears.has(row.year) ? "rotate-90" : ""
+                                }`}
+                                fill='none'
+                                stroke='currentColor'
+                                viewBox='0 0 24 24'>
+                                <path
+                                  strokeLinecap='round'
+                                  strokeLinejoin='round'
+                                  strokeWidth={2}
+                                  d='M9 5l7 7-7 7'
+                                />
+                              </svg>
+                            )}
+                            <span
+                              className={isSIPInvestment ? "select-none" : ""}>
+                              Year {row.year}
+                            </span>
+                            {isSIPInvestment && (
+                              <span className='text-xs text-slate-400 dark:text-slate-500'>
+                                ({expandedYears.has(row.year) ? "Hide" : "Show"}{" "}
+                                months)
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className='whitespace-nowrap px-4 py-3 text-sm text-slate-600 dark:text-slate-400'>
+                          ₹{Math.round(row.startingCorpus).toLocaleString()}
+                        </td>
+                        <td className='whitespace-nowrap px-4 py-3 text-sm text-blue-600 dark:text-blue-400'>
+                          ₹{Math.round(row.investmentAmount).toLocaleString()}
+                        </td>
+                        <td className='whitespace-nowrap px-4 py-3 text-sm text-emerald-600 dark:text-emerald-400'>
+                          ₹{Math.round(row.interestEarned).toLocaleString()}
+                        </td>
+                        <td className='whitespace-nowrap px-4 py-3 text-sm font-semibold text-slate-900 dark:text-slate-100'>
+                          ₹{Math.round(row.totalCorpus).toLocaleString()}
+                        </td>
+                      </tr>
+
+                      {/* Monthly breakdown for SIP investments */}
+                      {isSIPInvestment &&
+                        expandedYears.has(row.year) &&
+                        row.monthlyBreakdown && (
+                          <tr>
+                            <td colSpan={5} className='px-0 py-0'>
+                              <div className='bg-slate-25 dark:bg-slate-800/30'>
+                                <table className='w-full'>
+                                  <thead className='bg-slate-100 dark:bg-slate-700'>
+                                    <tr>
+                                      <th className='px-8 py-2 text-left text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400'>
+                                        Month
+                                      </th>
+                                      <th className='px-4 py-2 text-left text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400'>
+                                        Starting Corpus
+                                      </th>
+                                      <th className='px-4 py-2 text-left text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400'>
+                                        Monthly SIP
+                                      </th>
+                                      <th className='px-4 py-2 text-left text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400'>
+                                        Interest Earned
+                                      </th>
+                                      <th className='px-4 py-2 text-left text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400'>
+                                        Month End Corpus
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className='divide-y divide-slate-100 dark:divide-slate-600'>
+                                    {row.monthlyBreakdown.map((monthRow) => (
+                                      <tr
+                                        key={`${row.year}-${monthRow.month}`}
+                                        className='hover:bg-slate-50 dark:hover:bg-slate-700/50'>
+                                        <td className='whitespace-nowrap px-8 py-2 text-xs text-slate-700 dark:text-slate-300'>
+                                          {monthRow.monthName}
+                                        </td>
+                                        <td className='whitespace-nowrap px-4 py-2 text-xs text-slate-600 dark:text-slate-400'>
+                                          ₹
+                                          {Math.round(
+                                            monthRow.startingCorpus
+                                          ).toLocaleString()}
+                                        </td>
+                                        <td className='whitespace-nowrap px-4 py-2 text-xs text-blue-600 dark:text-blue-400'>
+                                          ₹
+                                          {Math.round(
+                                            monthRow.investmentAmount
+                                          ).toLocaleString()}
+                                        </td>
+                                        <td className='whitespace-nowrap px-4 py-2 text-xs text-emerald-600 dark:text-emerald-400'>
+                                          ₹
+                                          {Math.round(
+                                            monthRow.interestEarned
+                                          ).toLocaleString()}
+                                        </td>
+                                        <td className='whitespace-nowrap px-4 py-2 text-xs font-medium text-slate-800 dark:text-slate-200'>
+                                          ₹
+                                          {Math.round(
+                                            monthRow.totalCorpus
+                                          ).toLocaleString()}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                    </>
                   ))}
                 </tbody>
               </table>
@@ -112,6 +232,11 @@ export default function YearlyInvestmentBreakdownSection({
       {!showBreakdown && (
         <div className='text-center text-sm text-slate-500 dark:text-slate-400'>
           Toggle the switch above to view detailed yearly breakdown
+          {isSIPInvestment && (
+            <span className='block mt-1'>
+              Monthly SIP breakdown available for detailed analysis
+            </span>
+          )}
         </div>
       )}
     </div>
