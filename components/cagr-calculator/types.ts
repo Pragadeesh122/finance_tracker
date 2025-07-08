@@ -37,6 +37,7 @@ export interface MonthlyBreakdown {
   investmentAmount: number;
   interestEarned: number;
   totalCorpus: number;
+  cumulativeInterest: number; // Total interest earned up to this month
 }
 
 export interface YearlyInvestmentBreakdown {
@@ -45,5 +46,6 @@ export interface YearlyInvestmentBreakdown {
   investmentAmount: number;
   interestEarned: number;
   totalCorpus: number;
+  cumulativeInterest: number; // Total interest earned up to this year
   monthlyBreakdown?: MonthlyBreakdown[]; // Only for SIP investments
 }

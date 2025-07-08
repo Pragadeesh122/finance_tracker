@@ -127,6 +127,7 @@ export function calculateMonthlyBreakdown(
   const annualRate = cagr / 100;
   const monthlyRate = Math.pow(1 + annualRate, 1 / 12) - 1;
   let currentCorpus = startingCorpus;
+  let cumulativeInterest = 0; // Track total interest earned
 
   const monthNames = [
     "Jan",
@@ -153,6 +154,9 @@ export function calculateMonthlyBreakdown(
     const interestEarned = currentCorpus * monthlyRate;
     currentCorpus += interestEarned;
 
+    // Update cumulative interest
+    cumulativeInterest += interestEarned;
+
     monthlyBreakdown.push({
       month,
       monthName: monthNames[month - 1],
@@ -160,6 +164,7 @@ export function calculateMonthlyBreakdown(
       investmentAmount: monthlyAmount,
       interestEarned,
       totalCorpus: currentCorpus,
+      cumulativeInterest,
     });
   }
 
@@ -177,6 +182,7 @@ export function calculateYearlyInvestmentBreakdown(
   const breakdown: YearlyInvestmentBreakdown[] = [];
   const annualRate = cagr / 100;
   let cumulativeCorpus = 0;
+  let totalInterestEarned = 0; // Track cumulative interest across all years
 
   for (let year = 1; year <= years; year++) {
     const startingCorpus = cumulativeCorpus;
@@ -193,6 +199,7 @@ export function calculateYearlyInvestmentBreakdown(
       // Interest is earned on the entire corpus
       interestEarned = cumulativeCorpus * annualRate;
       cumulativeCorpus += interestEarned;
+      totalInterestEarned += interestEarned;
     } else if (investmentType === "sip") {
       // For monthly SIP, calculate month by month
       const startingYearCorpus = cumulativeCorpus;
@@ -207,6 +214,7 @@ export function calculateYearlyInvestmentBreakdown(
       const yearEndCorpus = monthlyBreakdown[11].totalCorpus; // Last month's total
       interestEarned = yearEndCorpus - startingYearCorpus - investmentAmount;
       cumulativeCorpus = yearEndCorpus;
+      totalInterestEarned += interestEarned;
     } else if (investmentType === "yearly") {
       // For yearly SIP, investment happens at the beginning of each year
       investmentAmount = amount;
@@ -217,6 +225,7 @@ export function calculateYearlyInvestmentBreakdown(
       // Calculate interest on the entire corpus (including new investment)
       interestEarned = cumulativeCorpus * annualRate;
       cumulativeCorpus += interestEarned;
+      totalInterestEarned += interestEarned;
     }
 
     breakdown.push({
@@ -225,6 +234,7 @@ export function calculateYearlyInvestmentBreakdown(
       investmentAmount,
       interestEarned,
       totalCorpus: cumulativeCorpus,
+      cumulativeInterest: totalInterestEarned,
       monthlyBreakdown: investmentType === "sip" ? monthlyBreakdown : undefined,
     });
   }
