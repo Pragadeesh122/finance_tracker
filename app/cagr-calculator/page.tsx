@@ -10,10 +10,16 @@ import {
   ProjectionInputs,
   WithdrawalInputs,
   CalculatorMode,
+  GoalPlanningInputs,
+  RetirementPlanningInputs,
+  StepUpSIPInputs,
   calculateLumpsumValue,
   calculateSIPValue,
   calculateYearlySIPValue,
 } from "../../components/cagr-calculator";
+import { StepUpSIPSection } from "../../components/cagr-calculator/StepUpSIPSection";
+import { GoalPlanningSection } from "../../components/cagr-calculator/GoalPlanningSection";
+import { RetirementPlanningSection } from "../../components/cagr-calculator/RetirementPlanningSection";
 
 export default function CAGRCalculator() {
   const [mode, setMode] = useState<CalculatorMode>("cagr");
@@ -32,6 +38,29 @@ export default function CAGRCalculator() {
   const [withdrawalInputs, setWithdrawalInputs] = useState<WithdrawalInputs>({
     annualWithdrawalRate: 5, // Default to 5% annual withdrawal
     withdrawalYears: 30, // Default to 30 years projection
+  });
+  const [stepUpSIPInputs, setStepUpSIPInputs] = useState<StepUpSIPInputs>({
+    initialMonthlyAmount: 0,
+    cagr: 12,
+    years: 0,
+    stepUpPercentage: 10,
+  });
+  const [goalPlanningInputs, setGoalPlanningInputs] = useState<GoalPlanningInputs>({
+    goalType: "retirement",
+    targetAmount: 0,
+    currentAge: 30,
+    targetAge: 60,
+    inflationRate: 6,
+    expectedCAGR: 12,
+  });
+  const [retirementInputs, setRetirementInputs] = useState<RetirementPlanningInputs>({
+    currentAge: 30,
+    retirementAge: 60,
+    currentMonthlyExpenses: 50000,
+    inflationRate: 6,
+    postRetirementYears: 25,
+    expenseReplacement: 80,
+    expectedCAGR: 12,
   });
   const [includeTax, setIncludeTax] = useState<boolean>(true);
 
@@ -86,6 +115,36 @@ export default function CAGRCalculator() {
     }));
   };
 
+  const handleStepUpSIPInputChange = (
+    field: keyof StepUpSIPInputs,
+    value: number
+  ) => {
+    setStepUpSIPInputs((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleGoalPlanningInputChange = (
+    field: keyof GoalPlanningInputs,
+    value: string | number
+  ) => {
+    setGoalPlanningInputs((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleRetirementInputChange = (
+    field: keyof RetirementPlanningInputs,
+    value: number
+  ) => {
+    setRetirementInputs((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
   // Calculate projected amount for withdrawal projection
   const projectedAmount =
     projectionInputs.investmentType === "lumpsum"
@@ -122,45 +181,47 @@ export default function CAGRCalculator() {
             </p>
           </div>
 
-          <div className='mt-8 flex justify-center gap-3 sm:gap-4'>
-            <button
-              onClick={() => setMode("cagr")}
-              className={`relative overflow-hidden rounded-lg px-6 py-2.5 text-sm font-medium transition-all duration-200 sm:text-base ${
-                mode === "cagr"
-                  ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 dark:from-indigo-500 dark:to-violet-500 dark:shadow-indigo-500/25 dark:hover:shadow-violet-500/40"
-                  : "bg-white/90 text-slate-700 hover:bg-white dark:bg-slate-800/90 dark:text-slate-300 dark:hover:bg-slate-800"
-              }`}>
-              Calculate CAGR
-              {mode === "cagr" && (
-                <span className='absolute inset-0 -z-10 animate-pulse bg-gradient-to-r from-blue-600 to-cyan-600 opacity-50 dark:from-indigo-600 dark:to-violet-600'></span>
-              )}
-            </button>
-            <button
-              onClick={() => setMode("projection")}
-              className={`relative overflow-hidden rounded-lg px-6 py-2.5 text-sm font-medium transition-all duration-200 sm:text-base ${
-                mode === "projection"
-                  ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 dark:from-indigo-500 dark:to-violet-500 dark:shadow-indigo-500/25 dark:hover:shadow-violet-500/40"
-                  : "bg-white/90 text-slate-700 hover:bg-white dark:bg-slate-800/90 dark:text-slate-300 dark:hover:bg-slate-800"
-              }`}>
-              Project Returns
-              {mode === "projection" && (
-                <span className='absolute inset-0 -z-10 animate-pulse bg-gradient-to-r from-blue-600 to-cyan-600 opacity-50 dark:from-indigo-600 dark:to-violet-600'></span>
-              )}
-            </button>
+          <div className='mt-8 flex flex-wrap justify-center gap-2 sm:gap-3'>
+            {[
+              { key: 'cagr', label: '📊 Calculate CAGR', description: 'Find compound annual growth rate' },
+              { key: 'projection', label: '📈 Project Returns', description: 'Calculate future value' },
+              { key: 'goal_planning', label: '🎯 Goal Planning', description: 'Plan for specific goals' },
+              { key: 'retirement', label: '🏖️ Retirement', description: 'Plan your retirement' },
+              { key: 'stepup_sip', label: '📊 Step-up SIP', description: 'SIP with annual increments' }
+            ].map((calculator) => (
+              <button
+                key={calculator.key}
+                onClick={() => setMode(calculator.key as CalculatorMode)}
+                className={`relative overflow-hidden rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 sm:px-6 sm:text-base ${
+                  mode === calculator.key
+                    ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 dark:from-indigo-500 dark:to-violet-500 dark:shadow-indigo-500/25 dark:hover:shadow-violet-500/40"
+                    : "bg-white/90 text-slate-700 hover:bg-white dark:bg-slate-800/90 dark:text-slate-300 dark:hover:bg-slate-800"
+                }`}>
+                <div className="text-center">
+                  <div>{calculator.label}</div>
+                  <div className="text-xs opacity-75 mt-1">{calculator.description}</div>
+                </div>
+                {mode === calculator.key && (
+                  <span className='absolute inset-0 -z-10 animate-pulse bg-gradient-to-r from-blue-600 to-cyan-600 opacity-50 dark:from-indigo-600 dark:to-violet-600'></span>
+                )}
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className='mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8'>
-        {mode === "cagr" ? (
+        {mode === "cagr" && (
           <CAGRCalculatorSection
             cagrInputs={cagrInputs}
             onInputChange={handleCAGRInputChange}
             includeTax={includeTax}
             onTaxToggle={setIncludeTax}
           />
-        ) : (
+        )}
+        
+        {mode === "projection" && (
           <div className='space-y-4'>
             <ProjectionCalculatorSection
               projectionInputs={projectionInputs}
@@ -181,6 +242,27 @@ export default function CAGRCalculator() {
               includeTax={includeTax}
             />
           </div>
+        )}
+
+        {mode === "goal_planning" && (
+          <GoalPlanningSection
+            inputs={goalPlanningInputs}
+            onInputChange={handleGoalPlanningInputChange}
+          />
+        )}
+
+        {mode === "retirement" && (
+          <RetirementPlanningSection
+            inputs={retirementInputs}
+            onInputChange={handleRetirementInputChange}
+          />
+        )}
+
+        {mode === "stepup_sip" && (
+          <StepUpSIPSection
+            inputs={stepUpSIPInputs}
+            onInputChange={handleStepUpSIPInputChange}
+          />
         )}
       </div>
     </main>

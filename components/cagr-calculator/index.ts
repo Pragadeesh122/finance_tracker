@@ -4,6 +4,9 @@ export {default as WithdrawalProjectionSection} from "./WithdrawalProjectionSect
 export {default as YearlyInvestmentBreakdownSection} from "./YearlyInvestmentBreakdown";
 export {default as TaxToggle} from "./TaxToggle";
 export {default as InvestmentTypeButtons} from "./InvestmentTypeButtons";
+export { StepUpSIPSection } from "./StepUpSIPSection";
+export { GoalPlanningSection } from "./GoalPlanningSection";
+export { RetirementPlanningSection } from "./RetirementPlanningSection";
 
 export * from "./types";
 export * from "./utils";
