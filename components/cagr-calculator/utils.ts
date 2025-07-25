@@ -426,6 +426,79 @@ export function calculateStepUpSIP(
   return bankerRound(totalValue);
 }
 
+// Step-up SIP yearly breakdown
+export function calculateStepUpSIPYearlyBreakdown(
+  initialMonthlyAmount: number,
+  cagr: number,
+  years: number,
+  stepUpPercentage: number
+): YearlyInvestmentBreakdown[] {
+  if (initialMonthlyAmount <= 0 || cagr <= 0 || years <= 0) return [];
+  
+  const breakdown: YearlyInvestmentBreakdown[] = [];
+  const monthlyRate = getMonthlyRate(cagr);
+  let cumulativeCorpus = 0;
+  let totalInterestEarned = 0;
+  let currentMonthlyAmount = initialMonthlyAmount;
+  
+  for (let year = 1; year <= years; year++) {
+    const startingCorpus = cumulativeCorpus;
+    const annualInvestment = currentMonthlyAmount * 12;
+    
+    // Calculate monthly breakdown for this year with step-up amount
+    const monthlyBreakdown: MonthlyBreakdown[] = [];
+    let yearCorpus = startingCorpus;
+    let yearInterest = 0;
+    
+    const monthNames = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
+    
+    for (let month = 1; month <= 12; month++) {
+      const monthStartCorpus = yearCorpus;
+      
+      // Add monthly SIP at beginning of month
+      yearCorpus += currentMonthlyAmount;
+      
+      // Calculate interest for the month
+      const monthlyInterest = yearCorpus * monthlyRate;
+      yearCorpus += monthlyInterest;
+      yearInterest += monthlyInterest;
+      totalInterestEarned += monthlyInterest;
+      
+      monthlyBreakdown.push({
+        month,
+        monthName: monthNames[month - 1],
+        startingCorpus: monthStartCorpus,
+        investmentAmount: currentMonthlyAmount,
+        interestEarned: monthlyInterest,
+        totalCorpus: yearCorpus,
+        cumulativeInterest: totalInterestEarned
+      });
+    }
+    
+    cumulativeCorpus = yearCorpus;
+    
+    breakdown.push({
+      year,
+      startingCorpus,
+      investmentAmount: annualInvestment,
+      interestEarned: yearInterest,
+      totalCorpus: cumulativeCorpus,
+      cumulativeInterest: totalInterestEarned,
+      monthlyBreakdown
+    });
+    
+    // Step up the monthly amount for next year
+    if (year < years) {
+      currentMonthlyAmount = bankerRound(currentMonthlyAmount * (1 + stepUpPercentage / 100));
+    }
+  }
+  
+  return breakdown;
+}
+
 // Goal-based planning: Calculate required SIP for target amount
 export function calculateRequiredSIP(
   targetAmount: number,
