@@ -14,12 +14,12 @@ export function Navbar({theme, onThemeToggle}: NavbarProps) {
 
   const navItems = [
     {
-      label: "Mutual Funds",
+      label: "CAGR Calculator",
       href: "/",
     },
     {
-      label: "CAGR Calculator",
-      href: "/cagr-calculator",
+      label: "Mutual Funds",
+      href: "/mutual_fund",
     },
   ];
 
