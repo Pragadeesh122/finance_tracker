@@ -37,12 +37,18 @@ export function Navbar({theme, onThemeToggle}: NavbarProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm font-medium transition-colors hover:text-slate-900 dark:hover:text-slate-200 ${
+                className={`group relative text-sm font-medium transition-colors hover:text-slate-900 dark:hover:text-slate-200 ${
                   pathname === item.href
                     ? "text-slate-900 dark:text-slate-200"
                     : "text-slate-600 dark:text-slate-400"
                 }`}>
                 {item.label}
+                <span
+                  className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-blue-500 to-cyan-500 transition-all duration-300 dark:from-indigo-500 dark:to-violet-500 ${
+                    pathname === item.href
+                      ? "w-full"
+                      : "w-0 group-hover:w-full"
+                  }`}></span>
               </Link>
             ))}
           </div>

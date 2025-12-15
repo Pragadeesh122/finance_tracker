@@ -35,7 +35,7 @@ export default function CAGRCalculatorSection({
             value={cagrInputs.initialAmount || ""}
             onChange={(e) => onInputChange("initialAmount", e.target.value)}
             placeholder='Enter initial amount'
-            className='mt-1 block w-full rounded-md border border-slate-200 bg-white/70 px-3 py-2 text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-100 dark:focus:border-violet-500 dark:focus:ring-violet-500'
+            className='mt-1 block w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20'
             min='0'
           />
         </div>
@@ -49,7 +49,7 @@ export default function CAGRCalculatorSection({
             value={cagrInputs.finalAmount || ""}
             onChange={(e) => onInputChange("finalAmount", e.target.value)}
             placeholder='Enter final amount'
-            className='mt-1 block w-full rounded-md border border-slate-200 bg-white/70 px-3 py-2 text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-100 dark:focus:border-violet-500 dark:focus:ring-violet-500'
+            className='mt-1 block w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20'
             min='0'
           />
         </div>
@@ -64,7 +64,7 @@ export default function CAGRCalculatorSection({
               value={cagrInputs.years || ""}
               onChange={(e) => onInputChange("years", e.target.value)}
               placeholder='Years'
-              className='mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100'
+              className='mt-1 block w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20'
               min='0'
             />
           </div>
@@ -78,7 +78,7 @@ export default function CAGRCalculatorSection({
               value={cagrInputs.months || ""}
               onChange={(e) => onInputChange("months", e.target.value)}
               placeholder='Months'
-              className='mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100'
+              className='mt-1 block w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20'
               min='0'
               max='11'
             />

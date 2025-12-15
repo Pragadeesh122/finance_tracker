@@ -214,10 +214,10 @@ export default function CAGRCalculator() {
               <button
                 key={calculator.key}
                 onClick={() => setMode(calculator.key as CalculatorMode)}
-                className={`relative overflow-hidden rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 sm:px-6 sm:text-base ${
+                className={`group relative overflow-hidden rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 sm:px-6 sm:text-base ${
                   mode === calculator.key
-                    ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 dark:from-indigo-500 dark:to-violet-500 dark:shadow-indigo-500/25 dark:hover:shadow-violet-500/40"
-                    : "bg-white/90 text-slate-700 hover:bg-white dark:bg-slate-800/90 dark:text-slate-300 dark:hover:bg-slate-800"
+                    ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-cyan-500/40 dark:from-indigo-500 dark:to-violet-500 dark:shadow-indigo-500/25 dark:hover:shadow-xl dark:hover:shadow-violet-500/40"
+                    : "bg-white/90 text-slate-700 shadow-md hover:bg-white hover:shadow-lg dark:bg-slate-800/90 dark:text-slate-300 dark:hover:bg-slate-800"
                 }`}>
                 <div className='text-center'>
                   <div>{calculator.label}</div>

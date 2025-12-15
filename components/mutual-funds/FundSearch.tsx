@@ -1,5 +1,6 @@
 "use client";
 
+import { forwardRef } from "react";
 import { SearchResult } from "./types";
 
 interface FundSearchProps {
@@ -11,13 +12,14 @@ interface FundSearchProps {
   allFunds: SearchResult[];
 }
 
-export function FundSearch({
-  searchQuery,
-  onSearchChange,
-  searchResults,
-  loading,
-  onFundSelect,
-}: FundSearchProps) {
+export const FundSearch = forwardRef<HTMLInputElement, FundSearchProps>(
+  function FundSearch({
+    searchQuery,
+    onSearchChange,
+    searchResults,
+    loading,
+    onFundSelect,
+  }, ref) {
 
   return (
     <div className='mx-auto mt-8 max-w-2xl'>
@@ -25,6 +27,7 @@ export function FundSearch({
         <div className='absolute -inset-0.5 bg-gradient-to-r from-slate-200 via-slate-400 to-slate-200 rounded-lg blur opacity-30 group-hover:opacity-50 transition duration-1000 group-hover:duration-200 dark:from-slate-700 dark:via-slate-600 dark:to-slate-700'></div>
         <div className='relative'>
           <input
+            ref={ref}
             type='text'
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
@@ -62,4 +65,4 @@ export function FundSearch({
       )}
     </div>
   );
-}
+});
