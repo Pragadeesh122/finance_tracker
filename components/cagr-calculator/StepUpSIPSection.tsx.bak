@@ -73,14 +73,14 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
   return (
     <div className="space-y-6">
       <Card className="p-6">
-        <h3 className="text-xl font-semibold text-foreground mb-6">
+        <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-6">
           Step-up SIP Calculator
         </h3>
         
         {/* Input Section */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
           <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
               Initial Monthly SIP (₹)
             </label>
             <input
@@ -100,7 +100,7 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
               Expected CAGR (%)
             </label>
             <input
@@ -122,7 +122,7 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
               Investment Period (Years)
             </label>
             <input
@@ -143,7 +143,7 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
               Annual Step-up (%)
             </label>
             <input
@@ -167,7 +167,7 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
 
         {/* Quick Step-up Buttons */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-muted-foreground mb-2">
+          <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
             Quick Step-up Selection
           </label>
           <div className="flex flex-wrap gap-2">
@@ -177,8 +177,8 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
                 onClick={() => onInputChange("stepUpPercentage", percentage)}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
                   inputs.stepUpPercentage === percentage
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-secondary text-foreground hover:bg-secondary/80 border border-border"
+                    ? "bg-blue-500 text-white"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
                 }`}
               >
                 {percentage}%
@@ -189,17 +189,17 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
 
         {/* Results Section */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="rounded-lg bg-secondary/30 border border-border p-4">
-            <div className="text-sm font-medium text-muted-foreground">
+          <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
+            <div className="text-sm font-medium text-blue-600 dark:text-blue-400">
               Step-up SIP Final Value
             </div>
-            <div className="mt-1 text-2xl font-semibold text-accent">
+            <div className="mt-1 text-2xl font-semibold text-blue-700 dark:text-blue-300">
               {formatCurrency(stepUpSIPValue)}
             </div>
           </div>
           
-          <div className="rounded-lg bg-secondary/30 border border-border p-4">
-            <div className="text-sm font-medium text-muted-foreground">
+          <div className="rounded-lg bg-slate-50 p-4 dark:bg-slate-800/50">
+            <div className="text-sm font-medium text-slate-600 dark:text-slate-400">
               Total Investment
             </div>
             <div className="mt-1 text-2xl font-semibold text-slate-700 dark:text-slate-300">
@@ -207,11 +207,11 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
             </div>
           </div>
           
-          <div className="rounded-lg bg-secondary/30 border border-border p-4">
-            <div className="text-sm font-medium text-accent">
+          <div className="rounded-lg bg-green-50 p-4 dark:bg-green-900/20">
+            <div className="text-sm font-medium text-green-600 dark:text-green-400">
               Total Returns
             </div>
-            <div className="mt-1 text-2xl font-semibold text-accent">
+            <div className="mt-1 text-2xl font-semibold text-green-700 dark:text-green-300">
               {formatCurrency(stepUpSIPValue - totalInvestmentStepUp)}
             </div>
           </div>
@@ -219,11 +219,11 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
 
         {/* Final SIP Amount */}
         {inputs.years > 0 && inputs.stepUpPercentage > 0 && (
-          <div className="mt-6 rounded-lg bg-secondary/50 border border-border p-4">
+          <div className="mt-6 rounded-lg bg-amber-50 p-4 dark:bg-amber-900/20">
             <div className="text-sm font-medium text-amber-600 dark:text-amber-400">
               Final Year SIP Amount
             </div>
-            <div className="mt-1 text-xl font-semibold text-foreground">
+            <div className="mt-1 text-xl font-semibold text-amber-700 dark:text-amber-300">
               {formatCurrency(
                 inputs.initialMonthlyAmount * Math.pow(1 + inputs.stepUpPercentage / 100, inputs.years - 1)
               )}
@@ -237,7 +237,7 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
       {showComparison && (
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-lg font-semibold text-foreground">
+            <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
               Step-up SIP vs Regular SIP Comparison
             </h4>
             <button
@@ -258,13 +258,13 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-slate-600 dark:text-slate-400">Final Value:</span>
-                  <span className="font-medium text-muted-foreground">
+                  <span className="font-medium text-blue-600 dark:text-blue-400">
                     {formatCurrency(stepUpSIPValue)}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-slate-600 dark:text-slate-400">Returns:</span>
-                  <span className="font-medium text-accent">
+                  <span className="font-medium text-green-600 dark:text-green-400">
                     {formatCurrency(stepUpSIPValue - totalInvestmentStepUp)}
                   </span>
                 </div>
@@ -294,20 +294,20 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
             </div>
           </div>
           
-          <div className="mt-6 rounded-lg bg-secondary/50 border border-border p-4">
-            <h6 className="font-medium text-foreground mb-2">
+          <div className="mt-6 rounded-lg bg-emerald-50 p-4 dark:bg-emerald-900/20">
+            <h6 className="font-medium text-emerald-700 dark:text-emerald-300 mb-2">
               Advantage of Step-up SIP
             </h6>
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <span className="text-sm text-emerald-600 dark:text-emerald-400">Additional Investment:</span>
-                <div className="font-semibold text-foreground">
+                <div className="font-semibold text-emerald-700 dark:text-emerald-300">
                   {formatCurrency(additionalInvestment)}
                 </div>
               </div>
               <div>
                 <span className="text-sm text-emerald-600 dark:text-emerald-400">Additional Returns:</span>
-                <div className="font-semibold text-foreground">
+                <div className="font-semibold text-emerald-700 dark:text-emerald-300">
                   {formatCurrency(additionalReturns)}
                 </div>
               </div>
@@ -320,7 +320,7 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
       {breakdownData.length > 0 && (
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-foreground">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
               Step-up SIP Yearly Breakdown
               <span className="ml-2 text-sm font-normal text-slate-500 dark:text-slate-400">
                 (Click on years to see monthly details)
@@ -330,7 +330,7 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
               onClick={handleToggleBreakdown}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${
                 showBreakdown
-                  ? "bg-accent"
+                  ? "bg-gradient-to-r from-blue-500 to-cyan-500 dark:from-indigo-500 dark:to-violet-500"
                   : "bg-slate-200 dark:bg-slate-700"
               }`}
               aria-label={showBreakdown ? "Hide breakdown" : "Show breakdown"}
@@ -348,7 +348,7 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
               <div className="inline-block min-w-full align-middle">
                 <div className="overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
                   <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-                    <thead className="bg-secondary/50">
+                    <thead className="bg-slate-50 dark:bg-slate-800">
                       <tr>
                         <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
                           Year
@@ -373,7 +373,7 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-border bg-background">
+                    <tbody className="divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-900">
                       {breakdownData
                         .map((row, index) => {
                           // Calculate monthly SIP amount for this year
@@ -382,10 +382,10 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
                           return [
                             <tr
                               key={index}
-                              className="hover:bg-secondary/30 cursor-pointer"
+                              className="hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer"
                               onClick={() => handleToggleYear(row.year)}
                             >
-                              <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-foreground">
+                              <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-slate-900 dark:text-slate-100">
                                 <div className="flex items-center gap-2">
                                   <svg
                                     className={`h-4 w-4 transform transition-transform duration-200 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 ${
@@ -411,19 +411,19 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
                               <td className="whitespace-nowrap px-4 py-3 text-sm text-slate-600 dark:text-slate-400">
                                 {formatCurrency(row.startingCorpus)}
                               </td>
-                              <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">
+                              <td className="whitespace-nowrap px-4 py-3 text-sm text-blue-600 dark:text-blue-400">
                                 {formatCurrency(monthlySIPAmount)}
                               </td>
-                              <td className="whitespace-nowrap px-4 py-3 text-sm text-muted-foreground">
+                              <td className="whitespace-nowrap px-4 py-3 text-sm text-blue-600 dark:text-blue-400">
                                 {formatCurrency(row.investmentAmount)}
                               </td>
                               <td className="whitespace-nowrap px-4 py-3 text-sm text-emerald-600 dark:text-emerald-400">
                                 {formatCurrency(row.interestEarned)}
                               </td>
-                              <td className="whitespace-nowrap px-4 py-3 text-sm font-semibold text-foreground">
+                              <td className="whitespace-nowrap px-4 py-3 text-sm font-semibold text-emerald-700 dark:text-emerald-300">
                                 {formatCurrency(row.cumulativeInterest)}
                               </td>
-                              <td className="whitespace-nowrap px-4 py-3 text-sm font-semibold text-foreground">
+                              <td className="whitespace-nowrap px-4 py-3 text-sm font-semibold text-slate-900 dark:text-slate-100">
                                 {formatCurrency(row.totalCorpus)}
                               </td>
                             </tr>,
@@ -461,7 +461,7 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
                                             {row.monthlyBreakdown.map((monthRow) => (
                                               <tr
                                                 key={`${row.year}-${monthRow.month}`}
-                                                className="hover:bg-secondary/20"
+                                                className="hover:bg-slate-50 dark:hover:bg-slate-700/50"
                                               >
                                                 <td className="whitespace-nowrap px-8 py-2 text-xs text-slate-700 dark:text-slate-300">
                                                   {monthRow.monthName}
@@ -469,13 +469,13 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
                                                 <td className="whitespace-nowrap px-4 py-2 text-xs text-slate-600 dark:text-slate-400">
                                                   {formatCurrency(monthRow.startingCorpus)}
                                                 </td>
-                                                <td className="whitespace-nowrap px-4 py-2 text-xs text-muted-foreground">
+                                                <td className="whitespace-nowrap px-4 py-2 text-xs text-blue-600 dark:text-blue-400">
                                                   {formatCurrency(monthRow.investmentAmount)}
                                                 </td>
                                                 <td className="whitespace-nowrap px-4 py-2 text-xs text-emerald-600 dark:text-emerald-400">
                                                   {formatCurrency(monthRow.interestEarned)}
                                                 </td>
-                                                <td className="whitespace-nowrap px-4 py-2 text-xs font-medium text-foreground">
+                                                <td className="whitespace-nowrap px-4 py-2 text-xs font-medium text-emerald-700 dark:text-emerald-300">
                                                   {formatCurrency(monthRow.cumulativeInterest)}
                                                 </td>
                                                 <td className="whitespace-nowrap px-4 py-2 text-xs font-medium text-slate-800 dark:text-slate-200">

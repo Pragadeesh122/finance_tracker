@@ -10,10 +10,10 @@ export default function InvestmentTypeButtons({
   onTypeChange,
 }: InvestmentTypeButtonsProps) {
   const buttonClass = (type: ProjectionInputs["investmentType"]) =>
-    `rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 ${
+    `rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
       investmentType === type
-        ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-sm dark:from-indigo-500 dark:to-violet-500"
-        : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+        ? "bg-primary text-primary-foreground shadow-sm"
+        : "bg-secondary text-foreground hover:bg-secondary/80 border border-border"
     }`;
 
   return (

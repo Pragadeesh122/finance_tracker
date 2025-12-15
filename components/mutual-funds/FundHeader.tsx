@@ -12,7 +12,7 @@ export function FundHeader({ selectedFund, isDiscontinued }: FundHeaderProps) {
     <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
       <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
       <div className='relative'>
-        <h2 className='text-xl font-semibold text-slate-900 dark:text-slate-100 sm:text-2xl'>
+        <h2 className='text-xl font-semibold text-foreground sm:text-2xl'>
           {selectedFund.name}
         </h2>
         <div className='mt-2 flex flex-wrap gap-4'>

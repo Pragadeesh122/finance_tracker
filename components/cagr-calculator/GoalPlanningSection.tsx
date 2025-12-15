@@ -100,14 +100,14 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
 
   return (
     <div className="space-y-6">
-      <Card className="p-6">
-        <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-6">
+      <Card className="p-6 bg-card border-border">
+        <h3 className="font-display text-xl font-semibold text-foreground mb-6">
           Goal-based Financial Planning
         </h3>
-        
+
         {/* Goal Type Selection */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-3">
+          <label className="block text-sm font-medium text-muted-foreground mb-3">
             Select Your Goal
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -128,10 +128,10 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
                     onInputChange('inflationRate', suggestions.inflationRate);
                   }
                 }}
-                className={`rounded-lg p-3 text-sm font-medium transition-all duration-200 ${
+                className={`rounded-lg p-3 text-sm font-medium transition-colors ${
                   inputs.goalType === goal.key
-                    ? "bg-blue-500 text-white shadow-lg"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-secondary text-foreground hover:bg-secondary/80 border border-border"
                 }`}
               >
                 {goal.label}
@@ -142,36 +142,36 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
 
         {/* Calculation Mode Selection */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-3">
+          <label className="block text-sm font-medium text-muted-foreground mb-3">
             What do you want to calculate?
           </label>
           <div className="flex flex-wrap gap-2">
             <button
               onClick={() => setCalculationMode('target_to_sip')}
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 calculationMode === 'target_to_sip'
-                  ? "bg-blue-500 text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "bg-secondary text-foreground hover:bg-secondary/80 border border-border"
               }`}
             >
               Required SIP
             </button>
             <button
               onClick={() => setCalculationMode('lumpsum_to_target')}
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 calculationMode === 'lumpsum_to_target'
-                  ? "bg-blue-500 text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "bg-secondary text-foreground hover:bg-secondary/80 border border-border"
               }`}
             >
               Required Lumpsum
             </button>
             <button
               onClick={() => setCalculationMode('sip_to_target')}
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 calculationMode === 'sip_to_target'
-                  ? "bg-blue-500 text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "bg-secondary text-foreground hover:bg-secondary/80 border border-border"
               }`}
             >
               Years to Goal
@@ -182,7 +182,7 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
         {/* Input Section */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
           <div>
-            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
+            <label className="block text-sm font-medium text-muted-foreground mb-2">
               {inputs.goalType === 'custom' ? 'Target Amount (₹)' : `${suggestions.description} (₹)`}
             </label>
             <input
@@ -191,12 +191,12 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
               onChange={(e) => {
                 const value = e.target.value;
                 const numValue = parseFloat(value);
-                onInputChange("targetAmount", 
+                onInputChange("targetAmount",
                   value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(0, numValue)
                 );
               }}
               placeholder="Enter target amount in today's value"
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-blue-400 dark:focus:ring-blue-400/20"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
               min="0"
             />
           </div>
@@ -204,7 +204,7 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
           {(inputs.goalType === 'retirement' || inputs.currentAge !== undefined) && (
             <>
               <div>
-                <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   Current Age
                 </label>
                 <input
@@ -213,19 +213,19 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
                   onChange={(e) => {
                     const value = e.target.value;
                     const numValue = parseFloat(value);
-                    onInputChange("currentAge", 
+                    onInputChange("currentAge",
                       value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(0, Math.min(100, numValue))
                     );
                   }}
                   placeholder="Enter your current age"
-                  className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-blue-400 dark:focus:ring-blue-400/20"
+                  className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
                   min="0"
                   max="100"
                 />
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
+                <label className="block text-sm font-medium text-muted-foreground mb-2">
                   Target Age
                 </label>
                 <input
@@ -234,12 +234,12 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
                   onChange={(e) => {
                     const value = e.target.value;
                     const numValue = parseFloat(value);
-                    onInputChange("targetAge", 
+                    onInputChange("targetAge",
                       value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(0, Math.min(100, numValue))
                     );
                   }}
                   placeholder="Goal achievement age"
-                  className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-blue-400 dark:focus:ring-blue-400/20"
+                  className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
                   min="0"
                   max="100"
                 />
@@ -248,7 +248,7 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
           )}
           
           <div>
-            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
+            <label className="block text-sm font-medium text-muted-foreground mb-2">
               Expected CAGR (%)
             </label>
             <input
@@ -257,19 +257,19 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
               onChange={(e) => {
                 const value = e.target.value;
                 const numValue = parseFloat(value);
-                onInputChange("expectedCAGR", 
+                onInputChange("expectedCAGR",
                   value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(0, numValue)
                 );
               }}
               placeholder="Enter expected annual returns"
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-blue-400 dark:focus:ring-blue-400/20"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
               min="0"
               step="0.1"
             />
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
+            <label className="block text-sm font-medium text-muted-foreground mb-2">
               Inflation Rate (%)
             </label>
             <input
@@ -278,12 +278,12 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
               onChange={(e) => {
                 const value = e.target.value;
                 const numValue = parseFloat(value);
-                onInputChange("inflationRate", 
+                onInputChange("inflationRate",
                   value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(-100, Math.min(100, numValue))
                 );
               }}
               placeholder="Enter expected inflation rate"
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-blue-400 dark:focus:ring-blue-400/20"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
               min="-100"
               max="100"
               step="0.1"
@@ -292,7 +292,7 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
 
           {calculationMode === 'sip_to_target' && (
             <div>
-              <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 Current Monthly Investment (₹)
               </label>
               <input
@@ -306,7 +306,7 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
                   );
                 }}
                 placeholder="Enter your current SIP amount"
-                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-slate-900 transition-all duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-blue-400 dark:focus:ring-blue-400/20"
+                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20"
                 min="0"
               />
             </div>
@@ -318,40 +318,40 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
           {/* Time and Target Information */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {yearsToGoal > 0 && (
-              <div className="rounded-lg bg-blue-50 border border-blue-200 p-4 dark:bg-blue-900/20 dark:border-blue-800">
-                <div className="text-sm font-medium text-blue-600 dark:text-blue-400">
+              <div className="rounded-lg bg-secondary/30 border border-border p-4">
+                <div className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                   Time to Goal
                 </div>
-                <div className="mt-1 text-2xl font-semibold text-blue-700 dark:text-blue-300">
+                <div className="mt-1 font-display text-2xl font-semibold text-accent">
                   {yearsToGoal} years
                 </div>
-                <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                <div className="text-xs text-muted-foreground mt-1">
                   From age {inputs.currentAge} to {inputs.targetAge}
                 </div>
               </div>
             )}
-            
-            <div className="rounded-lg bg-slate-50 border border-slate-200 p-4 dark:bg-slate-800/50 dark:border-slate-700">
-              <div className="text-sm font-medium text-slate-600 dark:text-slate-400">
+
+            <div className="rounded-lg bg-secondary/30 border border-border p-4">
+              <div className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                 Target Amount (Today&apos;s Value)
               </div>
-              <div className="mt-1 text-2xl font-semibold text-slate-700 dark:text-slate-300">
+              <div className="mt-1 text-2xl font-semibold text-foreground">
                 {formatCurrency(inputs.targetAmount)}
               </div>
-              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <div className="text-xs text-muted-foreground mt-1">
                 Current purchasing power
               </div>
             </div>
 
             {yearsToGoal > 0 && inputs.targetAmount !== inflationAdjustedTarget && (
-              <div className="rounded-lg bg-orange-50 border border-orange-200 p-4 dark:bg-orange-900/20 dark:border-orange-800">
-                <div className="text-sm font-medium text-orange-600 dark:text-orange-400">
+              <div className="rounded-lg bg-secondary/30 border border-border p-4">
+                <div className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                   Future Value Needed
                 </div>
-                <div className="mt-1 text-2xl font-semibold text-orange-700 dark:text-orange-300">
+                <div className="mt-1 text-2xl font-semibold text-foreground">
                   {formatCurrency(inflationAdjustedTarget)}
                 </div>
-                <div className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                <div className="text-xs text-muted-foreground mt-1">
                   After {yearsToGoal} years of {inputs.inflationRate}% inflation
                 </div>
               </div>
@@ -361,12 +361,12 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
           {/* Calculation Results */}
           <div className="space-y-4">
             {/* Explanation when showing dual calculations */}
-            {((calculationMode === 'target_to_sip' || calculationMode === 'lumpsum_to_target') && 
+            {((calculationMode === 'target_to_sip' || calculationMode === 'lumpsum_to_target') &&
               yearsToGoal > 0 && inputs.inflationRate > 0 && inputs.targetAmount !== inflationAdjustedTarget) && (
-              <div className="rounded-lg bg-blue-50 border border-blue-200 p-3 dark:bg-blue-900/20 dark:border-blue-800">
-                <div className="text-sm text-blue-700 dark:text-blue-300">
-                  <span className="font-medium">📊 Dual Calculation:</span> We show both scenarios - 
-                  investing for today&apos;s target value vs. inflation-adjusted future value. 
+              <div className="rounded-lg bg-secondary/50 border border-border p-3">
+                <div className="text-sm text-foreground">
+                  <span className="font-medium">📊 Dual Calculation:</span> We show both scenarios -
+                  investing for today&apos;s target value vs. inflation-adjusted future value.
                   Choose based on whether you expect costs to rise with inflation.
                 </div>
               </div>
@@ -374,27 +374,27 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
           
           {calculationMode === 'target_to_sip' && (
             <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
-              <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-4 dark:bg-emerald-900/20 dark:border-emerald-800">
-                <div className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+              <div className="rounded-lg bg-secondary/30 border border-border p-4">
+                <div className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                   SIP for Current Target Value
                 </div>
-                <div className="mt-1 text-2xl font-semibold text-emerald-700 dark:text-emerald-300">
+                <div className="mt-1 font-display text-2xl font-semibold text-accent">
                   {formatCurrency(requiredMonthlySIPCurrent)}
                 </div>
-                <div className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">
+                <div className="text-xs text-muted-foreground mt-1">
                   For {formatCurrency(inputs.targetAmount)} goal
                 </div>
               </div>
-              
+
               {yearsToGoal > 0 && inputs.inflationRate > 0 && inputs.targetAmount !== inflationAdjustedTarget && (
-                <div className="rounded-lg bg-amber-50 border border-amber-200 p-4 dark:bg-amber-900/20 dark:border-amber-800">
-                  <div className="text-sm font-medium text-amber-600 dark:text-amber-400">
+                <div className="rounded-lg bg-secondary/30 border border-border p-4">
+                  <div className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                     SIP for Inflation-Adjusted Goal
                   </div>
-                  <div className="mt-1 text-2xl font-semibold text-amber-700 dark:text-amber-300">
+                  <div className="mt-1 font-display text-2xl font-semibold text-accent">
                     {formatCurrency(requiredMonthlySIPInflationAdjusted)}
                   </div>
-                  <div className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                  <div className="text-xs text-muted-foreground mt-1">
                     For {formatCurrency(inflationAdjustedTarget)} future value
                   </div>
                 </div>
@@ -404,27 +404,27 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
           
           {calculationMode === 'lumpsum_to_target' && (
             <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
-              <div className="rounded-lg bg-violet-50 border border-violet-200 p-4 dark:bg-violet-900/20 dark:border-violet-800">
-                <div className="text-sm font-medium text-violet-600 dark:text-violet-400">
+              <div className="rounded-lg bg-secondary/30 border border-border p-4">
+                <div className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                   Lumpsum for Current Target
                 </div>
-                <div className="mt-1 text-2xl font-semibold text-violet-700 dark:text-violet-300">
+                <div className="mt-1 font-display text-2xl font-semibold text-accent">
                   {formatCurrency(requiredLumpsumCurrent)}
                 </div>
-                <div className="text-xs text-violet-600 dark:text-violet-400 mt-1">
+                <div className="text-xs text-muted-foreground mt-1">
                   For {formatCurrency(inputs.targetAmount)} goal
                 </div>
               </div>
-              
+
               {yearsToGoal > 0 && inputs.inflationRate > 0 && inputs.targetAmount !== inflationAdjustedTarget && (
-                <div className="rounded-lg bg-indigo-50 border border-indigo-200 p-4 dark:bg-indigo-900/20 dark:border-indigo-800">
-                  <div className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
+                <div className="rounded-lg bg-secondary/30 border border-border p-4">
+                  <div className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                     Lumpsum for Inflation-Adjusted Goal
                   </div>
-                  <div className="mt-1 text-2xl font-semibold text-indigo-700 dark:text-indigo-300">
+                  <div className="mt-1 font-display text-2xl font-semibold text-accent">
                     {formatCurrency(requiredLumpsumInflationAdjusted)}
                   </div>
-                  <div className="text-xs text-indigo-600 dark:text-indigo-400 mt-1">
+                  <div className="text-xs text-muted-foreground mt-1">
                     For {formatCurrency(inflationAdjustedTarget)} future value
                   </div>
                 </div>
@@ -434,27 +434,27 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
           
           {calculationMode === 'sip_to_target' && currentInvestment > 0 && (
             <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
-              <div className="rounded-lg bg-cyan-50 border border-cyan-200 p-4 dark:bg-cyan-900/20 dark:border-cyan-800">
-                <div className="text-sm font-medium text-cyan-600 dark:text-cyan-400">
+              <div className="rounded-lg bg-secondary/30 border border-border p-4">
+                <div className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                   Years to Current Target
                 </div>
-                <div className="mt-1 text-2xl font-semibold text-cyan-700 dark:text-cyan-300">
+                <div className="mt-1 font-display text-2xl font-semibold text-accent">
                   {calculateYearsToTarget(currentInvestment, inputs.targetAmount, inputs.expectedCAGR)} years
                 </div>
-                <div className="text-xs text-cyan-600 dark:text-cyan-400 mt-1">
+                <div className="text-xs text-muted-foreground mt-1">
                   With ₹{currentInvestment.toLocaleString()} monthly SIP
                 </div>
               </div>
-              
+
               {yearsToGoal > 0 && inputs.inflationRate > 0 && inputs.targetAmount !== inflationAdjustedTarget && (
-                <div className="rounded-lg bg-rose-50 border border-rose-200 p-4 dark:bg-rose-900/20 dark:border-rose-800">
-                  <div className="text-sm font-medium text-rose-600 dark:text-rose-400">
+                <div className="rounded-lg bg-secondary/30 border border-border p-4">
+                  <div className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
                     Years to Inflation-Adjusted Goal
                   </div>
-                  <div className="mt-1 text-2xl font-semibold text-rose-700 dark:text-rose-300">
+                  <div className="mt-1 font-display text-2xl font-semibold text-accent">
                     {yearsToReachTarget} years
                   </div>
-                  <div className="text-xs text-rose-600 dark:text-rose-400 mt-1">
+                  <div className="text-xs text-muted-foreground mt-1">
                     For inflation-adjusted target
                   </div>
                 </div>
@@ -465,11 +465,11 @@ export function GoalPlanningSection({ inputs, onInputChange }: GoalPlanningSecti
         </div>
 
         {/* Goal-specific Tips */}
-        <div className="mt-6 rounded-lg bg-blue-50 border border-blue-200 p-4 dark:bg-blue-900/20 dark:border-blue-800">
-          <h5 className="font-medium text-blue-700 dark:text-blue-300 mb-3">
+        <div className="mt-6 rounded-lg bg-secondary/50 border border-border p-4">
+          <h5 className="font-medium text-foreground mb-3">
             💡 Smart Planning Tips
           </h5>
-          <div className="text-sm text-blue-600 dark:text-blue-400 space-y-2">
+          <div className="text-sm text-muted-foreground space-y-2">
             {inputs.goalType === 'retirement' && (
               <>
                 <div>• Start investing early to leverage the power of compounding</div>

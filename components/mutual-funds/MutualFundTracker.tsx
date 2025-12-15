@@ -133,7 +133,7 @@ function MutualFundTrackerContent() {
             <h1 className='bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 bg-clip-text text-4xl font-bold tracking-tight text-transparent dark:from-slate-200 dark:via-slate-100 dark:to-slate-200 sm:text-5xl'>
               Indian Mutual Funds
             </h1>
-            <p className='mx-auto mt-3 max-w-2xl text-sm text-slate-600 dark:text-slate-400 sm:text-base'>
+            <p className='mx-auto mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base'>
               Track, analyze, and compare mutual fund performance with real-time
               data and interactive charts
             </p>
@@ -199,7 +199,7 @@ function MutualFundTrackerContent() {
           <div className='space-y-8'>
             {/* Popular Searches */}
             <div>
-              <h2 className='mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100'>
+              <h2 className='mb-4 text-2xl font-bold text-foreground'>
                 Popular Searches
               </h2>
               <div className='flex flex-wrap gap-3'>
@@ -237,28 +237,28 @@ function MutualFundTrackerContent() {
             <div className='grid gap-6 md:grid-cols-3'>
               <div className='rounded-xl border border-slate-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6 dark:border-slate-800 dark:from-blue-950/30 dark:to-cyan-950/30'>
                 <div className='mb-3 text-3xl'>🎯</div>
-                <h3 className='mb-2 text-lg font-semibold text-slate-900 dark:text-slate-100'>
+                <h3 className='mb-2 text-lg font-semibold text-foreground'>
                   Real-time NAV Data
                 </h3>
-                <p className='text-sm text-slate-600 dark:text-slate-400'>
+                <p className='text-sm text-muted-foreground'>
                   Access up-to-date Net Asset Values and historical performance data for thousands of mutual funds
                 </p>
               </div>
               <div className='rounded-xl border border-slate-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6 dark:border-slate-800 dark:from-green-950/30 dark:to-emerald-950/30'>
                 <div className='mb-3 text-3xl'>📊</div>
-                <h3 className='mb-2 text-lg font-semibold text-slate-900 dark:text-slate-100'>
+                <h3 className='mb-2 text-lg font-semibold text-foreground'>
                   Performance Analysis
                 </h3>
-                <p className='text-sm text-slate-600 dark:text-slate-400'>
+                <p className='text-sm text-muted-foreground'>
                   View interactive charts and analyze CAGR returns across different time periods
                 </p>
               </div>
               <div className='rounded-xl border border-slate-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6 dark:border-slate-800 dark:from-purple-950/30 dark:to-pink-950/30'>
                 <div className='mb-3 text-3xl'>💡</div>
-                <h3 className='mb-2 text-lg font-semibold text-slate-900 dark:text-slate-100'>
+                <h3 className='mb-2 text-lg font-semibold text-foreground'>
                   Investment Calculator
                 </h3>
-                <p className='text-sm text-slate-600 dark:text-slate-400'>
+                <p className='text-sm text-muted-foreground'>
                   Plan your investments with built-in SIP and lumpsum calculators for any fund
                 </p>
               </div>
@@ -266,7 +266,7 @@ function MutualFundTrackerContent() {
 
             {/* Getting Started */}
             <div className='rounded-xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
-              <h2 className='mb-4 text-2xl font-bold text-slate-900 dark:text-slate-100'>
+              <h2 className='mb-4 text-2xl font-bold text-foreground'>
                 Getting Started
               </h2>
               <div className='space-y-4'>
@@ -275,10 +275,10 @@ function MutualFundTrackerContent() {
                     1
                   </div>
                   <div>
-                    <h4 className='font-semibold text-slate-900 dark:text-slate-100'>
+                    <h4 className='font-semibold text-foreground'>
                       Search for a Fund
                     </h4>
-                    <p className='text-sm text-slate-600 dark:text-slate-400'>
+                    <p className='text-sm text-muted-foreground'>
                       Use the search bar above to find any mutual fund by name or fund house
                     </p>
                   </div>
@@ -288,10 +288,10 @@ function MutualFundTrackerContent() {
                     2
                   </div>
                   <div>
-                    <h4 className='font-semibold text-slate-900 dark:text-slate-100'>
+                    <h4 className='font-semibold text-foreground'>
                       Analyze Performance
                     </h4>
-                    <p className='text-sm text-slate-600 dark:text-slate-400'>
+                    <p className='text-sm text-muted-foreground'>
                       View NAV charts, historical returns, and key metrics to evaluate the fund
                     </p>
                   </div>
@@ -301,10 +301,10 @@ function MutualFundTrackerContent() {
                     3
                   </div>
                   <div>
-                    <h4 className='font-semibold text-slate-900 dark:text-slate-100'>
+                    <h4 className='font-semibold text-foreground'>
                       Plan Your Investment
                     </h4>
-                    <p className='text-sm text-slate-600 dark:text-slate-400'>
+                    <p className='text-sm text-muted-foreground'>
                       Use the investment calculator to project returns and plan your SIP or lumpsum investment
                     </p>
                   </div>

@@ -52,10 +52,10 @@ export const FundSearch = forwardRef<HTMLInputElement, FundSearchProps>(
                 key={fund.schemeCode}
                 onClick={() => onFundSelect(fund.schemeCode)}
                 className='w-full rounded-md p-3 text-left transition-all duration-200 hover:bg-slate-100 dark:hover:bg-slate-700'>
-                <div className='font-medium text-slate-900 dark:text-slate-100'>
+                <div className='font-medium text-foreground'>
                   {fund.schemeName}
                 </div>
-                <div className='mt-0.5 text-sm text-slate-500 dark:text-slate-400'>
+                <div className='mt-0.5 text-sm text-muted-foreground'>
                   {fund.fundHouse}
                 </div>
               </button>

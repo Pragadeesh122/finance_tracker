@@ -1,6 +1,14 @@
 import {CAGRInputs} from "./types";
 import {calculateCAGR, calculateTaxAmount} from "./utils";
 import TaxToggle from "./TaxToggle";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from "recharts";
+import {ChartContainer, ChartTooltip, ChartTooltipContent} from "@/components/ui/chart";
 
 interface CAGRCalculatorSectionProps {
   cagrInputs: CAGRInputs;
@@ -8,6 +16,13 @@ interface CAGRCalculatorSectionProps {
   includeTax: boolean;
   onTaxToggle: (includeTax: boolean) => void;
 }
+
+const chartConfig = {
+  value: {
+    label: "Portfolio Value",
+    color: "hsl(var(--chart-1))",
+  },
+};
 
 export default function CAGRCalculatorSection({
   cagrInputs,
@@ -23,11 +38,22 @@ export default function CAGRCalculatorSection({
 
   const totalGains = cagrInputs.finalAmount - cagrInputs.initialAmount;
 
+  // Generate chart data for growth visualization
+  const totalYears = cagrInputs.years || 1;
+  const chartData = Array.from({ length: totalYears + 1 }, (_, i) => {
+    const year = i;
+    const value = cagrInputs.initialAmount * Math.pow(1 + cagr / 100, year);
+    return {
+      year: `Year ${year}`,
+      value: Math.round(value),
+    };
+  });
+
   return (
-    <div className='transform rounded-lg border border-slate-200/60 bg-white/80 p-4 shadow-lg backdrop-blur-sm transition-all duration-200 hover:shadow-xl dark:border-slate-800/60 dark:bg-slate-900/80 sm:p-6'>
-      <div className='grid gap-4 sm:gap-6'>
+    <div className='rounded-xl border border-border bg-card p-6 shadow-sm'>
+      <div className='grid gap-6'>
         <div>
-          <label className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
+          <label className='block text-sm font-medium text-muted-foreground'>
             Initial Investment Amount (₹)
           </label>
           <input
@@ -35,13 +61,13 @@ export default function CAGRCalculatorSection({
             value={cagrInputs.initialAmount || ""}
             onChange={(e) => onInputChange("initialAmount", e.target.value)}
             placeholder='Enter initial amount'
-            className='mt-1 block w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20'
+            className='mt-1 block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
             min='0'
           />
         </div>
 
         <div>
-          <label className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
+          <label className='block text-sm font-medium text-muted-foreground'>
             Final Amount (₹)
           </label>
           <input
@@ -49,14 +75,14 @@ export default function CAGRCalculatorSection({
             value={cagrInputs.finalAmount || ""}
             onChange={(e) => onInputChange("finalAmount", e.target.value)}
             placeholder='Enter final amount'
-            className='mt-1 block w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20'
+            className='mt-1 block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
             min='0'
           />
         </div>
 
         <div className='grid grid-cols-2 gap-4'>
           <div>
-            <label className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
+            <label className='block text-sm font-medium text-muted-foreground'>
               Years
             </label>
             <input
@@ -64,13 +90,13 @@ export default function CAGRCalculatorSection({
               value={cagrInputs.years || ""}
               onChange={(e) => onInputChange("years", e.target.value)}
               placeholder='Years'
-              className='mt-1 block w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20'
+              className='mt-1 block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
               min='0'
             />
           </div>
 
           <div>
-            <label className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
+            <label className='block text-sm font-medium text-muted-foreground'>
               Months
             </label>
             <input
@@ -78,7 +104,7 @@ export default function CAGRCalculatorSection({
               value={cagrInputs.months || ""}
               onChange={(e) => onInputChange("months", e.target.value)}
               placeholder='Months'
-              className='mt-1 block w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20'
+              className='mt-1 block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
               min='0'
               max='11'
             />
@@ -87,11 +113,11 @@ export default function CAGRCalculatorSection({
 
         <TaxToggle includeTax={includeTax} onToggle={onTaxToggle} />
 
-        <div className='mt-6 overflow-hidden rounded-lg bg-gradient-to-br from-slate-100 to-white p-4 dark:from-slate-800 dark:to-slate-900/80'>
-          <div className='text-sm text-slate-600 dark:text-slate-400'>
+        <div className='mt-6 overflow-hidden rounded-lg bg-secondary/50 p-4 border border-border'>
+          <div className='text-xs font-semibold text-muted-foreground uppercase tracking-wide'>
             Calculated CAGR
           </div>
-          <div className='mt-1 bg-gradient-to-r from-blue-600 via-sky-600 to-cyan-600 bg-clip-text text-3xl font-bold text-transparent dark:from-indigo-400 dark:via-fuchsia-400 dark:to-violet-400'>
+          <div className='mt-2 font-display text-4xl font-bold text-accent tracking-tight'>
             {cagr.toFixed(2)}%
           </div>
           <div className='mt-2 text-sm text-slate-500 dark:text-slate-400'>
@@ -100,56 +126,56 @@ export default function CAGRCalculatorSection({
             time period.
           </div>
           <div className='mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
-            <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
-              <div className='text-sm text-slate-500 dark:text-slate-400'>
+            <div className='rounded-lg bg-secondary/30 p-3 border border-border/50'>
+              <div className='text-sm text-muted-foreground'>
                 Initial Amount
               </div>
-              <div className='mt-1 font-semibold text-slate-900 dark:text-slate-100'>
+              <div className='mt-1 font-semibold text-foreground'>
                 ₹{Math.round(cagrInputs.initialAmount).toLocaleString()}
               </div>
             </div>
-            <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
-              <div className='text-sm text-slate-500 dark:text-slate-400'>
+            <div className='rounded-lg bg-secondary/30 p-3 border border-border/50'>
+              <div className='text-sm text-muted-foreground'>
                 Final Amount
               </div>
-              <div className='mt-1 font-semibold text-slate-900 dark:text-slate-100'>
+              <div className='mt-1 font-semibold text-foreground'>
                 ₹{Math.round(cagrInputs.finalAmount).toLocaleString()}
               </div>
             </div>
-            <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
-              <div className='text-sm text-slate-500 dark:text-slate-400'>
+            <div className='rounded-lg bg-secondary/30 p-3 border border-border/50'>
+              <div className='text-sm text-muted-foreground'>
                 Total Returns
               </div>
-              <div className='mt-1 font-semibold text-emerald-600 dark:text-emerald-400'>
+              <div className='mt-1 font-semibold text-accent'>
                 ₹{Math.round(totalGains).toLocaleString()}
               </div>
             </div>
-            <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
-              <div className='text-sm text-slate-500 dark:text-slate-400'>
+            <div className='rounded-lg bg-secondary/30 p-3 border border-border/50'>
+              <div className='text-sm text-muted-foreground'>
                 Total Corpus (Before Tax)
               </div>
-              <div className='mt-1 font-semibold text-emerald-600 dark:text-emerald-400'>
+              <div className='mt-1 font-semibold text-accent'>
                 ₹{Math.round(cagrInputs.finalAmount).toLocaleString()}
               </div>
             </div>
             {includeTax && (
               <>
-                <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
-                  <div className='text-sm text-slate-500 dark:text-slate-400'>
+                <div className='rounded-lg bg-secondary/30 p-3 border border-border/50'>
+                  <div className='text-sm text-muted-foreground'>
                     Tax Amount
                   </div>
-                  <div className='mt-1 font-semibold text-red-600 dark:text-red-400'>
+                  <div className='mt-1 font-semibold text-destructive'>
                     ₹
                     {Math.round(
                       calculateTaxAmount(totalGains, includeTax)
                     ).toLocaleString()}
                   </div>
                 </div>
-                <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
-                  <div className='text-sm text-slate-500 dark:text-slate-400'>
+                <div className='rounded-lg bg-secondary/30 p-3 border border-border/50'>
+                  <div className='text-sm text-muted-foreground'>
                     Post-tax Amount
                   </div>
-                  <div className='mt-1 font-semibold text-emerald-600 dark:text-emerald-400'>
+                  <div className='mt-1 font-semibold text-accent'>
                     ₹
                     {Math.round(
                       cagrInputs.finalAmount -
@@ -159,16 +185,69 @@ export default function CAGRCalculatorSection({
                 </div>
               </>
             )}
-            <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
-              <div className='text-sm text-slate-500 dark:text-slate-400'>
+            <div className='rounded-lg bg-secondary/30 p-3 border border-border/50'>
+              <div className='text-sm text-muted-foreground'>
                 Investment Period
               </div>
-              <div className='mt-1 font-semibold text-slate-900 dark:text-slate-100'>
+              <div className='mt-1 font-semibold text-foreground'>
                 {Math.round(cagrInputs.years)} Years {cagrInputs.months} Months
               </div>
             </div>
           </div>
         </div>
+
+        {/* Growth Visualization Chart */}
+        {cagrInputs.initialAmount > 0 && cagrInputs.finalAmount > 0 && cagrInputs.years > 0 && (
+          <div className='mt-6'>
+            <h4 className='mb-4 text-sm font-semibold text-muted-foreground uppercase tracking-wide'>
+              Portfolio Growth Over Time
+            </h4>
+            <ChartContainer config={chartConfig} className='h-[250px] w-full'>
+              <AreaChart
+                data={chartData}
+                margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+              >
+                <defs>
+                  <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--color-value)" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="var(--color-value)" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis
+                  dataKey="year"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fontSize: 12 }}
+                  tickMargin={8}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(value) => `₹${(value / 100000).toFixed(1)}L`}
+                  tick={{ fontSize: 12 }}
+                />
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      formatter={(value) => [
+                        `₹${Number(value).toLocaleString()}`,
+                        "Value"
+                      ]}
+                    />
+                  }
+                />
+                <Area
+                  type="monotone"
+                  dataKey="value"
+                  stroke="var(--color-value)"
+                  fill="url(#colorValue)"
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ChartContainer>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -65,7 +65,7 @@ export function InvestmentCalculator({ selectedFund, cagrData }: InvestmentCalcu
     <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
       <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
       <div className='relative'>
-        <h3 className='text-xl font-semibold text-slate-900 dark:text-slate-100'>
+        <h3 className='text-xl font-semibold text-foreground'>
           Investment Calculator
         </h3>
         <div className='mt-6 space-y-6'>
@@ -75,7 +75,7 @@ export function InvestmentCalculator({ selectedFund, cagrData }: InvestmentCalcu
               className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
                 calculatorInputs.investmentType === "lumpsum"
                   ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+                  : "bg-secondary text-foreground hover:bg-secondary/80 border border-border"
               }`}>
               Lumpsum
             </button>
@@ -84,7 +84,7 @@ export function InvestmentCalculator({ selectedFund, cagrData }: InvestmentCalcu
               className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
                 calculatorInputs.investmentType === "sip"
                   ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+                  : "bg-secondary text-foreground hover:bg-secondary/80 border border-border"
               }`}>
               Monthly SIP
             </button>
@@ -92,7 +92,7 @@ export function InvestmentCalculator({ selectedFund, cagrData }: InvestmentCalcu
 
           <div className='grid gap-4 sm:grid-cols-2'>
             <div>
-              <label className='block text-sm font-medium text-slate-600 dark:text-slate-400'>
+              <label className='block text-sm font-medium text-muted-foreground'>
                 {calculatorInputs.investmentType === "lumpsum"
                   ? "Lumpsum Amount (₹)"
                   : "Monthly SIP Amount (₹)"}
@@ -121,7 +121,7 @@ export function InvestmentCalculator({ selectedFund, cagrData }: InvestmentCalcu
               />
             </div>
             <div>
-              <label className='block text-sm font-medium text-slate-600 dark:text-slate-400'>
+              <label className='block text-sm font-medium text-muted-foreground'>
                 Investment Period (Years)
               </label>
               <input
@@ -149,39 +149,39 @@ export function InvestmentCalculator({ selectedFund, cagrData }: InvestmentCalcu
           <div className='overflow-hidden rounded-xl bg-slate-50 p-6 dark:bg-slate-800/50'>
             <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
               <div>
-                <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
+                <div className='text-sm font-medium text-muted-foreground'>
                   Expected CAGR
                 </div>
-                <div className='mt-1.5 text-2xl font-semibold text-slate-900 dark:text-slate-100'>
+                <div className='mt-1.5 text-2xl font-semibold text-foreground'>
                   {cagrData["Max"]?.toFixed(2)}%
                 </div>
               </div>
               <div>
-                <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
+                <div className='text-sm font-medium text-muted-foreground'>
                   Total Investment
                 </div>
-                <div className='mt-1.5 text-2xl font-semibold text-slate-900 dark:text-slate-100'>
+                <div className='mt-1.5 text-2xl font-semibold text-foreground'>
                   ₹{Math.round(totalInvestment).toLocaleString()}
                 </div>
               </div>
               <div>
-                <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
+                <div className='text-sm font-medium text-muted-foreground'>
                   Total Returns
                 </div>
-                <div className='mt-1.5 text-2xl font-semibold text-emerald-600 dark:text-emerald-400'>
+                <div className='mt-1.5 text-2xl font-semibold text-accent'>
                   ₹{Math.round(totalGains).toLocaleString()}
                 </div>
               </div>
               <div>
-                <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
+                <div className='text-sm font-medium text-muted-foreground'>
                   Total Corpus (Before Tax)
                 </div>
-                <div className='mt-1.5 text-2xl font-semibold text-emerald-600 dark:text-emerald-400'>
+                <div className='mt-1.5 text-2xl font-semibold text-accent'>
                   ₹{Math.round(projectedValue).toLocaleString()}
                 </div>
               </div>
               <div>
-                <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
+                <div className='text-sm font-medium text-muted-foreground'>
                   Tax Amount
                 </div>
                 <div className='mt-1.5 text-2xl font-semibold text-red-600 dark:text-red-400'>
@@ -189,17 +189,17 @@ export function InvestmentCalculator({ selectedFund, cagrData }: InvestmentCalcu
                 </div>
               </div>
               <div>
-                <div className='text-sm font-medium text-slate-500 dark:text-slate-400'>
+                <div className='text-sm font-medium text-muted-foreground'>
                   Post-tax Amount
                 </div>
-                <div className='mt-1.5 text-2xl font-semibold text-emerald-600 dark:text-emerald-400'>
+                <div className='mt-1.5 text-2xl font-semibold text-accent'>
                   ₹{Math.round(postTaxAmount).toLocaleString()}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className='space-y-1 text-xs text-slate-500 dark:text-slate-400'>
+          <div className='space-y-1 text-xs text-muted-foreground'>
             <div>
               • Tax calculation assumes LTCG at 12.5% on gains above
               ₹1.25L exemption limit.

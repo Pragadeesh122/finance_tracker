@@ -1,11 +1,20 @@
 "use client";
 
-import {Inter} from "next/font/google";
+import {Inter, Space_Grotesk} from "next/font/google";
 import {useState, useEffect} from "react";
 import {Navbar} from "@/components/layout/navbar";
 import "./globals.css";
 
-const inter = Inter({subsets: ["latin"]});
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+  weight: ["500", "600", "700"],
+});
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   const [theme, setTheme] = useState<"dark" | "light">("dark");
@@ -32,7 +41,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
 
   return (
     <html lang='en' className={theme}>
-      <body className={inter.className}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans`}>
         <div className='flex min-h-screen flex-col'>
           <Navbar theme={theme} onThemeToggle={handleThemeToggle} />
           <div className='flex-1'>{children}</div>

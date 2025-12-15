@@ -69,35 +69,35 @@ export function NAVChart({ selectedFund, selectedPeriod, onPeriodChange }: NAVCh
             </div>
             <div className='mt-2 grid grid-cols-2 gap-4 sm:grid-cols-4'>
               <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
-                <div className='text-sm text-slate-500 dark:text-slate-400'>
+                <div className='text-sm text-muted-foreground'>
                   Low
                 </div>
-                <div className='mt-1 font-semibold text-slate-900 dark:text-slate-100'>
+                <div className='mt-1 font-semibold text-foreground'>
                   {minNav !== null ? `₹${minNav.toFixed(2)}` : "N/A"}
                 </div>
               </div>
               <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
-                <div className='text-sm text-slate-500 dark:text-slate-400'>
+                <div className='text-sm text-muted-foreground'>
                   High
                 </div>
-                <div className='mt-1 font-semibold text-slate-900 dark:text-slate-100'>
+                <div className='mt-1 font-semibold text-foreground'>
                   {maxNav !== null ? `₹${maxNav.toFixed(2)}` : "N/A"}
                 </div>
               </div>
               <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
-                <div className='text-sm text-slate-500 dark:text-slate-400'>
+                <div className='text-sm text-muted-foreground'>
                   Current
                 </div>
-                <div className='mt-1 font-semibold text-slate-900 dark:text-slate-100'>
+                <div className='mt-1 font-semibold text-foreground'>
                   ₹{selectedFund.data.currentNAV}
                 </div>
               </div>
               {selectedPeriod !== "6M" && cagrData[selectedPeriod] && (
                 <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
-                  <div className='text-sm text-slate-500 dark:text-slate-400'>
+                  <div className='text-sm text-muted-foreground'>
                     CAGR ({selectedPeriod})
                   </div>
-                  <div className='mt-1 font-semibold text-emerald-600 dark:text-emerald-400'>
+                  <div className='mt-1 font-semibold text-accent'>
                     {cagrData[selectedPeriod]?.toFixed(2)}%
                   </div>
                 </div>
@@ -112,7 +112,7 @@ export function NAVChart({ selectedFund, selectedPeriod, onPeriodChange }: NAVCh
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
                   selectedPeriod === period
                     ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+                    : "bg-secondary text-foreground hover:bg-secondary/80 border border-border"
                 }`}>
                 {period === "Max"
                   ? `Max (${getMaxDuration(

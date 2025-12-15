@@ -168,18 +168,20 @@ export default function CAGRCalculator() {
         );
 
   return (
-    <main className='min-h-screen bg-slate-50 dark:bg-slate-950'>
-      {/* Hero Section with Enhanced Gradient */}
-      <div className='relative overflow-hidden bg-gradient-to-br from-blue-500/10 via-sky-500/5 to-cyan-500/10 py-12 dark:from-indigo-950/50 dark:via-fuchsia-950/30 dark:to-violet-950/50'>
-        <div className='absolute inset-0 bg-grid-slate-200/30 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.7))] dark:bg-grid-slate-800/30'></div>
+    <main className='min-h-screen bg-background'>
+      {/* Hero Section - Clean Editorial Style */}
+      <div className='relative py-16 bg-gradient-to-b from-secondary/30 to-background'>
+        <div className='absolute top-0 left-0 right-0 h-px bg-accent'></div>
+        <div className='absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent'></div>
+
         <div className='relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <div className='text-center'>
-            <h1 className='bg-gradient-to-r from-blue-600 via-sky-600 to-cyan-600 bg-clip-text text-3xl font-bold text-transparent dark:from-indigo-300 dark:via-fuchsia-300 dark:to-violet-300 sm:text-4xl'>
+            <h1 className='font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl'>
               Investment Calculator
             </h1>
-            <p className='mx-auto mt-3 max-w-2xl text-sm text-slate-600 dark:text-slate-400 sm:text-base'>
+            <p className='mx-auto mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg'>
               Calculate CAGR, project returns, and plan your investment
-              withdrawals with our comprehensive calculator.
+              withdrawals with professional-grade financial tools.
             </p>
           </div>
 
@@ -214,20 +216,17 @@ export default function CAGRCalculator() {
               <button
                 key={calculator.key}
                 onClick={() => setMode(calculator.key as CalculatorMode)}
-                className={`group relative overflow-hidden rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 hover:scale-105 active:scale-95 sm:px-6 sm:text-base ${
+                className={`rounded-lg px-6 py-3 text-sm font-medium transition-colors ${
                   mode === calculator.key
-                    ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-cyan-500/40 dark:from-indigo-500 dark:to-violet-500 dark:shadow-indigo-500/25 dark:hover:shadow-xl dark:hover:shadow-violet-500/40"
-                    : "bg-white/90 text-slate-700 shadow-md hover:bg-white hover:shadow-lg dark:bg-slate-800/90 dark:text-slate-300 dark:hover:bg-slate-800"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-card text-card-foreground hover:bg-secondary border border-border"
                 }`}>
                 <div className='text-center'>
                   <div>{calculator.label}</div>
-                  <div className='text-xs opacity-75 mt-1'>
+                  <div className='text-xs opacity-70 mt-1'>
                     {calculator.description}
                   </div>
                 </div>
-                {mode === calculator.key && (
-                  <span className='absolute inset-0 -z-10 animate-pulse bg-gradient-to-r from-blue-600 to-cyan-600 opacity-50 dark:from-indigo-600 dark:to-violet-600'></span>
-                )}
               </button>
             ))}
           </div>

@@ -7,6 +7,14 @@ import {
 } from "./utils";
 import InvestmentTypeButtons from "./InvestmentTypeButtons";
 import TaxToggle from "./TaxToggle";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from "recharts";
+import {ChartContainer, ChartTooltip, ChartTooltipContent} from "@/components/ui/chart";
 
 interface ProjectionCalculatorSectionProps {
   projectionInputs: ProjectionInputs;
@@ -17,6 +25,17 @@ interface ProjectionCalculatorSectionProps {
   includeTax: boolean;
   onTaxToggle: (includeTax: boolean) => void;
 }
+
+const chartConfig = {
+  investment: {
+    label: "Total Investment",
+    color: "hsl(var(--chart-2))",
+  },
+  returns: {
+    label: "Total Corpus",
+    color: "hsl(var(--chart-1))",
+  },
+};
 
 export default function ProjectionCalculatorSection({
   projectionInputs,
@@ -52,9 +71,33 @@ export default function ProjectionCalculatorSection({
 
   const totalGains = projectedAmount - totalInvestment;
 
+  // Generate chart data for growth visualization
+  const chartData = Array.from({ length: projectionInputs.years + 1 }, (_, i) => {
+    const year = i;
+    let yearInvestment = 0;
+    let yearCorpus = 0;
+
+    if (projectionInputs.investmentType === "lumpsum") {
+      yearInvestment = projectionInputs.amount;
+      yearCorpus = calculateLumpsumValue(projectionInputs.amount, projectionInputs.cagr, year);
+    } else if (projectionInputs.investmentType === "sip") {
+      yearInvestment = projectionInputs.amount * year * 12;
+      yearCorpus = calculateSIPValue(projectionInputs.amount, projectionInputs.cagr, year);
+    } else {
+      yearInvestment = projectionInputs.amount * year;
+      yearCorpus = calculateYearlySIPValue(projectionInputs.amount, projectionInputs.cagr, year);
+    }
+
+    return {
+      year: `Year ${year}`,
+      investment: Math.round(yearInvestment),
+      returns: Math.round(yearCorpus),
+    };
+  });
+
   return (
-    <div className='transform rounded-lg border border-slate-200/60 bg-white/80 p-4 shadow-lg backdrop-blur-sm transition-all duration-200 hover:shadow-xl dark:border-slate-800/60 dark:bg-slate-900/80 sm:p-6'>
-      <div className='grid gap-3'>
+    <div className='rounded-xl border border-border bg-card p-6 shadow-sm'>
+      <div className='grid gap-6'>
         <InvestmentTypeButtons
           investmentType={projectionInputs.investmentType}
           onTypeChange={(type) => onInputChange("investmentType", type)}
@@ -62,9 +105,9 @@ export default function ProjectionCalculatorSection({
 
         <TaxToggle includeTax={includeTax} onToggle={onTaxToggle} />
 
-        <div className='grid gap-3 sm:grid-cols-3'>
+        <div className='grid gap-6 sm:grid-cols-3'>
           <div>
-            <label className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
+            <label className='block text-sm font-medium text-muted-foreground'>
               {projectionInputs.investmentType === "lumpsum"
                 ? "Lumpsum Amount (₹)"
                 : projectionInputs.investmentType === "sip"
@@ -82,13 +125,13 @@ export default function ProjectionCalculatorSection({
                   ? "Enter monthly SIP amount"
                   : "Enter yearly SIP amount"
               }
-              className='mt-1 block w-full rounded-md border border-slate-200 bg-white/70 px-3 py-1.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-100 dark:focus:border-violet-500 dark:focus:ring-violet-500'
+              className='mt-1 block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
               min='0'
             />
           </div>
 
           <div>
-            <label className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
+            <label className='block text-sm font-medium text-muted-foreground'>
               Expected CAGR (%)
             </label>
             <input
@@ -96,7 +139,7 @@ export default function ProjectionCalculatorSection({
               value={projectionInputs.cagr || ""}
               onChange={(e) => onInputChange("cagr", e.target.value)}
               placeholder='Enter expected CAGR'
-              className='mt-1 block w-full rounded-md border border-slate-200 bg-white/70 px-3 py-1.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-100 dark:focus:border-violet-500 dark:focus:ring-violet-500'
+              className='mt-1 block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
               min='0'
               max='100'
               step='0.1'
@@ -104,7 +147,7 @@ export default function ProjectionCalculatorSection({
           </div>
 
           <div>
-            <label className='block text-sm font-medium text-slate-700 dark:text-slate-300'>
+            <label className='block text-sm font-medium text-muted-foreground'>
               Investment Period (Years)
             </label>
             <input
@@ -112,49 +155,49 @@ export default function ProjectionCalculatorSection({
               value={projectionInputs.years || ""}
               onChange={(e) => onInputChange("years", e.target.value)}
               placeholder='Enter investment period'
-              className='mt-1 block w-full rounded-md border border-slate-200 bg-white/70 px-3 py-1.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-800 dark:bg-slate-800/70 dark:text-slate-100 dark:focus:border-violet-500 dark:focus:ring-violet-500'
+              className='mt-1 block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
               min='1'
               max='50'
             />
           </div>
         </div>
 
-        <div className='mt-2 overflow-hidden rounded-lg bg-gradient-to-br from-slate-100 to-white p-3 dark:from-slate-800 dark:to-slate-900/80'>
+        <div className='mt-2 overflow-hidden rounded-lg bg-secondary/50 p-4 border border-border'>
           <div
-            className={`grid grid-cols-2 gap-3 ${
+            className={`grid grid-cols-2 gap-4 ${
               includeTax ? "sm:grid-cols-5" : "sm:grid-cols-3"
             }`}>
             <div>
-              <div className='text-xs text-slate-600 dark:text-slate-400'>
+              <div className='text-xs text-muted-foreground uppercase tracking-wide'>
                 Total Investment
               </div>
-              <div className='mt-0.5 text-sm font-semibold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent dark:from-slate-200 dark:to-slate-400'>
+              <div className='mt-1 font-semibold text-foreground'>
                 ₹{Math.round(totalInvestment).toLocaleString()}
               </div>
             </div>
             <div>
-              <div className='text-xs text-slate-600 dark:text-slate-400'>
+              <div className='text-xs text-muted-foreground uppercase tracking-wide'>
                 Total Returns
               </div>
-              <div className='mt-0.5 text-sm font-semibold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-400'>
+              <div className='mt-1 font-semibold text-accent'>
                 ₹{Math.round(totalGains).toLocaleString()}
               </div>
             </div>
             <div>
-              <div className='text-xs text-slate-600 dark:text-slate-400'>
+              <div className='text-xs text-muted-foreground uppercase tracking-wide'>
                 Total Corpus
               </div>
-              <div className='mt-0.5 text-sm font-semibold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-400'>
+              <div className='mt-1 font-display text-lg font-bold text-accent'>
                 ₹{Math.round(projectedAmount).toLocaleString()}
               </div>
             </div>
             {includeTax && (
               <>
                 <div>
-                  <div className='text-xs text-slate-600 dark:text-slate-400'>
+                  <div className='text-xs text-muted-foreground uppercase tracking-wide'>
                     Tax Amount
                   </div>
-                  <div className='mt-0.5 text-sm font-semibold bg-gradient-to-r from-rose-600 to-red-600 bg-clip-text text-transparent dark:from-rose-400 dark:to-red-400'>
+                  <div className='mt-1 font-semibold text-destructive'>
                     ₹
                     {Math.round(
                       calculateTaxAmount(totalGains, includeTax)
@@ -162,10 +205,10 @@ export default function ProjectionCalculatorSection({
                   </div>
                 </div>
                 <div>
-                  <div className='text-xs text-slate-600 dark:text-slate-400'>
+                  <div className='text-xs text-muted-foreground uppercase tracking-wide'>
                     Post-tax Amount
                   </div>
-                  <div className='mt-0.5 text-sm font-semibold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-400'>
+                  <div className='mt-1 font-semibold text-accent'>
                     ₹
                     {Math.round(
                       projectedAmount -
@@ -177,6 +220,71 @@ export default function ProjectionCalculatorSection({
             )}
           </div>
         </div>
+
+        {/* Investment Growth Visualization Chart */}
+        {projectionInputs.amount > 0 && projectionInputs.years > 0 && projectionInputs.cagr > 0 && (
+          <div className='mt-6'>
+            <h4 className='mb-4 text-sm font-semibold text-muted-foreground uppercase tracking-wide'>
+              Investment Growth Over Time
+            </h4>
+            <ChartContainer config={chartConfig} className='h-[280px] w-full'>
+              <AreaChart
+                data={chartData}
+                margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+              >
+                <defs>
+                  <linearGradient id="colorReturns" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--color-returns)" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="var(--color-returns)" stopOpacity={0}/>
+                  </linearGradient>
+                  <linearGradient id="colorInvestment" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="var(--color-investment)" stopOpacity={0.2}/>
+                    <stop offset="95%" stopColor="var(--color-investment)" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis
+                  dataKey="year"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fontSize: 12 }}
+                  tickMargin={8}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(value) => `₹${(value / 100000).toFixed(1)}L`}
+                  tick={{ fontSize: 12 }}
+                />
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      formatter={(value, name) => [
+                        `₹${Number(value).toLocaleString()}`,
+                        name === "investment" ? "Total Investment" : "Total Corpus"
+                      ]}
+                    />
+                  }
+                />
+                <Area
+                  type="monotone"
+                  dataKey="investment"
+                  stroke="var(--color-investment)"
+                  fill="url(#colorInvestment)"
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="returns"
+                  stroke="var(--color-returns)"
+                  fill="url(#colorReturns)"
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ChartContainer>
+          </div>
+        )}
       </div>
     </div>
   );

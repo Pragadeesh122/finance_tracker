@@ -53,14 +53,14 @@ export function RetirementPlanningSection({
   return (
     <div className="space-y-6">
       <Card className="p-6">
-        <h3 className="text-xl font-semibold text-foreground mb-6">
+        <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-6">
           Retirement Planning Calculator
         </h3>
         
         {/* Input Section */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
           <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
               Current Age
             </label>
             <input
@@ -81,7 +81,7 @@ export function RetirementPlanningSection({
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
               Retirement Age
             </label>
             <input
@@ -102,7 +102,7 @@ export function RetirementPlanningSection({
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
               Current Monthly Expenses (₹)
             </label>
             <input
@@ -122,7 +122,7 @@ export function RetirementPlanningSection({
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
               Expense Replacement (%)
             </label>
             <input
@@ -143,7 +143,7 @@ export function RetirementPlanningSection({
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
               Post-retirement Years
             </label>
             <input
@@ -164,7 +164,7 @@ export function RetirementPlanningSection({
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
               Inflation Rate (%)
             </label>
             <input
@@ -186,7 +186,7 @@ export function RetirementPlanningSection({
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
+            <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
               Expected CAGR (%)
             </label>
             <input
@@ -210,7 +210,7 @@ export function RetirementPlanningSection({
 
         {/* Quick Presets */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-muted-foreground mb-3">
+          <label className="block text-sm font-medium text-slate-600 dark:text-slate-400 mb-3">
             Quick Expense Presets
           </label>
           <div className="flex flex-wrap gap-2">
@@ -225,8 +225,8 @@ export function RetirementPlanningSection({
                 onClick={() => onInputChange("currentMonthlyExpenses", preset.amount)}
                 className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
                   inputs.currentMonthlyExpenses === preset.amount
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-secondary text-foreground hover:bg-secondary/80 border border-border"
+                    ? "bg-blue-500 text-white"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
                 }`}
               >
                 {preset.label}
@@ -238,11 +238,11 @@ export function RetirementPlanningSection({
         {/* Results Section */}
         {yearsToRetirement > 0 && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-            <div className="rounded-lg bg-secondary/50 border border-border p-4">
-              <div className="text-sm font-medium text-muted-foreground">
+            <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
+              <div className="text-sm font-medium text-blue-600 dark:text-blue-400">
                 Years to Retirement
               </div>
-              <div className="mt-1 text-2xl font-semibold text-foreground">
+              <div className="mt-1 text-2xl font-semibold text-blue-700 dark:text-blue-300">
                 {yearsToRetirement}
               </div>
             </div>
@@ -329,7 +329,7 @@ export function RetirementPlanningSection({
       {/* Detailed Breakdown */}
       {showDetailedBreakdown && (
         <Card className="p-6">
-          <h4 className="text-lg font-semibold text-foreground mb-4">
+          <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
             Retirement Planning Breakdown
           </h4>
           
@@ -375,11 +375,11 @@ export function RetirementPlanningSection({
             </div>
 
             {/* Retirement Tips */}
-            <div className="mt-6 rounded-lg bg-secondary/50 border border-border p-4">
-              <h6 className="font-medium text-foreground mb-2">
+            <div className="mt-6 rounded-lg bg-amber-50 p-4 dark:bg-amber-900/20">
+              <h6 className="font-medium text-amber-700 dark:text-amber-300 mb-2">
                 💡 Retirement Planning Tips
               </h6>
-              <div className="text-sm text-muted-foreground space-y-1">
+              <div className="text-sm text-amber-600 dark:text-amber-400 space-y-1">
                 <div>• Start as early as possible to benefit from compounding</div>
                 <div>• Review and increase SIP amount annually with salary increments</div>
                 <div>• Consider healthcare inflation (typically higher than general inflation)</div>
