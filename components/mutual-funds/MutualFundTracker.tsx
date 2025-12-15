@@ -124,13 +124,13 @@ function MutualFundTrackerContent() {
     : false;
 
   return (
-    <main className='min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900'>
+    <main className='min-h-screen bg-background'>
       {/* Hero Section */}
-      <div className='relative overflow-hidden bg-gradient-to-br from-slate-100 via-white to-slate-50 py-12 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800'>
-        <div className='absolute inset-0 bg-grid-slate-200/30 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.7))] dark:bg-grid-slate-800/30'></div>
+      <div className='relative py-16 bg-gradient-to-b from-secondary/30 to-background'>
+        <div className='absolute top-0 left-0 right-0 h-px bg-accent'></div>
         <div className='relative mx-[6%]'>
           <div className='text-center'>
-            <h1 className='bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 bg-clip-text text-4xl font-bold tracking-tight text-transparent dark:from-slate-200 dark:via-slate-100 dark:to-slate-200 sm:text-5xl'>
+            <h1 className='font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl'>
               Indian Mutual Funds
             </h1>
             <p className='mx-auto mt-3 max-w-2xl text-sm text-muted-foreground sm:text-base'>
@@ -161,7 +161,7 @@ function MutualFundTrackerContent() {
             onClick={() => {
               window.location.href = '/mutual_fund';
             }}
-            className='group mb-6 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-all hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-violet-500 dark:hover:bg-violet-950 dark:hover:text-violet-300'
+            className='group mb-6 flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-accent hover:bg-secondary'
           >
             <svg
               className='h-4 w-4 transition-transform group-hover:-translate-x-1'
@@ -225,7 +225,7 @@ function MutualFundTrackerContent() {
                         searchInputRef.current?.focus();
                       }, 100);
                     }}
-                    className='rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-all hover:scale-105 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-violet-500 dark:hover:bg-violet-950 dark:hover:text-violet-300'
+                    className='rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-all hover:scale-105 hover:border-accent hover:bg-secondary'
                   >
                     {fundHouse}
                   </button>
@@ -235,7 +235,7 @@ function MutualFundTrackerContent() {
 
             {/* Info Cards */}
             <div className='grid gap-6 md:grid-cols-3'>
-              <div className='rounded-xl border border-slate-200 bg-gradient-to-br from-blue-50 to-cyan-50 p-6 dark:border-slate-800 dark:from-blue-950/30 dark:to-cyan-950/30'>
+              <div className='rounded-xl border border-border bg-card p-6 shadow-sm'>
                 <div className='mb-3 text-3xl'>🎯</div>
                 <h3 className='mb-2 text-lg font-semibold text-foreground'>
                   Real-time NAV Data
@@ -244,7 +244,7 @@ function MutualFundTrackerContent() {
                   Access up-to-date Net Asset Values and historical performance data for thousands of mutual funds
                 </p>
               </div>
-              <div className='rounded-xl border border-slate-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6 dark:border-slate-800 dark:from-green-950/30 dark:to-emerald-950/30'>
+              <div className='rounded-xl border border-border bg-card p-6 shadow-sm'>
                 <div className='mb-3 text-3xl'>📊</div>
                 <h3 className='mb-2 text-lg font-semibold text-foreground'>
                   Performance Analysis
@@ -253,7 +253,7 @@ function MutualFundTrackerContent() {
                   View interactive charts and analyze CAGR returns across different time periods
                 </p>
               </div>
-              <div className='rounded-xl border border-slate-200 bg-gradient-to-br from-purple-50 to-pink-50 p-6 dark:border-slate-800 dark:from-purple-950/30 dark:to-pink-950/30'>
+              <div className='rounded-xl border border-border bg-card p-6 shadow-sm'>
                 <div className='mb-3 text-3xl'>💡</div>
                 <h3 className='mb-2 text-lg font-semibold text-foreground'>
                   Investment Calculator
@@ -265,13 +265,13 @@ function MutualFundTrackerContent() {
             </div>
 
             {/* Getting Started */}
-            <div className='rounded-xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
-              <h2 className='mb-4 text-2xl font-bold text-foreground'>
+            <div className='rounded-xl border border-border bg-card p-8 shadow-sm'>
+              <h2 className='mb-4 font-display text-2xl font-bold text-foreground'>
                 Getting Started
               </h2>
               <div className='space-y-4'>
                 <div className='flex items-start gap-4'>
-                  <div className='flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-500 text-sm font-bold text-white'>
+                  <div className='flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground'>
                     1
                   </div>
                   <div>
@@ -284,7 +284,7 @@ function MutualFundTrackerContent() {
                   </div>
                 </div>
                 <div className='flex items-start gap-4'>
-                  <div className='flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-500 text-sm font-bold text-white'>
+                  <div className='flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground'>
                     2
                   </div>
                   <div>
@@ -297,7 +297,7 @@ function MutualFundTrackerContent() {
                   </div>
                 </div>
                 <div className='flex items-start gap-4'>
-                  <div className='flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-500 text-sm font-bold text-white'>
+                  <div className='flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground'>
                     3
                   </div>
                   <div>

@@ -62,8 +62,7 @@ export function InvestmentCalculator({ selectedFund, cagrData }: InvestmentCalcu
   const postTaxAmount = projectedValue - taxAmount;
 
   return (
-    <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
-      <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
+    <div className='rounded-xl border border-border bg-card p-6 shadow-sm'>
       <div className='relative'>
         <h3 className='text-xl font-semibold text-foreground'>
           Investment Calculator
@@ -116,7 +115,7 @@ export function InvestmentCalculator({ selectedFund, cagrData }: InvestmentCalcu
                     ? "Enter lumpsum amount"
                     : "Enter monthly SIP amount"
                 }
-                className='mt-1 block w-full rounded-lg border border-slate-200 bg-white/80 px-4 py-2.5 text-slate-900 backdrop-blur-sm transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-400/50 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-100 dark:focus:border-slate-600 dark:focus:ring-slate-500/50'
+                className='mt-1 block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
                 min='0'
               />
             </div>
@@ -139,14 +138,14 @@ export function InvestmentCalculator({ selectedFund, cagrData }: InvestmentCalcu
                   );
                 }}
                 placeholder='Enter investment period'
-                className='mt-1 block w-full rounded-lg border border-slate-200 bg-white/80 px-4 py-2.5 text-slate-900 backdrop-blur-sm transition-all duration-200 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-slate-400/50 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-100 dark:focus:border-slate-600 dark:focus:ring-slate-500/50'
+                className='mt-1 block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
                 min='1'
                 max='50'
               />
             </div>
           </div>
 
-          <div className='overflow-hidden rounded-xl bg-slate-50 p-6 dark:bg-slate-800/50'>
+          <div className='rounded-xl bg-secondary/50 border border-border p-6'>
             <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
               <div>
                 <div className='text-sm font-medium text-muted-foreground'>

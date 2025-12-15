@@ -7,6 +7,7 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  TooltipProps,
 } from "recharts";
 import { FundData, TimePeriod } from "./types";
 import { getFilteredData, getCAGR, getMaxDuration } from "./utils";
@@ -16,6 +17,20 @@ interface NAVChartProps {
   selectedPeriod: TimePeriod;
   onPeriodChange: (period: TimePeriod) => void;
 }
+
+const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className='rounded-lg border border-border bg-card p-3 shadow-lg'>
+        <p className='text-sm text-muted-foreground'>{label}</p>
+        <p className='mt-1 font-semibold text-foreground'>
+          NAV: ₹{payload[0].value?.toFixed(2)}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
 
 export function NAVChart({ selectedFund, selectedPeriod, onPeriodChange }: NAVChartProps) {
   const chartData = selectedFund?.data?.navData
@@ -59,8 +74,7 @@ export function NAVChart({ selectedFund, selectedPeriod, onPeriodChange }: NAVCh
       : null;
 
   return (
-    <div className='relative overflow-hidden rounded-xl border border-slate-200 bg-white/80 p-6 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80'>
-      <div className='absolute inset-0 bg-gradient-to-br from-slate-50 via-transparent to-slate-50/50 dark:from-slate-900 dark:to-slate-800/50'></div>
+    <div className='rounded-xl border border-border bg-card p-6 shadow-sm'>
       <div className='relative'>
         <div className='mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center'>
           <div>
@@ -68,7 +82,7 @@ export function NAVChart({ selectedFund, selectedPeriod, onPeriodChange }: NAVCh
               Price Chart
             </div>
             <div className='mt-2 grid grid-cols-2 gap-4 sm:grid-cols-4'>
-              <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
+              <div className='rounded-lg bg-secondary/30 border border-border p-3'>
                 <div className='text-sm text-muted-foreground'>
                   Low
                 </div>
@@ -76,7 +90,7 @@ export function NAVChart({ selectedFund, selectedPeriod, onPeriodChange }: NAVCh
                   {minNav !== null ? `₹${minNav.toFixed(2)}` : "N/A"}
                 </div>
               </div>
-              <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
+              <div className='rounded-lg bg-secondary/30 border border-border p-3'>
                 <div className='text-sm text-muted-foreground'>
                   High
                 </div>
@@ -84,7 +98,7 @@ export function NAVChart({ selectedFund, selectedPeriod, onPeriodChange }: NAVCh
                   {maxNav !== null ? `₹${maxNav.toFixed(2)}` : "N/A"}
                 </div>
               </div>
-              <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
+              <div className='rounded-lg bg-secondary/30 border border-border p-3'>
                 <div className='text-sm text-muted-foreground'>
                   Current
                 </div>
@@ -93,7 +107,7 @@ export function NAVChart({ selectedFund, selectedPeriod, onPeriodChange }: NAVCh
                 </div>
               </div>
               {selectedPeriod !== "6M" && cagrData[selectedPeriod] && (
-                <div className='rounded-lg bg-slate-50 p-3 dark:bg-slate-800'>
+                <div className='rounded-lg bg-secondary/30 border border-border p-3'>
                   <div className='text-sm text-muted-foreground'>
                     CAGR ({selectedPeriod})
                   </div>
@@ -180,19 +194,7 @@ export function NAVChart({ selectedFund, selectedPeriod, onPeriodChange }: NAVCh
                 axisLine={{stroke: "rgb(148, 163, 184)"}}
                 tickFormatter={(value) => `₹${value.toFixed(2)}`}
               />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "rgb(15, 23, 42)",
-                  border: "1px solid rgb(51, 65, 85)",
-                  borderRadius: "0.5rem",
-                  padding: "0.75rem",
-                }}
-                labelStyle={{color: "rgb(148, 163, 184)"}}
-                formatter={(value: number) => [
-                  `₹${value.toFixed(2)}`,
-                  "NAV",
-                ]}
-              />
+              <Tooltip content={<CustomTooltip />} />
               <Area
                 type='monotone'
                 dataKey='nav'
