@@ -3,13 +3,15 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { StepUpSIPInputs } from "./types";
-import { 
-  calculateStepUpSIP, 
-  calculateSIPValue, 
-  formatCurrency, 
+import {
+  calculateStepUpSIP,
+  calculateSIPValue,
+  formatCurrency,
   bankerRound,
   calculateStepUpSIPYearlyBreakdown
 } from "./utils";
+import { EnhancedInput } from "./EnhancedInput";
+import { CalculatorTypeIcons, InvestmentIcons, IconSizes, IconColors } from "./CalculatorIcons";
 
 interface StepUpSIPSectionProps {
   inputs: StepUpSIPInputs;
@@ -70,99 +72,66 @@ export function StepUpSIPSection({ inputs, onInputChange }: StepUpSIPSectionProp
     setExpandedYears(newExpandedYears);
   };
 
+  const StepUpIcon = CalculatorTypeIcons.stepUp;
+  const SIPIcon = CalculatorTypeIcons.sip;
+  const GrowthIcon = InvestmentIcons.growth;
+
   return (
     <div className="space-y-6">
       <Card className="p-6">
-        <h3 className="text-xl font-semibold text-foreground mb-6">
-          Step-up SIP Calculator
-        </h3>
-        
+        {/* Header with Icon */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="rounded-lg bg-accent/10 p-2.5">
+            <StepUpIcon className={`${IconSizes.lg} ${IconColors.accent}`} strokeWidth={2.5} />
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold text-foreground">Step-up SIP Calculator</h3>
+            <p className="text-sm text-muted-foreground">Grow your SIP investments annually</p>
+          </div>
+        </div>
+
         {/* Input Section */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
-              Initial Monthly SIP (₹)
-            </label>
-            <input
-              type="number"
-              value={inputs.initialMonthlyAmount || ""}
-              onChange={(e) => {
-                const value = e.target.value;
-                const numValue = parseFloat(value);
-                onInputChange("initialMonthlyAmount", 
-                  value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(0, numValue)
-                );
-              }}
-              placeholder="Enter initial SIP amount"
-              className="w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20"
-              min="0"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
-              Expected CAGR (%)
-            </label>
-            <input
-              type="number"
-              value={inputs.cagr || ""}
-              onChange={(e) => {
-                const value = e.target.value;
-                const numValue = parseFloat(value);
-                onInputChange("cagr", 
-                  value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(0, Math.min(100, numValue))
-                );
-              }}
-              placeholder="Expected returns"
-              className="w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20"
-              min="0"
-              max="100"
-              step="0.1"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
-              Investment Period (Years)
-            </label>
-            <input
-              type="number"
-              value={inputs.years || ""}
-              onChange={(e) => {
-                const value = e.target.value;
-                const numValue = parseFloat(value);
-                onInputChange("years", 
-                  value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(1, Math.min(50, numValue))
-                );
-              }}
-              placeholder="Investment period"
-              className="w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20"
-              min="1"
-              max="50"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
-              Annual Step-up (%)
-            </label>
-            <input
-              type="number"
-              value={inputs.stepUpPercentage || ""}
-              onChange={(e) => {
-                const value = e.target.value;
-                const numValue = parseFloat(value);
-                onInputChange("stepUpPercentage", 
-                  value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(0, Math.min(50, numValue))
-                );
-              }}
-              placeholder="Annual increase %"
-              className="w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20"
-              min="0"
-              max="50"
-              step="0.5"
-            />
-          </div>
+          <EnhancedInput
+            label="Initial Monthly SIP"
+            variant="currency"
+            value={inputs.initialMonthlyAmount}
+            onChange={(value) => onInputChange("initialMonthlyAmount", value)}
+            helperText="Starting monthly investment"
+            min={0}
+          />
+
+          <EnhancedInput
+            label="Expected CAGR"
+            variant="percentage"
+            value={inputs.cagr}
+            onChange={(value) => onInputChange("cagr", value)}
+            helperText="Annual growth rate"
+            min={0}
+            max={100}
+            step={0.1}
+          />
+
+          <EnhancedInput
+            label="Investment Period"
+            variant="years"
+            value={inputs.years}
+            onChange={(value) => onInputChange("years", value)}
+            helperText="Total investment years"
+            min={1}
+            max={50}
+          />
+
+          <EnhancedInput
+            label="Annual Step-up"
+            variant="percentage"
+            value={inputs.stepUpPercentage}
+            onChange={(value) => onInputChange("stepUpPercentage", value)}
+            helperText="Yearly SIP increase"
+            min={0}
+            max={50}
+            step={0.5}
+          />
         </div>
 
         {/* Quick Step-up Buttons */}

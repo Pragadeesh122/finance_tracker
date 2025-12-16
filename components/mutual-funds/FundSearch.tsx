@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef } from "react";
+import { Search } from "lucide-react";
 import { SearchResult } from "./types";
 
 interface FundSearchProps {
@@ -25,17 +26,23 @@ export const FundSearch = forwardRef<HTMLInputElement, FundSearchProps>(
     <div className='mx-auto mt-8 max-w-2xl'>
       <div className='relative group'>
         <div className='relative'>
+          {/* Search Icon */}
+          <div className='pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-accent'>
+            <Search className='h-5 w-5' strokeWidth={2} />
+          </div>
+
           <input
             ref={ref}
             type='text'
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder='Search mutual funds by name or fund house...'
-            className='w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder-muted-foreground transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
+            className='w-full rounded-lg border border-border bg-background pl-12 pr-12 py-3.5 text-foreground placeholder-muted-foreground transition-all duration-200 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.05)] hover:border-accent/50'
           />
+
           {loading && (
             <div className='absolute right-4 top-1/2 -translate-y-1/2'>
-              <div className='h-5 w-5 animate-spin rounded-full border-2 border-slate-400 border-t-transparent dark:border-slate-500'></div>
+              <div className='h-5 w-5 animate-spin rounded-full border-2 border-accent/30 border-t-accent'></div>
             </div>
           )}
         </div>

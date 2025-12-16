@@ -66,48 +66,48 @@ export default function WithdrawalProjectionSection({
           <div className='min-w-[800px] max-h-[600px] overflow-y-auto'>
             <table className='w-full border-separate border-spacing-0'>
               <thead className='sticky top-0 z-10'>
-                <tr className='bg-secondary/50 shadow-sm'>
-                  <th className='sticky left-0 z-20 bg-inherit px-4 py-4 text-left text-sm font-semibold shadow-sm'>
-                    <span className='text-foreground'>
+                <tr className='bg-secondary/80 backdrop-blur-sm'>
+                  <th className='sticky left-0 z-20 bg-inherit px-4 py-5 text-left border-b-2 border-border'>
+                    <div className='text-sm font-semibold text-foreground uppercase tracking-wide'>
                       Year
-                    </span>
+                    </div>
                   </th>
-                  <th className='whitespace-nowrap px-4 py-4 text-right text-sm font-semibold text-foreground'>
-                    <div className='font-semibold'>Starting Corpus</div>
+                  <th className='whitespace-nowrap px-4 py-5 text-right border-b-2 border-border'>
+                    <div className='text-sm font-semibold text-foreground mb-1'>Starting Corpus</div>
                     <div className='text-xs font-normal text-muted-foreground'>
                       Available at start of year
                     </div>
                   </th>
-                  <th className='whitespace-nowrap px-4 py-4 text-right text-sm font-semibold text-foreground'>
-                    <div className='font-semibold'>Monthly Income</div>
+                  <th className='whitespace-nowrap px-4 py-5 text-right border-b-2 border-border'>
+                    <div className='text-sm font-semibold text-foreground mb-1'>Monthly Income</div>
                     <div className='text-xs font-normal text-muted-foreground'>
                       {includeTax ? "Before annual tax" : "Monthly withdrawal"}
                     </div>
                   </th>
                   {includeTax && (
-                    <th className='whitespace-nowrap px-4 py-4 text-right text-sm font-semibold text-foreground'>
-                      <div className='font-semibold'>Post-tax Monthly</div>
+                    <th className='whitespace-nowrap px-4 py-5 text-right border-b-2 border-border'>
+                      <div className='text-sm font-semibold text-foreground mb-1'>Post-tax Monthly</div>
                       <div className='text-xs font-normal text-muted-foreground'>
                         After annual tax
                       </div>
                     </th>
                   )}
-                  <th className='whitespace-nowrap px-4 py-4 text-right text-sm font-semibold text-foreground'>
-                    <div className='font-semibold'>Annual Growth</div>
+                  <th className='whitespace-nowrap px-4 py-5 text-right border-b-2 border-border'>
+                    <div className='text-sm font-semibold text-foreground mb-1'>Annual Growth</div>
                     <div className='text-xs font-normal text-muted-foreground'>
                       at {projectionInputs.cagr}% CAGR
                     </div>
                   </th>
                   {includeTax && (
-                    <th className='whitespace-nowrap px-4 py-4 text-right text-sm font-semibold text-foreground'>
-                      <div className='font-semibold'>Annual Tax</div>
+                    <th className='whitespace-nowrap px-4 py-5 text-right border-b-2 border-border'>
+                      <div className='text-sm font-semibold text-foreground mb-1'>Annual Tax</div>
                       <div className='text-xs font-normal text-muted-foreground'>
                         12.5% above ₹1.5L
                       </div>
                     </th>
                   )}
-                  <th className='whitespace-nowrap px-4 py-4 text-right text-sm font-semibold text-foreground'>
-                    <div className='font-semibold'>Ending Corpus</div>
+                  <th className='whitespace-nowrap px-4 py-5 text-right border-b-2 border-border'>
+                    <div className='text-sm font-semibold text-foreground mb-1'>Ending Corpus</div>
                     <div className='text-xs font-normal text-muted-foreground'>
                       After growth {includeTax ? "& tax" : ""}
                     </div>
@@ -132,17 +132,17 @@ export default function WithdrawalProjectionSection({
                       }
                       border-b border-border transition-colors last:border-b-0 hover:bg-secondary/30
                     `}>
-                    <td className='sticky left-0 z-10 bg-inherit px-4 py-3.5 text-sm font-semibold text-foreground'>
+                    <td className='sticky left-0 z-10 bg-inherit px-4 py-4 text-sm font-semibold text-foreground'>
                       {year.year}
                     </td>
-                    <td className='whitespace-nowrap px-4 py-3.5 text-right text-sm font-medium text-foreground'>
+                    <td className='whitespace-nowrap px-4 py-4 text-right text-sm font-medium text-foreground'>
                       ₹
                       {year.startingCorpus.toLocaleString(undefined, {
                         maximumFractionDigits: 0,
                       })}
                     </td>
                     <td
-                      className={`whitespace-nowrap px-4 py-3.5 text-right text-sm font-medium ${
+                      className={`whitespace-nowrap px-4 py-4 text-right text-sm font-medium ${
                         !includeTax
                           ? "text-accent"
                           : "text-foreground"
@@ -153,28 +153,28 @@ export default function WithdrawalProjectionSection({
                       })}
                     </td>
                     {includeTax && (
-                      <td className='whitespace-nowrap px-4 py-3.5 text-right text-sm font-semibold text-accent'>
+                      <td className='whitespace-nowrap px-4 py-4 text-right text-sm font-semibold text-accent'>
                         ₹
                         {year.monthlyIncomeAfterTax.toLocaleString(undefined, {
                           maximumFractionDigits: 0,
                         })}
                       </td>
                     )}
-                    <td className='whitespace-nowrap px-4 py-3.5 text-right text-sm font-medium text-foreground'>
+                    <td className='whitespace-nowrap px-4 py-4 text-right text-sm font-medium text-foreground'>
                       ₹
                       {year.growthAmount.toLocaleString(undefined, {
                         maximumFractionDigits: 0,
                       })}
                     </td>
                     {includeTax && (
-                      <td className='whitespace-nowrap px-4 py-3.5 text-right text-sm font-semibold text-destructive'>
+                      <td className='whitespace-nowrap px-4 py-4 text-right text-sm font-semibold text-destructive'>
                         ₹
                         {year.annualTax.toLocaleString(undefined, {
                           maximumFractionDigits: 0,
                         })}
                       </td>
                     )}
-                    <td className='whitespace-nowrap px-4 py-3.5 text-right text-sm font-bold text-foreground'>
+                    <td className='whitespace-nowrap px-4 py-4 text-right text-sm font-bold text-foreground'>
                       ₹
                       {year.endingCorpus.toLocaleString(undefined, {
                         maximumFractionDigits: 0,

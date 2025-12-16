@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { RetirementPlanningInputs } from "./types";
-import { 
+import {
   calculateRetirementCorpus,
   calculateRequiredSIP,
   calculateInflationAdjustedValue,
   formatCurrency
 } from "./utils";
+import { EnhancedInput } from "./EnhancedInput";
+import { CalculatorTypeIcons, GoalIcons, IconSizes, IconColors } from "./CalculatorIcons";
 
 interface RetirementPlanningSectionProps {
   inputs: RetirementPlanningInputs;
@@ -50,162 +52,95 @@ export function RetirementPlanningSection({
   // Calculate safe withdrawal rate
   const safeWithdrawalRate = Math.max(4 - inputs.inflationRate, 2); // Min 2% real return
 
+  const RetirementIcon = CalculatorTypeIcons.retirement;
+  const EmergencyIcon = GoalIcons.emergency;
+
   return (
     <div className="space-y-6">
       <Card className="p-6">
-        <h3 className="text-xl font-semibold text-foreground mb-6">
-          Retirement Planning Calculator
-        </h3>
-        
+        {/* Header with Icon */}
+        <div className="flex items-center gap-3 mb-6">
+          <div className="rounded-lg bg-accent/10 p-2.5">
+            <RetirementIcon className={`${IconSizes.lg} ${IconColors.accent}`} strokeWidth={2.5} />
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold text-foreground">Retirement Planning Calculator</h3>
+            <p className="text-sm text-muted-foreground">Plan your secure retirement future</p>
+          </div>
+        </div>
+
         {/* Input Section */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
-              Current Age
-            </label>
-            <input
-              type="number"
-              value={inputs.currentAge || ""}
-              onChange={(e) => {
-                const value = e.target.value;
-                const numValue = parseFloat(value);
-                onInputChange("currentAge", 
-                  value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(18, Math.min(80, numValue))
-                );
-              }}
-              placeholder="Your current age"
-              className="w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20"
-              min="18"
-              max="80"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
-              Retirement Age
-            </label>
-            <input
-              type="number"
-              value={inputs.retirementAge || ""}
-              onChange={(e) => {
-                const value = e.target.value;
-                const numValue = parseFloat(value);
-                onInputChange("retirementAge", 
-                  value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(inputs.currentAge + 5, Math.min(75, numValue))
-                );
-              }}
-              placeholder="Retirement age"
-              className="w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20"
-              min={inputs.currentAge + 5}
-              max="75"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
-              Current Monthly Expenses (₹)
-            </label>
-            <input
-              type="number"
-              value={inputs.currentMonthlyExpenses || ""}
-              onChange={(e) => {
-                const value = e.target.value;
-                const numValue = parseFloat(value);
-                onInputChange("currentMonthlyExpenses", 
-                  value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(0, numValue)
-                );
-              }}
-              placeholder="Current monthly expenses"
-              className="w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20"
-              min="0"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
-              Expense Replacement (%)
-            </label>
-            <input
-              type="number"
-              value={inputs.expenseReplacement || ""}
-              onChange={(e) => {
-                const value = e.target.value;
-                const numValue = parseFloat(value);
-                onInputChange("expenseReplacement", 
-                  value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(50, Math.min(120, numValue))
-                );
-              }}
-              placeholder="% of current expenses needed"
-              className="w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20"
-              min="50"
-              max="120"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
-              Post-retirement Years
-            </label>
-            <input
-              type="number"
-              value={inputs.postRetirementYears || ""}
-              onChange={(e) => {
-                const value = e.target.value;
-                const numValue = parseFloat(value);
-                onInputChange("postRetirementYears", 
-                  value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(15, Math.min(40, numValue))
-                );
-              }}
-              placeholder="Years after retirement"
-              className="w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20"
-              min="15"
-              max="40"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
-              Inflation Rate (%)
-            </label>
-            <input
-              type="number"
-              value={inputs.inflationRate || ""}
-              onChange={(e) => {
-                const value = e.target.value;
-                const numValue = parseFloat(value);
-                onInputChange("inflationRate", 
-                  value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(0, Math.min(15, numValue))
-                );
-              }}
-              placeholder="Expected inflation"
-              className="w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20"
-              min="0"
-              max="15"
-              step="0.1"
-            />
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-muted-foreground mb-2">
-              Expected CAGR (%)
-            </label>
-            <input
-              type="number"
-              value={inputs.expectedCAGR || ""}
-              onChange={(e) => {
-                const value = e.target.value;
-                const numValue = parseFloat(value);
-                onInputChange("expectedCAGR", 
-                  value === "" ? 0 : isNaN(numValue) ? 0 : Math.max(0, Math.min(25, numValue))
-                );
-              }}
-              placeholder="Expected returns"
-              className="w-full rounded-lg border-2 border-slate-200 bg-white/70 px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 backdrop-blur-sm transition-all hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-800/70 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-violet-500 dark:focus:ring-violet-500/20"
-              min="0"
-              max="25"
-              step="0.1"
-            />
-          </div>
+          <EnhancedInput
+            label="Current Age"
+            variant="age"
+            value={inputs.currentAge}
+            onChange={(value) => onInputChange("currentAge", value)}
+            helperText="Your age today"
+            min={18}
+            max={80}
+          />
+
+          <EnhancedInput
+            label="Retirement Age"
+            variant="age"
+            value={inputs.retirementAge}
+            onChange={(value) => onInputChange("retirementAge", value)}
+            helperText="When you plan to retire"
+            min={inputs.currentAge + 5}
+            max={75}
+          />
+
+          <EnhancedInput
+            label="Monthly Expenses"
+            variant="currency"
+            value={inputs.currentMonthlyExpenses}
+            onChange={(value) => onInputChange("currentMonthlyExpenses", value)}
+            helperText="Current monthly spending"
+            min={0}
+          />
+
+          <EnhancedInput
+            label="Expense Replacement"
+            variant="percentage"
+            value={inputs.expenseReplacement}
+            onChange={(value) => onInputChange("expenseReplacement", value)}
+            helperText="% of expenses after retirement"
+            min={50}
+            max={120}
+          />
+
+          <EnhancedInput
+            label="Post-retirement Years"
+            variant="years"
+            value={inputs.postRetirementYears}
+            onChange={(value) => onInputChange("postRetirementYears", value)}
+            helperText="Years after retirement"
+            min={15}
+            max={40}
+          />
+
+          <EnhancedInput
+            label="Inflation Rate"
+            variant="percentage"
+            value={inputs.inflationRate}
+            onChange={(value) => onInputChange("inflationRate", value)}
+            helperText="Expected inflation"
+            min={0}
+            max={15}
+            step={0.1}
+          />
+
+          <EnhancedInput
+            label="Expected CAGR"
+            variant="percentage"
+            value={inputs.expectedCAGR}
+            onChange={(value) => onInputChange("expectedCAGR", value)}
+            helperText="Expected returns"
+            min={0}
+            max={25}
+            step={0.1}
+          />
         </div>
 
         {/* Quick Presets */}
@@ -238,7 +173,7 @@ export function RetirementPlanningSection({
         {/* Results Section */}
         {yearsToRetirement > 0 && (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-            <div className="rounded-lg bg-secondary/50 border border-border p-4">
+            <div className="rounded-lg bg-card border border-border p-4 hover:border-border/80 transition-colors">
               <div className="text-sm font-medium text-muted-foreground">
                 Years to Retirement
               </div>
@@ -246,31 +181,40 @@ export function RetirementPlanningSection({
                 {yearsToRetirement}
               </div>
             </div>
-            
-            <div className="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
-              <div className="text-sm font-medium text-red-600 dark:text-red-400">
+
+            <div className="rounded-lg bg-card border border-border p-4 hover:border-border/80 transition-colors">
+              <div className="text-sm font-medium text-muted-foreground">
                 Required Corpus
               </div>
-              <div className="mt-1 text-xl font-semibold text-red-700 dark:text-red-300">
+              <div className="mt-1 text-xl font-semibold text-foreground">
                 {formatCurrency(requiredCorpus)}
               </div>
+              <div className="text-xs text-muted-foreground mt-1">
+                Target amount
+              </div>
             </div>
-            
-            <div className="rounded-lg bg-green-50 p-4 dark:bg-green-900/20">
-              <div className="text-sm font-medium text-green-600 dark:text-green-400">
+
+            <div className="rounded-lg bg-accent/5 border-2 border-accent p-4 hover:bg-accent/10 transition-colors">
+              <div className="text-sm font-medium text-accent">
                 Required Monthly SIP
               </div>
-              <div className="mt-1 text-xl font-semibold text-green-700 dark:text-green-300">
+              <div className="mt-1 text-xl font-semibold text-accent">
                 {formatCurrency(requiredMonthlySIP)}
               </div>
+              <div className="text-xs text-accent/80 mt-1">
+                Start investing
+              </div>
             </div>
-            
-            <div className="rounded-lg bg-purple-50 p-4 dark:bg-purple-900/20">
-              <div className="text-sm font-medium text-purple-600 dark:text-purple-400">
+
+            <div className="rounded-lg bg-card border border-border p-4 hover:border-border/80 transition-colors">
+              <div className="text-sm font-medium text-muted-foreground">
                 Future Monthly Expenses
               </div>
-              <div className="mt-1 text-xl font-semibold text-purple-700 dark:text-purple-300">
+              <div className="mt-1 text-xl font-semibold text-foreground">
                 {formatCurrency(futureMonthlyExpenses)}
+              </div>
+              <div className="text-xs text-muted-foreground mt-1">
+                Inflation adjusted
               </div>
             </div>
           </div>
@@ -278,35 +222,35 @@ export function RetirementPlanningSection({
 
         {/* Investment Summary */}
         {yearsToRetirement > 0 && (
-          <div className="rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 p-6 dark:from-emerald-900/20 dark:to-teal-900/20">
-            <h4 className="font-semibold text-emerald-700 dark:text-emerald-300 mb-4">
-              Investment Summary
+          <div className="rounded-lg bg-accent/5 border border-accent/20 p-6">
+            <h4 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+              <span className="text-accent">Investment Summary</span>
             </h4>
             <div className="grid gap-4 sm:grid-cols-3">
               <div>
-                <div className="text-sm text-emerald-600 dark:text-emerald-400">Total Investment</div>
-                <div className="text-lg font-semibold text-emerald-700 dark:text-emerald-300">
+                <div className="text-sm text-muted-foreground">Total Investment</div>
+                <div className="text-lg font-semibold text-foreground">
                   {formatCurrency(totalSIPInvestment)}
                 </div>
-                <div className="text-xs text-emerald-600 dark:text-emerald-400">
+                <div className="text-xs text-muted-foreground">
                   Over {yearsToRetirement} years
                 </div>
               </div>
               <div>
-                <div className="text-sm text-emerald-600 dark:text-emerald-400">Wealth Created</div>
-                <div className="text-lg font-semibold text-emerald-700 dark:text-emerald-300">
+                <div className="text-sm text-muted-foreground">Wealth Created</div>
+                <div className="text-lg font-semibold text-accent">
                   {formatCurrency(wealthCreated)}
                 </div>
-                <div className="text-xs text-emerald-600 dark:text-emerald-400">
+                <div className="text-xs text-muted-foreground">
                   Power of compounding
                 </div>
               </div>
               <div>
-                <div className="text-sm text-emerald-600 dark:text-emerald-400">Safe Withdrawal Rate</div>
-                <div className="text-lg font-semibold text-emerald-700 dark:text-emerald-300">
+                <div className="text-sm text-muted-foreground">Safe Withdrawal Rate</div>
+                <div className="text-lg font-semibold text-foreground">
                   {safeWithdrawalRate.toFixed(1)}%
                 </div>
-                <div className="text-xs text-emerald-600 dark:text-emerald-400">
+                <div className="text-xs text-muted-foreground">
                   Annual withdrawal
                 </div>
               </div>
@@ -366,7 +310,7 @@ export function RetirementPlanningSection({
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-600 dark:text-slate-400">Required Corpus:</span>
-                    <span className="font-medium text-red-600 dark:text-red-400">
+                    <span className="font-medium text-accent">
                       {formatCurrency(requiredCorpus)}
                     </span>
                   </div>

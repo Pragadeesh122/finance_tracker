@@ -257,14 +257,36 @@ export default function ProjectionCalculatorSection({
                   tick={{ fontSize: 12 }}
                 />
                 <ChartTooltip
-                  content={
-                    <ChartTooltipContent
-                      formatter={(value, name) => [
-                        `₹${Number(value).toLocaleString()}`,
-                        name === "investment" ? "Total Investment" : "Total Corpus"
-                      ]}
-                    />
-                  }
+                  content={({active, payload}) => {
+                    if (!active || !payload || payload.length === 0) {
+                      return null;
+                    }
+
+                    return (
+                      <div className="rounded-lg border border-border bg-background/95 backdrop-blur-sm px-3 py-2.5 shadow-lg">
+                        <div className="space-y-2">
+                          {payload.map((entry, index) => {
+                            const label = entry.dataKey === "investment" ? "Total Investment" : "Total Corpus";
+                            const value = `₹${Number(entry.value).toLocaleString()}`;
+                            const color = entry.color;
+
+                            return (
+                              <div key={index} className="flex items-center gap-2.5">
+                                <div
+                                  className="h-2.5 w-2.5 rounded-sm"
+                                  style={{ backgroundColor: color }}
+                                />
+                                <div className="flex flex-col gap-0.5">
+                                  <span className="text-xs text-muted-foreground">{label}</span>
+                                  <span className="text-sm font-semibold text-foreground">{value}</span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  }}
                 />
                 <Area
                   type="monotone"

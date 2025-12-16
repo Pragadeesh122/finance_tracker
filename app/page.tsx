@@ -20,6 +20,7 @@ import {
 import {StepUpSIPSection} from "@/components/cagr-calculator/StepUpSIPSection";
 import {GoalPlanningSection} from "@/components/cagr-calculator/GoalPlanningSection";
 import {RetirementPlanningSection} from "@/components/cagr-calculator/RetirementPlanningSection";
+import {Calculator, TrendingUp, Target, Crown, ArrowUpRight} from "lucide-react";
 
 export default function CAGRCalculator() {
   const [mode, setMode] = useState<CalculatorMode>("cagr");
@@ -189,46 +190,60 @@ export default function CAGRCalculator() {
             {[
               {
                 key: "cagr",
-                label: "📊 Calculate CAGR",
+                label: "Calculate CAGR",
                 description: "Find compound annual growth rate",
+                icon: Calculator,
               },
               {
                 key: "projection",
-                label: "📈 Project Returns",
+                label: "Project Returns",
                 description: "Calculate future value",
+                icon: TrendingUp,
               },
               {
                 key: "goal_planning",
-                label: "🎯 Goal Planning",
+                label: "Goal Planning",
                 description: "Plan for specific goals",
+                icon: Target,
               },
               {
                 key: "retirement",
-                label: "🏖️ Retirement",
+                label: "Retirement",
                 description: "Plan your retirement",
+                icon: Crown,
               },
               {
                 key: "stepup_sip",
-                label: "📊 Step-up SIP",
+                label: "Step-up SIP",
                 description: "SIP with annual increments",
+                icon: ArrowUpRight,
               },
-            ].map((calculator) => (
-              <button
-                key={calculator.key}
-                onClick={() => setMode(calculator.key as CalculatorMode)}
-                className={`rounded-lg px-6 py-3 text-sm font-medium transition-colors ${
-                  mode === calculator.key
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-card text-card-foreground hover:bg-secondary border border-border"
-                }`}>
-                <div className='text-center'>
-                  <div>{calculator.label}</div>
-                  <div className='text-xs opacity-70 mt-1'>
-                    {calculator.description}
+            ].map((calculator) => {
+              const Icon = calculator.icon;
+              return (
+                <button
+                  key={calculator.key}
+                  onClick={() => setMode(calculator.key as CalculatorMode)}
+                  className={`rounded-lg px-6 py-3 text-sm font-medium transition-all duration-200 ${
+                    mode === calculator.key
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "bg-card text-card-foreground hover:bg-secondary border border-border"
+                  }`}>
+                  <div className='flex items-center gap-2'>
+                    <Icon
+                      className={`h-4 w-4 ${mode === calculator.key ? '' : 'text-accent'}`}
+                      strokeWidth={2.5}
+                    />
+                    <div className='text-center'>
+                      <div>{calculator.label}</div>
+                      <div className='text-xs opacity-70 mt-0.5'>
+                        {calculator.description}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </button>
-            ))}
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>

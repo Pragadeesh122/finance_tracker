@@ -9,6 +9,8 @@ import {
   YAxis,
 } from "recharts";
 import {ChartContainer, ChartTooltip, ChartTooltipContent} from "@/components/ui/chart";
+import { EnhancedInput } from "./EnhancedInput";
+import { CalculatorTypeIcons, InvestmentIcons, IconSizes, IconColors } from "./CalculatorIcons";
 
 interface CAGRCalculatorSectionProps {
   cagrInputs: CAGRInputs;
@@ -49,73 +51,69 @@ export default function CAGRCalculatorSection({
     };
   });
 
+  const CAGRIcon = CalculatorTypeIcons.cagr;
+  const GrowthIcon = InvestmentIcons.growth;
+
   return (
     <div className='rounded-xl border border-border bg-card p-6 shadow-sm'>
-      <div className='grid gap-6'>
-        <div>
-          <label className='block text-sm font-medium text-muted-foreground'>
-            Initial Investment Amount (₹)
-          </label>
-          <input
-            type='number'
-            value={cagrInputs.initialAmount || ""}
-            onChange={(e) => onInputChange("initialAmount", e.target.value)}
-            placeholder='Enter initial amount'
-            className='mt-1 block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
-            min='0'
-          />
+      {/* Header with Icon */}
+      <div className="flex items-center gap-3 mb-6">
+        <div className="rounded-lg bg-accent/10 p-2.5">
+          <CAGRIcon className={`${IconSizes.lg} ${IconColors.accent}`} strokeWidth={2.5} />
         </div>
+        <div>
+          <h3 className="text-lg font-semibold text-foreground">CAGR Calculator</h3>
+          <p className="text-sm text-muted-foreground">Calculate your investment growth rate</p>
+        </div>
+      </div>
 
-        <div>
-          <label className='block text-sm font-medium text-muted-foreground'>
-            Final Amount (₹)
-          </label>
-          <input
-            type='number'
-            value={cagrInputs.finalAmount || ""}
-            onChange={(e) => onInputChange("finalAmount", e.target.value)}
-            placeholder='Enter final amount'
-            className='mt-1 block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
-            min='0'
-          />
-        </div>
+      <div className='grid gap-6'>
+        <EnhancedInput
+          label="Initial Investment"
+          variant="currency"
+          value={cagrInputs.initialAmount}
+          onChange={(value) => onInputChange("initialAmount", value)}
+          helperText="Enter your starting investment amount"
+          min={0}
+        />
+
+        <EnhancedInput
+          label="Final Amount"
+          variant="currency"
+          value={cagrInputs.finalAmount}
+          onChange={(value) => onInputChange("finalAmount", value)}
+          helperText="Enter the current or expected final value"
+          min={0}
+        />
 
         <div className='grid grid-cols-2 gap-4'>
-          <div>
-            <label className='block text-sm font-medium text-muted-foreground'>
-              Years
-            </label>
-            <input
-              type='number'
-              value={cagrInputs.years || ""}
-              onChange={(e) => onInputChange("years", e.target.value)}
-              placeholder='Years'
-              className='mt-1 block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
-              min='0'
-            />
-          </div>
+          <EnhancedInput
+            label="Investment Period"
+            variant="years"
+            value={cagrInputs.years}
+            onChange={(value) => onInputChange("years", value)}
+            min={0}
+            max={50}
+          />
 
-          <div>
-            <label className='block text-sm font-medium text-muted-foreground'>
-              Months
-            </label>
-            <input
-              type='number'
-              value={cagrInputs.months || ""}
-              onChange={(e) => onInputChange("months", e.target.value)}
-              placeholder='Months'
-              className='mt-1 block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground placeholder-muted-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
-              min='0'
-              max='11'
-            />
-          </div>
+          <EnhancedInput
+            label="Additional Months"
+            variant="months"
+            value={cagrInputs.months}
+            onChange={(value) => onInputChange("months", value)}
+            min={0}
+            max={11}
+          />
         </div>
 
         <TaxToggle includeTax={includeTax} onToggle={onTaxToggle} />
 
         <div className='mt-6 overflow-hidden rounded-lg bg-secondary/50 p-4 border border-border'>
-          <div className='text-xs font-semibold text-muted-foreground uppercase tracking-wide'>
-            Calculated CAGR
+          <div className="flex items-center gap-2 mb-2">
+            <GrowthIcon className={`${IconSizes.sm} ${IconColors.accent}`} />
+            <div className='text-xs font-semibold text-muted-foreground uppercase tracking-wide'>
+              Calculated CAGR
+            </div>
           </div>
           <div className='mt-2 font-display text-4xl font-bold text-accent tracking-tight'>
             {cagr.toFixed(2)}%

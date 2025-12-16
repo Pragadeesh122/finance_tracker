@@ -90,37 +90,42 @@ export function InvestmentCalculator({ selectedFund, cagrData }: InvestmentCalcu
           </div>
 
           <div className='grid gap-4 sm:grid-cols-2'>
-            <div>
-              <label className='block text-sm font-medium text-muted-foreground'>
+            <div className='group'>
+              <label className='mb-2 block text-sm font-medium text-foreground transition-colors group-focus-within:text-accent'>
                 {calculatorInputs.investmentType === "lumpsum"
                   ? "Lumpsum Amount (₹)"
                   : "Monthly SIP Amount (₹)"}
               </label>
-              <input
-                type='number'
-                value={calculatorInputs.amount || ""}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  const numValue = parseFloat(value);
-                  handleInputChange("amount",
-                    value === ""
-                      ? 0
-                      : isNaN(numValue)
-                      ? 0
-                      : Math.max(0, numValue)
-                  );
-                }}
-                placeholder={
-                  calculatorInputs.investmentType === "lumpsum"
-                    ? "Enter lumpsum amount"
-                    : "Enter monthly SIP amount"
-                }
-                className='mt-1 block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
-                min='0'
-              />
+              <div className='relative'>
+                <div className='pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base font-medium text-muted-foreground transition-colors group-focus-within:text-accent'>
+                  ₹
+                </div>
+                <input
+                  type='number'
+                  value={calculatorInputs.amount || ""}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    const numValue = parseFloat(value);
+                    handleInputChange("amount",
+                      value === ""
+                        ? 0
+                        : isNaN(numValue)
+                        ? 0
+                        : Math.max(0, numValue)
+                    );
+                  }}
+                  placeholder={
+                    calculatorInputs.investmentType === "lumpsum"
+                      ? "10000"
+                      : "5000"
+                  }
+                  className='block w-full rounded-lg border border-border bg-background pl-9 pr-4 py-3 text-foreground placeholder-muted-foreground/60 transition-all duration-200 hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.05)]'
+                  min='0'
+                />
+              </div>
             </div>
-            <div>
-              <label className='block text-sm font-medium text-muted-foreground'>
+            <div className='group'>
+              <label className='mb-2 block text-sm font-medium text-foreground transition-colors group-focus-within:text-accent'>
                 Investment Period (Years)
               </label>
               <input
@@ -137,8 +142,8 @@ export function InvestmentCalculator({ selectedFund, cagrData }: InvestmentCalcu
                       : Math.max(1, Math.min(50, numValue))
                   );
                 }}
-                placeholder='Enter investment period'
-                className='mt-1 block w-full rounded-lg border border-border bg-background px-4 py-2.5 text-foreground transition-colors hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
+                placeholder='5'
+                className='block w-full rounded-lg border border-border bg-background px-4 py-3 text-foreground placeholder-muted-foreground/60 transition-all duration-200 hover:border-accent/50 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 focus:shadow-[0_0_0_3px_rgba(22,163,74,0.05)]'
                 min='1'
                 max='50'
               />

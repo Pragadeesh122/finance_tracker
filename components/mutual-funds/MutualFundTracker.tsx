@@ -8,18 +8,19 @@ import { FundHeader } from "./FundHeader";
 import { NAVChart } from "./NAVChart";
 import { FundDetails } from "./FundDetails";
 import { InvestmentCalculator } from "./InvestmentCalculator";
-import { 
-  FundData, 
-  SearchResult, 
-  TimePeriod 
+import { TrendingUp, BarChart3, Calculator } from "lucide-react";
+import {
+  FundData,
+  SearchResult,
+  TimePeriod
 } from "./types";
-import { 
-  getAllFunds, 
-  searchFunds, 
-  searchLocalFunds, 
-  getFundDetails, 
+import {
+  getAllFunds,
+  searchFunds,
+  searchLocalFunds,
+  getFundDetails,
   getFundMetrics,
-  getCAGR 
+  getCAGR
 } from "./utils";
 
 function MutualFundTrackerContent() {
@@ -235,8 +236,10 @@ function MutualFundTrackerContent() {
 
             {/* Info Cards */}
             <div className='grid gap-6 md:grid-cols-3'>
-              <div className='rounded-xl border border-border bg-card p-6 shadow-sm'>
-                <div className='mb-3 text-3xl'>🎯</div>
+              <div className='group rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-accent/30'>
+                <div className='mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10 text-accent transition-transform duration-300 group-hover:scale-110'>
+                  <TrendingUp className='h-6 w-6' strokeWidth={2} />
+                </div>
                 <h3 className='mb-2 text-lg font-semibold text-foreground'>
                   Real-time NAV Data
                 </h3>
@@ -244,8 +247,10 @@ function MutualFundTrackerContent() {
                   Access up-to-date Net Asset Values and historical performance data for thousands of mutual funds
                 </p>
               </div>
-              <div className='rounded-xl border border-border bg-card p-6 shadow-sm'>
-                <div className='mb-3 text-3xl'>📊</div>
+              <div className='group rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-accent/30'>
+                <div className='mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10 text-accent transition-transform duration-300 group-hover:scale-110'>
+                  <BarChart3 className='h-6 w-6' strokeWidth={2} />
+                </div>
                 <h3 className='mb-2 text-lg font-semibold text-foreground'>
                   Performance Analysis
                 </h3>
@@ -253,8 +258,10 @@ function MutualFundTrackerContent() {
                   View interactive charts and analyze CAGR returns across different time periods
                 </p>
               </div>
-              <div className='rounded-xl border border-border bg-card p-6 shadow-sm'>
-                <div className='mb-3 text-3xl'>💡</div>
+              <div className='group rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-md hover:border-accent/30'>
+                <div className='mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-accent/10 text-accent transition-transform duration-300 group-hover:scale-110'>
+                  <Calculator className='h-6 w-6' strokeWidth={2} />
+                </div>
                 <h3 className='mb-2 text-lg font-semibold text-foreground'>
                   Investment Calculator
                 </h3>
