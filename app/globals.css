@@ -8,31 +8,31 @@ body {
 
 @layer base {
   :root {
-    /* Warm paper-inspired backgrounds */
-    --background: 40 14% 99%;
-    --foreground: 24 10% 10%;
+    /* Premium off-white background - inspired by high-end fintech */
+    --background: 40 8% 98%;
+    --foreground: 24 12% 12%;
 
-    /* Cards with subtle warmth */
+    /* Elevated cards with depth - pure white on warm background */
     --card: 0 0% 100%;
-    --card-foreground: 24 10% 10%;
+    --card-foreground: 24 12% 12%;
 
-    /* Popovers */
+    /* Popovers - elevated above cards */
     --popover: 0 0% 100%;
-    --popover-foreground: 24 10% 10%;
+    --popover-foreground: 24 12% 12%;
 
-    /* Primary - Deep slate */
+    /* Primary - Rich charcoal for contrast */
     --primary: 222 47% 11%;
-    --primary-foreground: 40 14% 99%;
+    --primary-foreground: 40 8% 98%;
 
-    /* Secondary - Warm gray */
-    --secondary: 40 6% 97%;
-    --secondary-foreground: 24 10% 10%;
+    /* Secondary - Subtle warm tint for depth */
+    --secondary: 40 10% 96%;
+    --secondary-foreground: 24 12% 12%;
 
-    /* Muted - Subtle warm gray */
-    --muted: 40 6% 97%;
-    --muted-foreground: 30 6% 45%;
+    /* Muted - Enhanced visibility */
+    --muted: 40 12% 95%;
+    --muted-foreground: 30 8% 38%;
 
-    /* Accent - Forest green (growth, prosperity) */
+    /* Accent - Forest green (preserved brand color) */
     --accent: 160 84% 39%;
     --accent-foreground: 0 0% 100%;
 
@@ -40,9 +40,9 @@ body {
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders - Warm subtle */
-    --border: 30 8% 92%;
-    --input: 30 8% 92%;
+    /* Borders - More defined for clarity */
+    --border: 30 12% 88%;
+    --input: 30 12% 88%;
     --ring: 160 84% 39%;
 
     /* Chart colors - Professional palette */

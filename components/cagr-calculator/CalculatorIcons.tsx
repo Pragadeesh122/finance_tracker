@@ -21,17 +21,14 @@ import {
   Target,
   Sparkles,
   ArrowUpRight,
-  ArrowDownRight,
   Briefcase,
   Home,
   GraduationCap,
   Plane,
   Heart,
-  ShoppingCart,
   User,
   Users,
   Crown,
-  Zap,
   Shield,
   CheckCircle2,
   Info,
@@ -46,7 +43,7 @@ import {
   Download,
   Upload,
   Eye,
-  EyeOff
+  EyeOff,
 } from "lucide-react";
 
 /**
@@ -59,7 +56,7 @@ export const CalculatorTypeIcons = {
   stepUp: ArrowUpRight,
   retirement: Crown,
   goal: Target,
-  general: Calculator
+  general: Calculator,
 };
 
 /**
@@ -74,7 +71,7 @@ export const InvestmentIcons = {
   monthly: Calendar,
   yearly: Clock,
   initial: DollarSign,
-  final: Target
+  final: Target,
 };
 
 /**
@@ -87,7 +84,7 @@ export const GoalIcons = {
   travel: Plane,
   wedding: Heart,
   emergency: Shield,
-  general: Target
+  general: Target,
 };
 
 /**
@@ -98,7 +95,7 @@ export const ChartIcons = {
   bar: BarChart3,
   pie: PieChart,
   area: BarChart2,
-  activity: Activity
+  activity: Activity,
 };
 
 /**
@@ -110,7 +107,7 @@ export const InputFieldIcons = {
   calendar: Calendar,
   time: Clock,
   user: User,
-  family: Users
+  family: Users,
 };
 
 /**
@@ -125,7 +122,7 @@ export const ActionIcons = {
   hide: EyeOff,
   expand: ChevronDown,
   collapse: ChevronUp,
-  next: ChevronRight
+  next: ChevronRight,
 };
 
 /**
@@ -135,7 +132,7 @@ export const StatusIcons = {
   success: CheckCircle2,
   info: Info,
   warning: AlertCircle,
-  error: AlertCircle
+  error: AlertCircle,
 };
 
 /**
@@ -147,7 +144,7 @@ export const IconSizes = {
   md: "h-5 w-5",
   lg: "h-6 w-6",
   xl: "h-8 w-8",
-  "2xl": "h-10 w-10"
+  "2xl": "h-10 w-10",
 } as const;
 
 /**
@@ -162,7 +159,7 @@ export const IconColors = {
   error: "text-red-600 dark:text-red-400",
   info: "text-blue-600 dark:text-blue-400",
   growth: "text-emerald-600 dark:text-emerald-400",
-  decline: "text-red-600 dark:text-red-400"
+  decline: "text-red-600 dark:text-red-400",
 } as const;
 
 /**
@@ -175,7 +172,7 @@ export const CalculatorIcons = {
   ...ChartIcons,
   ...InputFieldIcons,
   ...ActionIcons,
-  ...StatusIcons
+  ...StatusIcons,
 };
 
 // Type exports for TypeScript support

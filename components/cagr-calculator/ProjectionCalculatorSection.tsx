@@ -7,14 +7,8 @@ import {
 } from "./utils";
 import InvestmentTypeButtons from "./InvestmentTypeButtons";
 import TaxToggle from "./TaxToggle";
-import {
-  Area,
-  AreaChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-} from "recharts";
-import {ChartContainer, ChartTooltip, ChartTooltipContent} from "@/components/ui/chart";
+import {Area, AreaChart, CartesianGrid, XAxis, YAxis} from "recharts";
+import {ChartContainer, ChartTooltip} from "@/components/ui/chart";
 
 interface ProjectionCalculatorSectionProps {
   projectionInputs: ProjectionInputs;
@@ -72,20 +66,32 @@ export default function ProjectionCalculatorSection({
   const totalGains = projectedAmount - totalInvestment;
 
   // Generate chart data for growth visualization
-  const chartData = Array.from({ length: projectionInputs.years + 1 }, (_, i) => {
+  const chartData = Array.from({length: projectionInputs.years + 1}, (_, i) => {
     const year = i;
     let yearInvestment = 0;
     let yearCorpus = 0;
 
     if (projectionInputs.investmentType === "lumpsum") {
       yearInvestment = projectionInputs.amount;
-      yearCorpus = calculateLumpsumValue(projectionInputs.amount, projectionInputs.cagr, year);
+      yearCorpus = calculateLumpsumValue(
+        projectionInputs.amount,
+        projectionInputs.cagr,
+        year
+      );
     } else if (projectionInputs.investmentType === "sip") {
       yearInvestment = projectionInputs.amount * year * 12;
-      yearCorpus = calculateSIPValue(projectionInputs.amount, projectionInputs.cagr, year);
+      yearCorpus = calculateSIPValue(
+        projectionInputs.amount,
+        projectionInputs.cagr,
+        year
+      );
     } else {
       yearInvestment = projectionInputs.amount * year;
-      yearCorpus = calculateYearlySIPValue(projectionInputs.amount, projectionInputs.cagr, year);
+      yearCorpus = calculateYearlySIPValue(
+        projectionInputs.amount,
+        projectionInputs.cagr,
+        year
+      );
     }
 
     return {
@@ -222,91 +228,131 @@ export default function ProjectionCalculatorSection({
         </div>
 
         {/* Investment Growth Visualization Chart */}
-        {projectionInputs.amount > 0 && projectionInputs.years > 0 && projectionInputs.cagr > 0 && (
-          <div className='mt-6'>
-            <h4 className='mb-4 text-sm font-semibold text-muted-foreground uppercase tracking-wide'>
-              Investment Growth Over Time
-            </h4>
-            <ChartContainer config={chartConfig} className='h-[280px] w-full'>
-              <AreaChart
-                data={chartData}
-                margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-              >
-                <defs>
-                  <linearGradient id="colorReturns" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--color-returns)" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="var(--color-returns)" stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="colorInvestment" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--color-investment)" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="var(--color-investment)" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis
-                  dataKey="year"
-                  tickLine={false}
-                  axisLine={false}
-                  tick={{ fontSize: 12 }}
-                  tickMargin={8}
-                />
-                <YAxis
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={(value) => `₹${(value / 100000).toFixed(1)}L`}
-                  tick={{ fontSize: 12 }}
-                />
-                <ChartTooltip
-                  content={({active, payload}) => {
-                    if (!active || !payload || payload.length === 0) {
-                      return null;
+        {projectionInputs.amount > 0 &&
+          projectionInputs.years > 0 &&
+          projectionInputs.cagr > 0 && (
+            <div className='mt-6'>
+              <h4 className='mb-4 text-sm font-semibold text-muted-foreground uppercase tracking-wide'>
+                Investment Growth Over Time
+              </h4>
+              <ChartContainer config={chartConfig} className='h-[280px] w-full'>
+                <AreaChart
+                  data={chartData}
+                  margin={{top: 10, right: 10, left: 0, bottom: 0}}>
+                  <defs>
+                    <linearGradient
+                      id='colorReturns'
+                      x1='0'
+                      y1='0'
+                      x2='0'
+                      y2='1'>
+                      <stop
+                        offset='5%'
+                        stopColor='var(--color-returns)'
+                        stopOpacity={0.3}
+                      />
+                      <stop
+                        offset='95%'
+                        stopColor='var(--color-returns)'
+                        stopOpacity={0}
+                      />
+                    </linearGradient>
+                    <linearGradient
+                      id='colorInvestment'
+                      x1='0'
+                      y1='0'
+                      x2='0'
+                      y2='1'>
+                      <stop
+                        offset='5%'
+                        stopColor='var(--color-investment)'
+                        stopOpacity={0.2}
+                      />
+                      <stop
+                        offset='95%'
+                        stopColor='var(--color-investment)'
+                        stopOpacity={0}
+                      />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray='3 3' vertical={false} />
+                  <XAxis
+                    dataKey='year'
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{fontSize: 12}}
+                    tickMargin={8}
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) =>
+                      `₹${(value / 100000).toFixed(1)}L`
                     }
+                    tick={{fontSize: 12}}
+                  />
+                  <ChartTooltip
+                    content={({active, payload}) => {
+                      if (!active || !payload || payload.length === 0) {
+                        return null;
+                      }
 
-                    return (
-                      <div className="rounded-lg border border-border bg-background/95 backdrop-blur-sm px-3 py-2.5 shadow-lg">
-                        <div className="space-y-2">
-                          {payload.map((entry, index) => {
-                            const label = entry.dataKey === "investment" ? "Total Investment" : "Total Corpus";
-                            const value = `₹${Number(entry.value).toLocaleString()}`;
-                            const color = entry.color;
+                      return (
+                        <div className='rounded-lg border border-border bg-background/95 backdrop-blur-sm px-3 py-2.5 shadow-lg'>
+                          <div className='space-y-2'>
+                            {payload.map((entry, index) => {
+                              const label =
+                                entry.dataKey === "investment"
+                                  ? "Total Investment"
+                                  : "Total Corpus";
+                              const value = `₹${Number(
+                                entry.value
+                              ).toLocaleString()}`;
+                              const color = entry.color;
 
-                            return (
-                              <div key={index} className="flex items-center gap-2.5">
+                              return (
                                 <div
-                                  className="h-2.5 w-2.5 rounded-sm"
-                                  style={{ backgroundColor: color }}
-                                />
-                                <div className="flex flex-col gap-0.5">
-                                  <span className="text-xs text-muted-foreground">{label}</span>
-                                  <span className="text-sm font-semibold text-foreground">{value}</span>
+                                  key={index}
+                                  className='flex items-end gap-3.5'>
+                                  <div
+                                    className='h-2.5 w-2.5 rounded-lg mb-2 mt-1'
+                                    style={{backgroundColor: color}}
+                                  />
+                                  <div className='flex flex-col justify-center gap-0.5'>
+                                    <span className='text-xs text-muted-foreground'>
+                                      {label}
+                                    </span>
+                                    <span className='text-sm font-semibold text-foreground'>
+                                      {value}
+                                    </span>
+                                  </div>
                                 </div>
-                              </div>
-                            );
-                          })}
+                              );
+                            })}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="investment"
-                  stroke="var(--color-investment)"
-                  fill="url(#colorInvestment)"
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                />
-                <Area
-                  type="monotone"
-                  dataKey="returns"
-                  stroke="var(--color-returns)"
-                  fill="url(#colorReturns)"
-                  strokeWidth={2}
-                />
-              </AreaChart>
-            </ChartContainer>
-          </div>
-        )}
+                      );
+                    }}
+                  />
+                  <Area
+                    type='monotone'
+                    dataKey='investment'
+                    stroke='var(--color-investment)'
+                    fill='url(#colorInvestment)'
+                    strokeWidth={2}
+                    strokeDasharray='5 5'
+                  />
+                  <Area
+                    type='monotone'
+                    dataKey='returns'
+                    stroke='var(--color-returns)'
+                    fill='url(#colorReturns)'
+                    strokeWidth={2}
+                  />
+                </AreaChart>
+              </ChartContainer>
+            </div>
+          )}
       </div>
     </div>
   );
